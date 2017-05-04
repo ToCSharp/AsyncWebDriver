@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{489FD59F-D739-4144-89B8-B5A719BCB120}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AsyncWebDriver</RootNamespace>
+    <AssemblyName>AsyncWebDriver</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AsyncWebDriver\AsyncWebDriver.cs" />
+    <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
+    <Compile Include="AsyncWebDriver\RemoteCoordinates.cs" />
+    <Compile Include="AsyncWebDriver\RemoteNavigator.cs" />
+    <Compile Include="AsyncWebDriver\RemoteOptions.cs" />
+    <Compile Include="AsyncWebDriver\SyncRemoteTargetLocator.cs" />
+    <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
+    <Compile Include="AsyncWebDriver\SyncWebDriver.cs" />
+    <Compile Include="AsyncWebDriver\SyncWebElement.cs" />
+    <Compile Include="AsyncWebDriver\TaskExt.cs" />
+    <Compile Include="By.cs" />
+    <Compile Include="Cookie.cs" />
+    <Compile Include="HTML5\AppCacheStatus.cs" />
+    <Compile Include="HTML5\IApplicationCache.cs" />
+    <Compile Include="HTML5\IHasApplicationCache.cs" />
+    <Compile Include="HTML5\IHasLocationContext.cs" />
+    <Compile Include="HTML5\IHasWebStorage.cs" />
+    <Compile Include="HTML5\ILocalStorage.cs" />
+    <Compile Include="HTML5\ILocationContext.cs" />
+    <Compile Include="HTML5\ISessionStorage.cs" />
+    <Compile Include="HTML5\IWebStorage.cs" />
+    <Compile Include="HTML5\Location.cs" />
+    <Compile Include="IAlert.cs" />
+    <Compile Include="ICookieJar.cs" />
+    <Compile Include="IHasInputDevices.cs" />
+    <Compile Include="IHasTouchScreen.cs" />
+    <Compile Include="IJavascriptExecutor.cs" />
+    <Compile Include="IKeyboard.cs" />
+    <Compile Include="ILocatable.cs" />
+    <Compile Include="ILogs.cs" />
+    <Compile Include="IMouse.cs" />
+    <Compile Include="INavigation.cs" />
+    <Compile Include="Interactions\Actions.cs" />
+    <Compile Include="Interactions\ButtonReleaseAction.cs" />
+    <Compile Include="Interactions\ClickAction.cs" />
+    <Compile Include="Interactions\ClickAndHoldAction.cs" />
+    <Compile Include="Interactions\CompositeAction.cs" />
+    <Compile Include="Interactions\ContextClickAction.cs" />
+    <Compile Include="Interactions\DoubleClickAction.cs" />
+    <Compile Include="Interactions\DoubleTapAction.cs" />
+    <Compile Include="Interactions\FlickAction.cs" />
+    <Compile Include="Interactions\IAction.cs" />
+    <Compile Include="Interactions\ICoordinates.cs" />
+    <Compile Include="Interactions\KeyboardAction.cs" />
+    <Compile Include="Interactions\KeyDownAction.cs" />
+    <Compile Include="Interactions\KeyUpAction.cs" />
+    <Compile Include="Interactions\LongPressAction.cs" />
+    <Compile Include="Interactions\MouseAction.cs" />
+    <Compile Include="Interactions\MoveMouseAction.cs" />
+    <Compile Include="Interactions\MoveToOffsetAction.cs" />
+    <Compile Include="Interactions\ScreenMoveAction.cs" />
+    <Compile Include="Interactions\ScreenPressAction.cs" />
+    <Compile Include="Interactions\ScreenReleaseAction.cs" />
+    <Compile Include="Interactions\ScrollAction.cs" />
+    <Compile Include="Interactions\SendKeysAction.cs" />
+    <Compile Include="Interactions\SingleKeyAction.cs" />
+    <Compile Include="Interactions\SingleTapAction.cs" />
+    <Compile Include="Interactions\TouchAction.cs" />
+    <Compile Include="Interactions\TouchActions.cs" />
+    <Compile Include="Interactions\WebDriverAction.cs" />
+    <Compile Include="Internal\IFindsByClassName.cs" />
+    <Compile Include="Internal\IFindsByCssSelector.cs" />
+    <Compile Include="Internal\IFindsById.cs" />
+    <Compile Include="Internal\IFindsByLinkText.cs" />
+    <Compile Include="Internal\IFindsByName.cs" />
+    <Compile Include="Internal\IFindsByPartialLinkText.cs" />
+    <Compile Include="Internal\IFindsByTagName.cs" />
+    <Compile Include="Internal\IFindsByXPath.cs" />
+    <Compile Include="Internal\IWrapsDriver.cs" />
+    <Compile Include="Internal\IWrapsElement.cs" />
+    <Compile Include="Internal\ReturnedCookie.cs" />
+    <Compile Include="InvalidSelectorException.cs" />
+    <Compile Include="IOptions.cs" />
+    <Compile Include="ISearchContext.cs" />
+    <Compile Include="ITakesScreenshot.cs" />
+    <Compile Include="ITargetLocator.cs" />
+    <Compile Include="ITimeouts.cs" />
+    <Compile Include="ITouchScreen.cs" />
+    <Compile Include="IWebDriver.cs" />
+    <Compile Include="IWebElement.cs" />
+    <Compile Include="IWindow.cs" />
+    <Compile Include="Keys.cs" />
+    <Compile Include="LogEntry.cs" />
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="LogType.cs" />
+    <Compile Include="NoSuchElementException.cs" />
+    <Compile Include="NoSuchFrameException.cs" />
+    <Compile Include="NoSuchWindowException.cs" />
+    <Compile Include="NotFoundException.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Screenshot.cs" />
+    <Compile Include="WebDriverException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IAsyncWebBrowserClient\IAsyncWebBrowserClient.csproj">
+      <Project>{5148b07e-f81f-4f3b-b522-b8c312531152}</Project>
+      <Name>IAsyncWebBrowserClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

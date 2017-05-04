@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{13891DBA-94C7-45AA-B9BD-77AC7B56C379}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AsyncFirefoxDriver</RootNamespace>
+    <AssemblyName>AsyncFirefoxDriver</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FirefoxProfilesWorker.cs" />
+    <Compile Include="IniFileReader.cs" />
+    <Compile Include="KeyValuePairVM.cs" />
+    <Compile Include="AsyncFirefoxDriver.cs" />
+    <Compile Include="MarionetteComands\AcceptDialogCommand.cs" />
+    <Compile Include="MarionetteComands\ClearElementCommand.cs" />
+    <Compile Include="MarionetteComands\ClearImportedScriptsCommand.cs" />
+    <Compile Include="MarionetteComands\ClickElementCommand.cs" />
+    <Compile Include="MarionetteComands\CloseChromeWindowCommand.cs" />
+    <Compile Include="MarionetteComands\CloseCommand.cs" />
+    <Compile Include="MarionetteComands\DismissDialogCommand.cs" />
+    <Compile Include="MarionetteComands\ExecuteScriptCommand.cs" />
+    <Compile Include="MarionetteComands\FindElementCommand.cs" />
+    <Compile Include="MarionetteComands\FindElementsCommand.cs" />
+    <Compile Include="MarionetteComands\GetActiveElementCommand.cs" />
+    <Compile Include="MarionetteComands\GetActiveFrameCommand.cs" />
+    <Compile Include="MarionetteComands\GetChromeWindowHandleCommand.cs" />
+    <Compile Include="MarionetteComands\GetChromeWindowHandlesCommand.cs" />
+    <Compile Include="MarionetteComands\GetCommand.cs" />
+    <Compile Include="MarionetteComands\GetContextCommand.cs" />
+    <Compile Include="MarionetteComands\GetCurrentUrlCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementAttributeCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementPropertyCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementRectCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementTagNameCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementTextCommand.cs" />
+    <Compile Include="MarionetteComands\GetElementValueOfCssPropertyCommand.cs" />
+    <Compile Include="MarionetteComands\GetPageSourceCommand.cs" />
+    <Compile Include="MarionetteComands\GetTextFromDialogCommand.cs" />
+    <Compile Include="MarionetteComands\GetTitleCommand.cs" />
+    <Compile Include="MarionetteComands\GetWindowHandleCommand.cs" />
+    <Compile Include="MarionetteComands\GetWindowHandlesCommand.cs" />
+    <Compile Include="MarionetteComands\GetWindowPositionCommand.cs" />
+    <Compile Include="MarionetteComands\GetWindowSizeCommand.cs" />
+    <Compile Include="MarionetteComands\GetWindowTypeCommand.cs" />
+    <Compile Include="MarionetteComands\GoBackCommand.cs" />
+    <Compile Include="MarionetteComands\GoForwardCommand.cs" />
+    <Compile Include="MarionetteComands\ImportScriptCommand.cs" />
+    <Compile Include="MarionetteComands\IsElementDisplayedCommand.cs" />
+    <Compile Include="MarionetteComands\IsElementEnabledCommand.cs" />
+    <Compile Include="MarionetteComands\IsElementSelectedCommand.cs" />
+    <Compile Include="MarionetteComands\MaximizeWindowCommand.cs" />
+    <Compile Include="MarionetteComands\NewSessionCommand.cs" />
+    <Compile Include="MarionetteComands\RefreshCommand.cs" />
+    <Compile Include="MarionetteComands\SendKeysToDialogCommand.cs" />
+    <Compile Include="MarionetteComands\SendKeysToElementCommand.cs" />
+    <Compile Include="MarionetteComands\SessionTearDownCommand.cs" />
+    <Compile Include="MarionetteComands\SetContextCommand.cs" />
+    <Compile Include="MarionetteComands\SetTimeoutsCommand.cs" />
+    <Compile Include="MarionetteComands\SetWindowPositionCommand.cs" />
+    <Compile Include="MarionetteComands\SetWindowSizeCommand.cs" />
+    <Compile Include="MarionetteComands\SwitchToFrameCommand.cs" />
+    <Compile Include="MarionetteComands\SwitchToParentFrameCommand.cs" />
+    <Compile Include="MarionetteComands\SwitchToWindowCommand.cs" />
+    <Compile Include="MarionetteComands\TakeScreenshotCommand.cs" />
+    <Compile Include="MarionetteDebuggerCommand.cs" />
+    <Compile Include="MarionetteDebuggerCommandString.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AsyncWebDriver\AsyncWebDriver.csproj">
+      <Project>{489fd59f-d739-4144-89b8-b5a719bcb120}</Project>
+      <Name>AsyncWebDriver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IAsyncWebBrowserClient\IAsyncWebBrowserClient.csproj">
+      <Project>{5148b07e-f81f-4f3b-b522-b8c312531152}</Project>
+      <Name>IAsyncWebBrowserClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebBrowserCommunication\WebBrowserCommunication.csproj">
+      <Project>{bd66d956-659c-4974-b86d-1ae8f75e7f12}</Project>
+      <Name>WebBrowserCommunication</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="js\mymarionetteserver.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
