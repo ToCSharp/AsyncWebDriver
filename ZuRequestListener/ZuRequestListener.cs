@@ -53,38 +53,7 @@ namespace Zu.Browser
         {
             await DoNotRecordContentType("application/zip");
         }
-            //        public async Task StartListening()
-            //        {
-            //            browserClient?.AddEventListener("JsRequestListener", OnEventFromConnection);
-            //            var res = await browserClient?.EvalFile("TracingListenerSaverReplacer.js");
-            //            res = await browserClient?.Eval(@"
-            //this.httpResponseObserver.doSaveAll = true;
-            //function onFileSaved(url, path, hashC){
-            //    server.sendEvent({""to"": ""JsRequestListener"", ""type"": 1, ""url"": url, ""path"": path, ""hashC"": hashC}); 
-            //} 
-            //this.httpResponseObserver.addListener(this);
-            //");
-            //        }
-
-            //        public async Task StartListeningFileLoaded()
-            //        {
-            //            IsListeningFileLoaded = true;
-            //            browserClient?.AddEventListener("JsRequestListener", OnEventFromConnection);
-            //            try
-            //            {
-            //                var res = await browserClient?.EvalFile("TracingListener.js");
-            //                //res = await browserClient?.Eval("this.TracingListenerActivate(); return 'ok';");
-            //                res = await browserClient?.Eval(@"
-            //this.onFileLoaded = function (url, body){
-            //    server.sendEvent({""to"": ""JsRequestListener"", ""type"": 2, ""url"": url, ""body"": body}); 
-            //} 
-            //this.httpResponseObserver.addListener(this);
-            //");
-            //            }catch(Exception ex)
-            //            {
-
-            //            }
-            //        }
+ 
 
             public async Task StartListeningFileLoaded()
         {
