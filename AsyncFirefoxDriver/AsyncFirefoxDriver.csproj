@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncWebDriver, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.0.1\lib\net452\AsyncWebDriver.dll</HintPath>
+    </Reference>
+    <Reference Include="IWebBrowserClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.0.1\lib\net452\IWebBrowserClient.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -107,23 +113,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AsyncWebDriver\AsyncWebDriver.csproj">
-      <Project>{489fd59f-d739-4144-89b8-b5a719bcb120}</Project>
-      <Name>AsyncWebDriver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IAsyncWebBrowserClient\IAsyncWebBrowserClient.csproj">
-      <Project>{5148b07e-f81f-4f3b-b522-b8c312531152}</Project>
-      <Name>IAsyncWebBrowserClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WebBrowserCommunication\WebBrowserCommunication.csproj">
       <Project>{bd66d956-659c-4974-b86d-1ae8f75e7f12}</Project>
       <Name>WebBrowserCommunication</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="js\mymarionetteserver.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="js\mymarionetteserver.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -24,80 +24,7 @@ namespace Zu.Firefox
 
         private List<Tuple<string, Action<JToken>>> eventAsyncActions = new List<Tuple<string, Action<JToken>>>();
 
-        //        public async Task<string> CreateConnection2(int port)
-        //        {
-        //            await SetContextChrome();
 
-        //            var scriptFile = @"D:\jsfiles\mymarionetteserver.js";
-        //            var script = File.ReadAllText(scriptFile);
-        //            var res1 = await ExecuteScript(script, scriptFile);
-        //            var res = await ExecuteScript($@"
-        //try {{
-        //    //Cu.import(""chrome://marionette/content/server.js"");
-        //    //MarionetteServer.prototype.sendEvent = function(packet) {{
-        //    //    for (let c in this.conns) {{
-        //    //        this.conns[c].sendRaw(packet);
-        //    //    }}
-        //    //}};
-
-        //                s = new MarionetteServer2({port}, true);
-        //                s.start();
-        //            }} catch (e) {{
-        //                return e.toString();
-        //            }} finally {{
-        //            	if (s) {{
-        //            		//this.server = s;
-        //                    zuConn2 = s;
-        //            	}}
-        //            }}
-        //            return ""ok""", $@"D:\scripts\script{scriptInd++}.js");
-        //            //if (res?["value"].ToString() != "ok")
-        //            //{
-        //            //    return res?.ToString();
-        //            //}
-        //            _connectionM2 = new DebuggerConnectionMarionette(new NetworkClientFactory());
-        //            _connectionM2.OutputMessage += _connectionM2_OutputMessage;
-        //            _debuggerEndpointUri2 = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port }.Uri;
-        //            //_connectionM.OutputMessage += _connection_OutputMessage;
-        //            await Task.Factory.StartNew(() => _connectionM2.Connect(_debuggerEndpointUri2));
-        //            clientMarionette2 = new DebuggerClientMarionette(_connectionM2);
-        //            //var comm1 = new newSessionCommand(1);
-        //            //await clientMarionette2.SendRequestAsync(comm1, cancellationToken);
-        //            return "ok"; // comm1.Result.ToString();
-        //        }
-        //public async Task<string> CreateConnection2b(int port)
-        //{
-        //    //await SetContextChrome();
-
-        //    //var scriptFile = @"D:\jsfiles\mymarionetteserver.js";
-        //    //var script = File.ReadAllText(scriptFile);
-        //    //var res1 = await ExecuteScript(script, scriptFile);
-        //    //var res = await ExecuteScript($@"
-        //    //try {{
-        //    //    s = new MarionetteServer2({port}, true);
-        //    //    s.start();
-        //    //}} catch (e) {{
-        //    //    return e.toString();
-        //    //}} finally {{
-        //    //	if (s) {{
-        //    //		this.server = s;
-        //    //	}}
-        //    //}}
-        //    //return ""ok""", $@"D:\scripts\script{scriptInd++}.js");
-        //    ////if (res?["value"].ToString() != "ok")
-        //    ////{
-        //    ////    return res?.ToString();
-        //    //}
-        //    _connectionM2 = new DebuggerConnectionMarionette(new NetworkClientFactory());
-        //    _connectionM2.OutputMessage += _connectionM2_OutputMessage;
-        //    _debuggerEndpointUri2 = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port }.Uri;
-        //    //_connectionM.OutputMessage += _connection_OutputMessage;
-        //    await Task.Factory.StartNew(() => _connectionM2.Connect(_debuggerEndpointUri2));
-        //    clientMarionette2 = new DebuggerClientMarionette(_connectionM2);
-        //    var comm1 = new newSessionCommand(1);
-        //    await clientMarionette2.SendRequestAsync(comm1, cancellationToken);
-        //    return comm1.Result.ToString();
-        //}
         private object lock1 = new object();
 
         private readonly object lock2 = new object();
@@ -839,7 +766,26 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             else
             {
                 if (!await ObjectExists("MarionetteServer2"))
-                    await EvalFile("mymarionetteserver.js");
+                {
+                    var assem = this.GetType().Assembly;
+                    var resPath = $"{assem.GetName().Name}.js.mymarionetteserver.js";
+                    var code = "";
+                    if (assem.GetManifestResourceNames().Contains(resPath))
+                    {
+                        using (Stream stream = assem.GetManifestResourceStream(resPath))
+                        {
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                code = reader.ReadToEnd();
+                            }
+                        }
+                        await ExecuteScript(code, Path.GetFullPath("mymarionetteserver.js"));
+                    }
+                    else
+                    {
+                        await EvalFile("mymarionetteserver.js");
+                    }
+                }
                 var res = await ExecuteScript($@"
             var s;
             try {{
