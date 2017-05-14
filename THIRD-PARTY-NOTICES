@@ -4,6 +4,10 @@ In the event that we accidentally failed to list a required notice, please
 bring it to our attention. Post an issue or email us:
 
           tocsharp@gmail.com 
+          
+AsyncWebDriver that this document references does not necessarily use
+all the open source software packages referred to below and may also
+only use portions of a given package. More info in "NOTICE" file.
 
 The attached notices are provided for information only.
 
@@ -32,3 +36,25 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+License notice for Selenium
+-------------------------------
+
+https://github.com/SeleniumHQ/selenium/blob/master/LICENSE
+
+Licensed under the Apache License, Version 2.0 (the “License”); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at 
+http://www.apache.org/licenses/LICENSE-2.0 
+
+
+License notice for Node.js Tools for Visual Studio
+-------------------------------
+
+https://github.com/Microsoft/nodejstools/blob/master/LICENSE
+
+Licensed under the Apache License, Version 2.0 (the “License”); 
+you may not use this file except in compliance with the License. 
+You may obtain a copy of the License at 
+http://www.apache.org/licenses/LICENSE-2.0 
