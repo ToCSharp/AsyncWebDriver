@@ -1,0 +1,9 @@
+AsyncWebDriver in it base was rewritten from selenium dotnet WebDriver hosted on 
+https://github.com/SeleniumHQ/selenium/tree/master/dotnet/src/webdriver.
+
+WebBrowserCommunication is based on Communication lib from Node.js Tools for Visual Studio 
+to which we added connection to Firefox Marionette.
+Node.js Tools for Visual Studio Communication part hosted on
+https://github.com/Microsoft/nodejstools/tree/master/Nodejs/Product/Nodejs/Debugger/Communication
+
+For third-party license information see the THIRD-PARTY-NOTICES file which accompanies this NOTICE file.
