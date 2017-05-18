@@ -6,9 +6,11 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
+    <licenseUrl>https://github.com/ToCSharp/AsyncWebDriver/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/ToCSharp/AsyncWebDriver</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>First.</releaseNotes>
+    <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright Oleg Zudov 2017</copyright>
     <tags>AsyncFirefoxDriver Firefox WebDriver</tags>
   </metadata>
