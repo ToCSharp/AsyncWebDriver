@@ -31,9 +31,9 @@ namespace AsyncFirefoxDriverExample
 
         private async Task<string> Make_ffDriver(string profileName = "default", bool doOpenSecondPort = true)
         {
-            FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
             if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
                 FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
+            FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
 
             ffDriver = new AsyncFirefoxDriver(profileName);
             ffDriver.DoConnect2 = doOpenSecondPort;
