@@ -114,5 +114,7 @@ namespace Zu.WebBrowser
 
         Task<string> TakeScreenshot(string elementId, string highlights, string full, string hash,
             CancellationToken cancellationToken = new CancellationToken());
+        Task<JToken> ExecuteScript(string script, string filename = null,
+            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken());
     }
 }
