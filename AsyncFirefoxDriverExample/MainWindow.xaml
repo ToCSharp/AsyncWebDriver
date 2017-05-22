@@ -70,10 +70,11 @@
                     <Button Content="profiles" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,10,0,0" Click="Button_Click_4"/>
                     <TextBox x:Name="tbMarionPort" HorizontalAlignment="Left" Height="23" Margin="10,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="76"/>
                     <Button Content="set Marionette port" HorizontalAlignment="Left" Margin="98,38,0,0" VerticalAlignment="Top" Width="131" Click="Button_Click_5"/>
-                    <Button Content="Open Offline" Grid.Column="1" HorizontalAlignment="Left" Margin="10,23,0,0" VerticalAlignment="Top" Width="125"/>
+                    <Button Content="Open Offline" Grid.Column="1" HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="125" Click="Button_Click_11"/>
                     <TextBlock HorizontalAlignment="Left" Margin="10,63,0,0" TextWrapping="Wrap" Text="DoubleClick to open" VerticalAlignment="Top"/>
-                    <Button Content="user prefs" Grid.Column="1" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Width="105" Click="Button_Click_6"/>
+                    <Button Content="user prefs" Grid.Column="1" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Width="105" Click="Button_Click_6"/>
                     <TextBox x:Name="tbProfilesData" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap"/>
+                    <Button Content="Open in Firefox Developer Edition" Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="193" Click="Button_Click_10"/>
                 </Grid>
             </TabItem>
         </TabControl>

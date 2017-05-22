@@ -101,7 +101,7 @@ namespace Zu.Firefox
             Thread.Sleep(1000);
 
             // wait for closing previos Firefox
-            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Firefox Developer Edition")
             {
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();
@@ -136,7 +136,7 @@ namespace Zu.Firefox
             Thread.Sleep(1000);
 
             // wait for closing previos Firefox
-            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Firefox Developer Edition")
             {
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();

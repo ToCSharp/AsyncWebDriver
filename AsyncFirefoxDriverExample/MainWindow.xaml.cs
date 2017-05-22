@@ -245,5 +245,17 @@ namespace AsyncFirefoxDriverExample
             var next = syncDriver.FindElementById("pnnext");
             next?.Click();
         }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            var profileName = (lbProfiles.SelectedItem as Tuple<string, string>)?.Item1;
+            FirefoxProfilesWorker.OpenFirefoxDeveloperProfile(profileName);
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            var profileName = (lbProfiles.SelectedItem as Tuple<string, string>)?.Item1;
+            FirefoxProfilesWorker.OpenFirefoxProfileOffline(profileName);
+        }
     }
 }
