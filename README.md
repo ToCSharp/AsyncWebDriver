@@ -58,4 +58,4 @@ Look at AsyncFirefoxDriverExample
 
 ## ZuRequestListener
 ZuRequestListener is AsyncFirefoxDriver extension. 
-It is exemple how to extend WebDriver functionality.
+It is example how to extend WebDriver functionality.
