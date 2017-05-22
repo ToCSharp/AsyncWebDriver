@@ -15,6 +15,7 @@ namespace Zu.Firefox
         public static string UserPreferencesFileName = "user.js";
 
         public static string FirefoxBinaryFileName; // = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
+        public static string FirefoxDeveloperBinaryFileName;
         public static string FirefoxProfilesDir = @"c:\firefox\profiles\";
 
         static FirefoxProfilesWorker()
@@ -23,6 +24,14 @@ namespace Zu.Firefox
                 FirefoxBinaryFileName = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
             else if (File.Exists(@"C:\Program Files\Mozilla Firefox\firefox.exe"))
                 FirefoxBinaryFileName = @"C:\Program Files\Mozilla Firefox\firefox.exe";
+            if (File.Exists(@"C:\Program Files (x86)\Firefox Developer Edition\firefox.exe"))
+            {
+                FirefoxDeveloperBinaryFileName = @"C:\Program Files (x86)\Firefox Developer Edition\firefox.exe";
+            }
+            else if (File.Exists(@"C:\Program Files\Firefox Developer Edition\firefox.exe"))
+            {
+                FirefoxDeveloperBinaryFileName = @"C:\Program Files\Firefox Developer Edition\firefox.exe";
+            }
         }
 
         public static int OpenFirefoxProfileTimoutMs { get; set; } = 10000;
@@ -81,6 +90,23 @@ namespace Zu.Firefox
                 var v = reader.ReadToEnd();
             }
         }
+        public static void OpenFirefoxDeveloperProfile(string key)
+        {
+            var process = new Process();
+            process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
+            process.StartInfo.Arguments = $@"-no-remote -P ""{key}""";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+            Thread.Sleep(1000);
+
+            // wait for closing previos Firefox
+            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            {
+                var reader = process.StandardOutput;
+                var v = reader.ReadToEnd();
+            }
+        }
 
         public static void OpenFirefoxProfileOffline(string key)
         {
@@ -93,6 +119,23 @@ namespace Zu.Firefox
             process.Start();
             Thread.Sleep(1000);
 
+            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            {
+                var reader = process.StandardOutput;
+                var v = reader.ReadToEnd();
+            }
+        }
+        public static void OpenFirefoxDeveloperProfileOffline(string key)
+        {
+            var process = new Process();
+            process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
+            process.StartInfo.Arguments = $@"-no-remote -P ""{key}"" -offline";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.Start();
+            Thread.Sleep(1000);
+
+            // wait for closing previos Firefox
             if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
             {
                 var reader = process.StandardOutput;
