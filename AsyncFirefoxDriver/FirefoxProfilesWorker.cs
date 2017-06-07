@@ -69,9 +69,9 @@ namespace Zu.Firefox
             return GetProfiles().FirstOrDefault(v => v.Key == profileName).Value;
         }
 
-        public static void OpenFirefoxProfile(string key)
+        public static Process OpenFirefoxProfile(string key)
         {
-            if (string.IsNullOrWhiteSpace(key)) return;
+            if (string.IsNullOrWhiteSpace(key)) return null;
             var process = new Process();
             process.StartInfo.FileName =
                 FirefoxBinaryFileName; // @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
@@ -89,8 +89,9 @@ namespace Zu.Firefox
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();
             }
+            return process;
         }
-        public static void OpenFirefoxDeveloperProfile(string key)
+        public static Process OpenFirefoxDeveloperProfile(string key)
         {
             var process = new Process();
             process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
@@ -106,11 +107,12 @@ namespace Zu.Firefox
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();
             }
+            return process;
         }
 
-        public static void OpenFirefoxProfileOffline(string key)
+        public static Process OpenFirefoxProfileOffline(string key)
         {
-            if (string.IsNullOrWhiteSpace(key)) return;
+            if (string.IsNullOrWhiteSpace(key)) return null;
             var process = new Process();
             process.StartInfo.FileName = FirefoxBinaryFileName;
             process.StartInfo.Arguments = $@"-no-remote -P ""{key}"" -offline";
@@ -124,8 +126,9 @@ namespace Zu.Firefox
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();
             }
+            return process;
         }
-        public static void OpenFirefoxDeveloperProfileOffline(string key)
+        public static Process OpenFirefoxDeveloperProfileOffline(string key)
         {
             var process = new Process();
             process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
@@ -141,6 +144,7 @@ namespace Zu.Firefox
                 var reader = process.StandardOutput;
                 var v = reader.ReadToEnd();
             }
+            return process;
         }
         //public static string LastError;
 
