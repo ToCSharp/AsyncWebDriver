@@ -66,4 +66,7 @@ ZuRequestListener is AsyncFirefoxDriver extension.
 It is example how to extend WebDriver functionality.
 
 ## [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/AsyncFirefoxDriverExtensions)
-LiveIp and LivePreferences to get ip and Firefox preferences of running profile.
+* LiveIp to get ip
+* LivePreferences to view and edit Firefox preferences of running profile
+* AddonManager have methods GetAddonsList, InstallAddon, InstallTemporaryAddon, UninstallAddon.
+
