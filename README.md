@@ -63,7 +63,7 @@ Run built Example in release tab.
 
 ## ZuRequestListener
 ZuRequestListener is AsyncFirefoxDriver extension. 
-It is example how to extend WebDriver functionality.
+It is example how to extend WebDriver functionality. Does not work well in Multiprocess Firefox. 
 
 ## [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/AsyncFirefoxDriverExtensions)
 * LiveIp to get ip
