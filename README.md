@@ -12,7 +12,10 @@ AsyncFirefoxDriver implements IWebBrowserClient and can be used as AsyncWebDrive
 
 But the main MISSION of this project is to provide Firefox specific capabilities.
 Reqest listener and profiles worker already here.
-Properties, debugger, all what addons and extensions can do, we can do with AsyncFirefoxDriver (coming soon).
+
+More extensions in [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/AsyncFirefoxDriverExtensions) project.
+
+Debugger, all what addons and extensions can do, we can do with AsyncFirefoxDriver (coming soon).
 
 ## Other browsers
 AsyncFirefoxDriver is the only one so far. 
@@ -54,8 +57,16 @@ using Zu.Firefox;
 ```
 
 ## Examples
-Look at AsyncFirefoxDriverExample
+Look at AsyncFirefoxDriverExample.
+
+Run built Example in release tab.
 
 ## ZuRequestListener
 ZuRequestListener is AsyncFirefoxDriver extension. 
 It is example how to extend WebDriver functionality.
+
+## [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/AsyncFirefoxDriverExtensions)
+* LiveIp to get ip
+* LivePreferences to view and edit Firefox preferences of running profile
+* AddonManager have methods GetAddonsList, InstallAddon, InstallTemporaryAddon, UninstallAddon.
+
