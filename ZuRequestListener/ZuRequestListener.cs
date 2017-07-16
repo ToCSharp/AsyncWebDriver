@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace Zu.Browser
 {
     public class ZuRequestListener
     {
-        private IAsyncWebBrowserWorker browserClient;
+        private IAsyncWebBrowserClient browserClient;
         public event EventHandler<JToken> StartRequest;
         public event EventHandler<JToken> StopRequest;
 
@@ -19,9 +20,35 @@ namespace Zu.Browser
 
         public bool DoSendBinary { get; set; } = false;
         public string SaveAllFilesToFolder { get; set; } = null;
-        public ZuRequestListener(IAsyncWebBrowserWorker browserClient)
+        public ZuRequestListener(IAsyncWebBrowserClient browserClient)
         {
             this.browserClient = browserClient;
+        }
+
+        public async Task<JToken> EvalFile(string fileName, string dir = "js", bool inChrome = true)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (inChrome) await browserClient?.SetContext(Contexts.Chrome);
+            else await browserClient?.SetContext(Contexts.Content);
+
+            var assem = this.GetType().Assembly;
+            var resPath = !string.IsNullOrWhiteSpace(dir) ? $"{assem.GetName().Name}.{dir.Replace('\\', '.').Trim('.')}.{fileName}" : $"{assem.GetName().Name}.{fileName}";
+            var code = "";
+            if (assem.GetManifestResourceNames().Contains(resPath))
+            {
+                using (Stream stream = assem.GetManifestResourceStream(resPath))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        code = reader.ReadToEnd();
+                    }
+                }
+                return await browserClient?.ExecuteScript(code, Path.GetFullPath(fileName));
+            }
+            else
+            {
+                return await browserClient?.EvalFile(fileName);
+            }
         }
 
         public async Task DoNotRecordFilesWithExt(string str)
@@ -29,7 +56,7 @@ namespace Zu.Browser
             await browserClient?.SetContext(Contexts.Chrome);
             if (!(await browserClient?.ObjectExists("httpResponseObserver")))
             {
-                var res = await browserClient?.EvalFile("TracingListener.js");
+                var res = await /*browserClient?.*/EvalFile("TracingListener.js");
             }
             //await browserClient?.Eval($"httpResponseObserver.filesExtNotRecord.push('{str}');");
             await browserClient?.Eval($@"if (httpResponseObserver.filesExtNotRecord.indexOf('{str}') === -1) {{
@@ -43,7 +70,7 @@ namespace Zu.Browser
             await browserClient?.SetContext(Contexts.Chrome);
             if (!(await browserClient?.ObjectExists("httpResponseObserver")))
             {
-                var res = await browserClient?.EvalFile("TracingListener.js");
+                var res = await /*browserClient?.*/EvalFile("TracingListener.js");
             }
             await browserClient?.Eval($@"if (httpResponseObserver.contentTypesNotRecord.indexOf('{str}') === -1) {{
     httpResponseObserver.contentTypesNotRecord.push('{str}');
@@ -53,9 +80,9 @@ namespace Zu.Browser
         {
             await DoNotRecordContentType("application/zip");
         }
- 
 
-            public async Task StartListeningFileLoaded()
+
+        public async Task StartListeningFileLoaded()
         {
             IsListeningFileLoaded = true;
             browserClient?.AddEventListener("JsRequestListener", OnEventFromConnection);
@@ -65,11 +92,30 @@ namespace Zu.Browser
                 await browserClient?.SetContext(Contexts.Chrome);
                 if (!(await browserClient?.ObjectExists("httpResponseObserver")))
                 {
-                    var res1 = await browserClient?.EvalFile("TracingListener.js");
+                    //var assem = this.GetType().Assembly;
+                    //var resPath = $"{assem.GetName().Name}.js.mymarionetteserver.js";
+                    //var code = "";
+                    //if (assem.GetManifestResourceNames().Contains(resPath))
+                    //{
+                    //    using (Stream stream = assem.GetManifestResourceStream(resPath))
+                    //    {
+                    //        using (StreamReader reader = new StreamReader(stream))
+                    //        {
+                    //            code = reader.ReadToEnd();
+                    //        }
+                    //    }
+                    //    await browserClient?.ExecuteScript(code, Path.GetFullPath("TracingListener.js"));
+                    //}
+                    //else
+                    //{
+                    //    var res1 = await browserClient?.EvalFile("TracingListener.js");
+                    //}
+                    await EvalFile("TracingListener.js");
+
                 }
                 if (DoSendBinary)
                 {
-                    var res1 = await browserClient?.EvalFile("base64.js");
+                    var res1 = await /*browserClient?.*/EvalFile("base64.js");
                     res1 = await browserClient?.Eval($"httpResponseObserver.doSendBinary = true; return 'ok'");
                 }
                 if (SaveAllFilesToFolder != null)
