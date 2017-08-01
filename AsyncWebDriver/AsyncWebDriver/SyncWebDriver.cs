@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Threading;
 using Zu.AsyncWebDriver;
 using Zu.AsyncWebDriver.Remote;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {

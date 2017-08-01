@@ -35,7 +35,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,7 +54,6 @@
     <Compile Include="AsyncWebDriver\SyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\TaskExt.cs" />
     <Compile Include="By.cs" />
-    <Compile Include="Cookie.cs" />
     <Compile Include="HTML5\AppCacheStatus.cs" />
     <Compile Include="HTML5\IApplicationCache.cs" />
     <Compile Include="HTML5\IHasApplicationCache.cs" />
@@ -66,16 +64,9 @@
     <Compile Include="HTML5\ISessionStorage.cs" />
     <Compile Include="HTML5\IWebStorage.cs" />
     <Compile Include="HTML5\Location.cs" />
-    <Compile Include="IAlert.cs" />
-    <Compile Include="ICookieJar.cs" />
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IHasTouchScreen.cs" />
-    <Compile Include="IJavascriptExecutor.cs" />
-    <Compile Include="IKeyboard.cs" />
-    <Compile Include="ILocatable.cs" />
     <Compile Include="ILogs.cs" />
-    <Compile Include="IMouse.cs" />
-    <Compile Include="INavigation.cs" />
     <Compile Include="Interactions\Actions.cs" />
     <Compile Include="Interactions\ButtonReleaseAction.cs" />
     <Compile Include="Interactions\ClickAction.cs" />
@@ -85,8 +76,6 @@
     <Compile Include="Interactions\DoubleClickAction.cs" />
     <Compile Include="Interactions\DoubleTapAction.cs" />
     <Compile Include="Interactions\FlickAction.cs" />
-    <Compile Include="Interactions\IAction.cs" />
-    <Compile Include="Interactions\ICoordinates.cs" />
     <Compile Include="Interactions\KeyboardAction.cs" />
     <Compile Include="Interactions\KeyDownAction.cs" />
     <Compile Include="Interactions\KeyUpAction.cs" />
@@ -113,18 +102,15 @@
     <Compile Include="Internal\IFindsByTagName.cs" />
     <Compile Include="Internal\IFindsByXPath.cs" />
     <Compile Include="Internal\IWrapsDriver.cs" />
+    <Compile Include="Internal\IWebElementReference.cs" />
     <Compile Include="Internal\IWrapsElement.cs" />
     <Compile Include="Internal\ReturnedCookie.cs" />
     <Compile Include="InvalidSelectorException.cs" />
     <Compile Include="IOptions.cs" />
     <Compile Include="ISearchContext.cs" />
-    <Compile Include="ITakesScreenshot.cs" />
     <Compile Include="ITargetLocator.cs" />
-    <Compile Include="ITimeouts.cs" />
-    <Compile Include="ITouchScreen.cs" />
     <Compile Include="IWebDriver.cs" />
     <Compile Include="IWebElement.cs" />
-    <Compile Include="IWindow.cs" />
     <Compile Include="Keys.cs" />
     <Compile Include="LogEntry.cs" />
     <Compile Include="LogLevel.cs" />
@@ -134,7 +120,6 @@
     <Compile Include="NoSuchWindowException.cs" />
     <Compile Include="NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Screenshot.cs" />
     <Compile Include="WebDriverException.cs" />
   </ItemGroup>
   <ItemGroup>

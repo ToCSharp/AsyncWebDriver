@@ -3,6 +3,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Zu.WebBrowser.BasicTypes;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.WebBrowser
 {
@@ -15,6 +17,9 @@ namespace Zu.WebBrowser
 
     public interface IAsyncWebBrowserClient : IAsyncWebBrowserWorker
     {
+        IMouse Mouse { get; }
+        IKeyboard Keyboard { get; }
+
         Task<string> AcceptDialog(CancellationToken cancellationToken = new CancellationToken());
         Task<string> ClearElement(string elementId, CancellationToken cancellationToken = new CancellationToken());
         Task<string> ClearImportedScripts(CancellationToken cancellationToken = new CancellationToken());
@@ -34,7 +39,7 @@ namespace Zu.WebBrowser
         Task<string> GetChromeWindowHandle(CancellationToken cancellationToken = new CancellationToken());
         Task<JToken> GetChromeWindowHandles(CancellationToken cancellationToken = new CancellationToken());
         Task<JToken> GetClientContext(CancellationToken cancellationToken = new CancellationToken());
-        Task<string> GetCurrentUrl(CancellationToken cancellationToken = new CancellationToken());
+        Task<string> GetUrl(CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> GetElementAttribute(string elementId, string attrName,
             CancellationToken cancellationToken = new CancellationToken());
@@ -42,7 +47,7 @@ namespace Zu.WebBrowser
         Task<string> GetElementProperty(string elementId, string propName,
             CancellationToken cancellationToken = new CancellationToken());
 
-        Task<JToken> GetElementRect(string elementId, CancellationToken cancellationToken = new CancellationToken());
+        Task<WebRect> GetElementRect(string elementId, CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> GetElementTagName(string elementId, CancellationToken cancellationToken = new CancellationToken());
 
@@ -59,7 +64,7 @@ namespace Zu.WebBrowser
 
         Task<string> GetTitle(CancellationToken cancellationToken = new CancellationToken());
 
-        Task<string> GetUrl(string url, CancellationToken cancellationToken = new CancellationToken());
+        Task<string> GoToUrl(string url, CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> GetWindowHandle(CancellationToken cancellationToken = new CancellationToken());
 
@@ -77,11 +82,11 @@ namespace Zu.WebBrowser
 
         Task<string> ImportScript(string script, CancellationToken cancellationToken = new CancellationToken());
 
-        Task<string> IsElementDisplayed(string elementId,
-            CancellationToken cancellationToken = new CancellationToken());
+        Task<bool> IsElementDisplayed(string elementId, CancellationToken cancellationToken = new CancellationToken());
 
-        Task<string> IsElementEnabled(string elementId, CancellationToken cancellationToken = new CancellationToken());
-        Task<string> IsElementSelected(string elementId, CancellationToken cancellationToken = new CancellationToken());
+        Task<bool> IsElementEnabled(string elementId, CancellationToken cancellationToken = new CancellationToken());
+
+        Task<bool> IsElementSelected(string elementId, CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> MaximizeWindow(CancellationToken cancellationToken = new CancellationToken());
 
@@ -93,6 +98,7 @@ namespace Zu.WebBrowser
             CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> SessionTearDown(CancellationToken cancellationToken = new CancellationToken());
+
         Task<JToken> SetContextChrome(CancellationToken cancellationToken = new CancellationToken());
 
         Task<JToken> SetContextContent(CancellationToken cancellationToken = new CancellationToken());
@@ -112,9 +118,19 @@ namespace Zu.WebBrowser
 
         Task<string> SwitchToWindow(string name, CancellationToken cancellationToken = new CancellationToken());
 
-        Task<string> TakeScreenshot(string elementId, string highlights, string full, string hash,
+        Task<Screenshot> TakeScreenshot(string elementId, string highlights, string full, string hash,
             CancellationToken cancellationToken = new CancellationToken());
+
         Task<JToken> ExecuteScript(string script, string filename = null,
-            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken());
+            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken(), params object[] args);
+
+        Task<JToken> ExecuteAsyncScript(string script, string filename = null,
+            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken(), params object[] args);
+
+        Task<WebPoint> GetElementLocation(string elementId, CancellationToken cancellationToken = new CancellationToken());
+
+        Task<WebSize> GetElementSize(string elementId, CancellationToken cancellationToken = new CancellationToken());
+
+        Task<string> SubmitElement(string elementId, CancellationToken cancellationToken = new CancellationToken());
     }
 }

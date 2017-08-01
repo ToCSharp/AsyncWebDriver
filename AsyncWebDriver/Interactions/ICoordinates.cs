@@ -2,6 +2,7 @@
 
 using System.Drawing;
 using System.Threading.Tasks;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.AsyncWebDriver.Interactions.Internal
 {
@@ -13,17 +14,17 @@ namespace Zu.AsyncWebDriver.Interactions.Internal
         /// <summary>
         ///     Gets the location of an element in absolute screen coordinates.
         /// </summary>
-        Task<Point> LocationOnScreen { get; }
+        Task<WebPoint> LocationOnScreen { get; }
 
         /// <summary>
         ///     Gets the location of an element relative to the origin of the view port.
         /// </summary>
-        Task<Point> LocationInViewport { get; }
+        Task<WebPoint> LocationInViewport { get; }
 
         /// <summary>
         ///     Gets the location of an element's position within the HTML DOM.
         /// </summary>
-        Task<Point> LocationInDom { get; }
+        Task<WebPoint> LocationInDom { get; }
 
         /// <summary>
         ///     Gets a locator providing a user-defined location for this element.

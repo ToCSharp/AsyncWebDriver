@@ -1,16 +1,17 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Zu.AsyncWebDriver.Interactions.Internal;
 using Zu.AsyncWebDriver.Internal;
+using Zu.WebBrowser.BasicTypes;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -21,7 +22,7 @@ namespace Zu.AsyncWebDriver.Remote
     /// <seealso cref="ILocatable" />
     public class AsyncWebElement : IWebElement, IFindsByLinkText, IFindsById, IFindsByName, IFindsByTagName,
         IFindsByClassName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, IWrapsDriver, ITakesScreenshot,
-        ILocatable
+        ILocatable, IWebElementReference
     {
         private readonly WebDriver driver;
 
@@ -36,9 +37,7 @@ namespace Zu.AsyncWebDriver.Remote
             InternalElementId = id;
         }
 
-        public int SimpleCommandsTimeoutMs { get; set; }
-
-            = 10000;
+        public int SimpleCommandsTimeoutMs { get; set; } = 10000;
 
         /// <summary>
         ///     Gets the ID of the element.
@@ -401,7 +400,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// <summary>
         ///     Gets the point where the element would be when scrolled into view.
         /// </summary>
-        public Task<Point> LocationOnScreenOnceScrolledIntoView(
+        public Task<WebPoint> LocationOnScreenOnceScrolledIntoView(
             CancellationToken cancellationToken = new CancellationToken())
         {
             throw new NotImplementedException();
@@ -412,6 +411,21 @@ namespace Zu.AsyncWebDriver.Remote
         ///     various frames of reference.
         /// </summary>
         public ICoordinates Coordinates => new RemoteCoordinates(this);
+
+        string IWebElementReference.ElementReferenceId
+        {
+            get { return this.InternalElementId; }
+        }
+        /// <summary>
+        /// Converts an object into an object that represents an element for the wire protocol.
+        /// </summary>
+        /// <returns>A <see cref="Dictionary{TKey, TValue}"/> that represents an element in the wire protocol.</returns>
+        Dictionary<string, object> IWebElementReference.ToDictionary()
+        {
+            Dictionary<string, object> elementDictionary = new Dictionary<string, object>();
+            elementDictionary.Add("element-6066-11e4-a52e-4f735466cecf", this.InternalElementId);
+            return elementDictionary;
+        }
 
         /// <summary>
         ///     Gets a <see cref="Screenshot" /> object representing the image of this element on the screen.
@@ -500,7 +514,7 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 var res = await driver.browserClient.IsElementEnabled(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
-                return res == "true";
+                return res;
             }
             catch (Exception ex)
             {
@@ -520,7 +534,7 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 var res = await driver.browserClient.IsElementSelected(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
-                return res == "true";
+                return res;
             }
             catch (Exception ex)
             {
@@ -532,17 +546,41 @@ namespace Zu.AsyncWebDriver.Remote
         ///     Gets a <see cref="Point" /> object containing the coordinates of the upper-left corner
         ///     of this element relative to the upper-left corner of the page.
         /// </summary>
-        public Task<Point> Location(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<WebPoint> Location(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            //try
+            //{
+                var res = await driver.browserClient.GetElementLocation(InternalElementId, cancellationToken)
+                    .TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
 
         /// <summary>
         ///     Gets a <see cref="Size" /> object containing the height and width of this element.
         /// </summary>
-        public Task<Size> Size(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<WebSize> Size(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            //try
+            //{
+                var res = await driver.browserClient.GetElementSize(InternalElementId, cancellationToken)
+                    .TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            //}
+            //catch (Exception ex)
+            //{
+            //    return null;
+            //}
         }
 
         /// <summary>
@@ -553,9 +591,21 @@ namespace Zu.AsyncWebDriver.Remote
         ///     of having to parse an element's "style" attribute to determine
         ///     visibility of an element.
         /// </remarks>
-        public Task<bool> Displayed(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<bool> Displayed(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            try
+            {
+                var res = await driver.browserClient.IsElementDisplayed(InternalElementId, cancellationToken)
+                    .TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -636,9 +686,7 @@ namespace Zu.AsyncWebDriver.Remote
                 {
                     var res = await driver.browserClient.IsElementEnabled(InternalElementId, cancellationToken)
                         .TimeoutAfter(SimpleCommandsTimeoutMs);
-                    //await driver.browserClient.SubmitElement(elementId, cancellationToken: cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
-                    throw new NotImplementedException();
-                    return;
+                    var res2 = await driver.browserClient.SubmitElement(InternalElementId, cancellationToken: cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 }
                 catch (Exception ex)
                 {
@@ -882,7 +930,8 @@ namespace Zu.AsyncWebDriver.Remote
         /// <returns>A boolean if it is equal or not</returns>
         public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            if (obj == null) return false;
+            return InternalElementId == (obj as AsyncWebElement).InternalElementId;
         }
 
         /// <summary>

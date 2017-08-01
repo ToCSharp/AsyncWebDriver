@@ -1,8 +1,10 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -36,7 +38,7 @@ namespace Zu.AsyncWebDriver.Remote
             if (driver.browserClient == null)
                 throw new WebDriverException("no browserClient");
 
-            var res = await driver.browserClient.GetUrl(url, cancellationToken);
+            var res = await driver.browserClient.GoToUrl(url, cancellationToken);
         }
 
         public async Task GoToUrl(Uri url, CancellationToken cancellationToken = new CancellationToken())
@@ -44,7 +46,7 @@ namespace Zu.AsyncWebDriver.Remote
             if (driver.browserClient == null)
                 throw new WebDriverException("no browserClient");
 
-            var res = await driver.browserClient.GetUrl(url.ToString(), cancellationToken);
+            var res = await driver.browserClient.GoToUrl(url.ToString(), cancellationToken);
         }
 
         public async Task Refresh(CancellationToken cancellationToken = new CancellationToken())

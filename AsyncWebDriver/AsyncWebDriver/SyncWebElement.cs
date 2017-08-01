@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Interactions.Internal;
+using Zu.WebBrowser.BasicTypes;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -27,13 +29,13 @@ namespace Zu.AsyncWebDriver.Remote
 
         public bool Selected => GetSelected();
 
-        public Point Location => GetLocation();
+        public WebPoint Location => GetLocation();
 
-        public Size Size => GetSize();
+        public WebSize Size => GetSize();
 
         public bool Displayed => GetDisplayed();
 
-        public Point LocationOnScreenOnceScrolledIntoView => GetLocationOnScreenOnceScrolledIntoView();
+        public WebPoint LocationOnScreenOnceScrolledIntoView => GetLocationOnScreenOnceScrolledIntoView();
 
         public ICoordinates Coordinates => AsyncElement.Coordinates;
 
@@ -105,9 +107,9 @@ namespace Zu.AsyncWebDriver.Remote
             return res;
         }
 
-        public Point GetLocation()
+        public WebPoint GetLocation()
         {
-            var res = Point.Empty;
+            WebPoint res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
             Task.Run(async () =>
@@ -119,9 +121,9 @@ namespace Zu.AsyncWebDriver.Remote
             return res;
         }
 
-        public Size GetSize()
+        public WebSize GetSize()
         {
-            var res = new Size(0, 0);
+            WebSize res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
             Task.Run(async () =>
@@ -147,9 +149,9 @@ namespace Zu.AsyncWebDriver.Remote
             return res;
         }
 
-        public Point GetLocationOnScreenOnceScrolledIntoView()
+        public WebPoint GetLocationOnScreenOnceScrolledIntoView()
         {
-            var res = Point.Empty;
+            WebPoint res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
             Task.Run(async () =>

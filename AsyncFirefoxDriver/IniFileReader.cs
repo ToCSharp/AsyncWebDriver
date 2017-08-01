@@ -1,5 +1,4 @@
-﻿// <copyright file="IniFileReader.cs" company="Oleg Zudov">
-// Copyright 2017 Oleg Zudov
+﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // Copyright 2007-2011 WebDriver committers
 // Copyright 2007-2011 Google Inc.
 // Portions copyright 2011 Software Freedom Conservancy
@@ -20,9 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace Zu.FileUtils
 {

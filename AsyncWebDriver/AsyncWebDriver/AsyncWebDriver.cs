@@ -1,4 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
 using System.Collections;
@@ -14,6 +15,8 @@ using Newtonsoft.Json.Linq;
 using Zu.AsyncWebDriver.Html5;
 using Zu.AsyncWebDriver.Internal;
 using Zu.WebBrowser;
+using Zu.WebBrowser.BasicTypes;
+using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -38,6 +41,8 @@ namespace Zu.AsyncWebDriver.Remote
         public WebDriver(IAsyncWebBrowserClient client)
         {
             browserClient = client;
+            Mouse = browserClient.Mouse;
+            Keyboard = browserClient.Keyboard;
             appPath = Path.GetDirectoryName(typeof(WebDriver).Assembly.Location);
         }
 
@@ -406,21 +411,54 @@ namespace Zu.AsyncWebDriver.Remote
             }
         }
 
-        public Task<object> ExecuteScript(string script, CancellationToken cancellationToken = new CancellationToken(),
+        public async Task<object> ExecuteScript(string script, CancellationToken cancellationToken = new CancellationToken(),
             params object[] args)
         {
-            throw new NotImplementedException();
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            try
+            {
+                var res = await browserClient.ExecuteScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
 
-        public Task<object> ExecuteAsyncScript(string script,
+        public async Task<object> ExecuteAsyncScript(string script,
             CancellationToken cancellationToken = new CancellationToken(), params object[] args)
         {
-            throw new NotImplementedException();
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            try
+            {
+                var res = await browserClient.ExecuteAsyncScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
 
-        public Task<Screenshot> GetScreenshot(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<Screenshot> GetScreenshot(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            try
+            {
+                var res = await browserClient.TakeScreenshot(null, null, null, null, cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -526,7 +564,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GetCurrentUrl(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.GetUrl(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
             catch (Exception ex)
@@ -542,7 +580,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GetUrl(url, cancellationToken).TimeoutAfter(GoToUrlTimeoutMs);
+                var res = await browserClient.GoToUrl(url, cancellationToken).TimeoutAfter(GoToUrlTimeoutMs);
                 return res;
             }
             catch (Exception ex)

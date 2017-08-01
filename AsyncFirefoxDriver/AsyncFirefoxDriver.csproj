@@ -31,11 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncWebDriver, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.0.3\lib\net452\AsyncWebDriver.dll</HintPath>
+    <Reference Include="AsyncWebDriver, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.1.1\lib\net452\AsyncWebDriver.dll</HintPath>
     </Reference>
-    <Reference Include="IWebBrowserClient, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.0.3\lib\net452\IWebBrowserClient.dll</HintPath>
+    <Reference Include="IWebBrowserClient, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.1.1\lib\net452\IWebBrowserClient.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -50,6 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FirefoxDriverKeyboard.cs" />
+    <Compile Include="FirefoxDriverMouse.cs" />
     <Compile Include="FirefoxProfilesWorker.cs" />
     <Compile Include="IniFileReader.cs" />
     <Compile Include="KeyValuePairVM.cs" />
@@ -108,6 +110,7 @@
     <Compile Include="MarionetteDebuggerCommand.cs" />
     <Compile Include="MarionetteDebuggerCommandString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

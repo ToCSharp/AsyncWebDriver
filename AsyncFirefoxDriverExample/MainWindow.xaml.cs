@@ -81,7 +81,7 @@ namespace AsyncFirefoxDriverExample
 
         private void RequestListener_FileLoaded(object sender, ZuRequestInfo e)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart) delegate { loadedFiles.Insert(0, e); });
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate { loadedFiles.Insert(0, e); });
         }
 
         private void bEvalEvents_Click_16(object sender, RoutedEventArgs e)
@@ -91,11 +91,11 @@ namespace AsyncFirefoxDriverExample
 
         private void ffDriverEventListener(JToken obj)
         {
-            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart) delegate
-            {
-                evs.Insert(0, obj?["value"]?.ToString());
-                lbEvalEvents1.ItemsSource = evs;
-            });
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate
+           {
+               evs.Insert(0, obj?["value"]?.ToString());
+               lbEvalEvents1.ItemsSource = evs;
+           });
         }
 
         private async void bEvalEvents_Click_19(object sender, RoutedEventArgs e)
@@ -192,27 +192,35 @@ namespace AsyncFirefoxDriverExample
 
         private async void Button_Click_8(object sender, RoutedEventArgs e)
         {
-            if (await Prepare() != "ok") return;
-            await asyncDriver.SetContextContent();
-            var res2 = await asyncDriver.GoToUrl("https://www.google.com/");
-            var query = await asyncDriver.FindElement(By.Name("q"));
-            foreach (var v in tbSendKeys.Text.ToList())
+            try
             {
-                await Task.Delay(500 + new Random().Next(1000));
-                await query.SendKeys(v.ToString());
+                if (await Prepare() != "ok") return;
+                await asyncDriver.SetContextContent();
+                var res2 = await asyncDriver.GoToUrl("https://www.google.com/");
+                var query = await asyncDriver.FindElement(By.Name("q"));
+                foreach (var v in tbSendKeys.Text.ToList())
+                {
+                    await Task.Delay(500 + new Random().Next(1000));
+                    await query.SendKeys(v.ToString());
+                }
+                await Task.Delay(500);
+                await query.SendKeys(Keys.Enter);
+                await Task.Delay(2000);
+                query = await asyncDriver.FindElement(By.Name("q"));
+                await query.SendKeys(Keys.ArrowDown);
+                await Task.Delay(1000);
+                await query.SendKeys(Keys.ArrowDown);
+                await Task.Delay(2000);
+                await query.SendKeys(Keys.ArrowDown);
+                await Task.Delay(1000);
+                await query.SendKeys(Keys.ArrowUp);
+                await Task.Delay(500);
+                await query.SendKeys(Keys.Enter);
             }
-            await Task.Delay(500);
-            await query.SendKeys(Keys.Enter);
-            await Task.Delay(2000);
-            await query.SendKeys(Keys.ArrowDown);
-            await Task.Delay(1000);
-            await query.SendKeys(Keys.ArrowDown);
-            await Task.Delay(2000);
-            await query.SendKeys(Keys.ArrowDown);
-            await Task.Delay(1000);
-            await query.SendKeys(Keys.ArrowUp);
-            await Task.Delay(500);
-            await query.SendKeys(Keys.Enter);
+            catch (Exception ex)
+            {
+                tbRes.Text = ex.ToString();
+            }
         }
 
         private async void Button_Click_9(object sender, RoutedEventArgs e)

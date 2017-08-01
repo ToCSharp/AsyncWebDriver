@@ -1,10 +1,11 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
-using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.WebBrowser.BasicTypes;
 
-namespace Zu.AsyncWebDriver
+namespace Zu.WebBrowser.AsyncInteractions
 {
     /// <summary>
     ///     Provides methods for getting and setting the size and position of the browser window.
@@ -15,13 +16,13 @@ namespace Zu.AsyncWebDriver
         ///     Gets or sets the position of the browser window relative to the upper-left corner of the screen.
         /// </summary>
         /// <remarks>When setting this property, it should act as the JavaScript window.moveTo() method.</remarks>
-        Task<Point> Position { get; set; }
+        Task<WebPoint> Position { get; set; }
 
         /// <summary>
         ///     Gets or sets the size of the outer browser window, including title bars and window borders.
         /// </summary>
         /// <remarks>When setting this property, it should act as the JavaScript window.resizeTo() method.</remarks>
-        Task<Size> Size { get; set; }
+        Task<WebSize> Size { get; set; }
 
         /// <summary>
         ///     Maximizes the current window if it is not already maximized.

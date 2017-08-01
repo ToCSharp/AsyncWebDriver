@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,12 +10,16 @@ using System.Threading.Tasks;
 using MyCommunicationLib.Communication.MarionetteComands;
 using Newtonsoft.Json.Linq;
 using Zu.WebBrowser;
+using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 using Zu.WebBrowser.Communication;
 
 namespace Zu.Firefox
 {
     public class AsyncFirefoxDriver : IAsyncWebBrowserClient
     {
+
+        #region Connection
         private DebuggerConnectionMarionette _connectionM;
         private DebuggerConnectionMarionette _connectionM2;
         private Uri _debuggerEndpointUri;
@@ -52,7 +58,7 @@ namespace Zu.Firefox
         {
             if (port == 0) return "Error: MarionettePort not set";
             _connectionM = new DebuggerConnectionMarionette(new NetworkClientFactory());
-            _debuggerEndpointUri = new UriBuilder {Scheme = "tcp", Host = "127.0.0.1", Port = port}.Uri;
+            _debuggerEndpointUri = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port }.Uri;
             //_connectionM.OutputMessage += _connection_OutputMessage;
             var r = "connected";
             await Task.Factory.StartNew(async () =>
@@ -104,85 +110,116 @@ namespace Zu.Firefox
             await SetContextChrome(cancellationToken);
             return "Marionette " + port + (_connectionM2?.Connected == true ? " Marionette2 " + port2 : "");
         }
+        #endregion
 
-        public async Task<string> GetUrl(string url, CancellationToken cancellationToken = new CancellationToken())
+        public Contexts CurrentContext { get; set; }
+
+        private IMouse mouse;
+        public IMouse Mouse
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            get
+            {
+                if (mouse == null) mouse = new FirefoxDriverMouse();
+                return mouse;
+            }
+            set
+            {
+                mouse = value;
+            }
+        }
+
+        private IKeyboard keyboard;
+        public IKeyboard Keyboard
+        {
+            get
+            {
+                if (keyboard == null) keyboard = new FirefoxDriverKeyboard();
+                return keyboard;
+            }
+            set
+            {
+                keyboard = value;
+            }
+        }
+
+        public async Task<string> GoToUrl(string url, CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetCommand(url);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> AcceptDialog(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new AcceptDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> ClearElement(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClearElementCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> ClearImportedScripts(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClearImportedScriptsCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> ClickElement(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClickElementCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> Close(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new CloseCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> DismissDialog(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new DismissDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> CloseChromeWindow(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new CloseChromeWindowCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<JToken> FindElement(string strategy, string expr, string startNode = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new FindElementCommand(strategy, expr, startNode);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -192,7 +229,7 @@ namespace Zu.Firefox
         public async Task<JToken> FindElements(string strategy, string expr, string startNode = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new FindElementsCommand(strategy, expr, startNode);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -201,148 +238,148 @@ namespace Zu.Firefox
 
         public async Task<string> GetActiveElement(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetActiveElementCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetActiveFrame(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetActiveFrameCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetChromeWindowHandle(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<JToken> GetChromeWindowHandles(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandlesCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result;
         }
 
-        public async Task<string> GetCurrentUrl(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<string> GetUrl(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetCurrentUrlCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetElementAttribute(string elementId, string attrName,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementAttributeCommand(elementId, attrName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetElementProperty(string elementId, string propName,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementPropertyCommand(elementId, propName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
-        public async Task<JToken> GetElementRect(string elementId,
+        public async Task<WebRect> GetElementRect(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementRectCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
-            return comm1.Result;
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            return ResultValueConverter.ToWebRect(comm1.Result);
         }
 
         public async Task<string> GetElementTagName(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementTagNameCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetElementText(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementTextCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetElementValueOfCssProperty(string elementId, string propName,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementValueOfCssPropertyCommand(elementId, propName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetPageSource(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetPageSourceCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetTextFromDialog(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTextFromDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetTitle(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTitleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GetWindowHandle(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<JToken> GetWindowHandles(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandlesCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -351,7 +388,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetWindowPosition(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowPositionCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -360,7 +397,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetWindowSize(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowSizeCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -369,190 +406,190 @@ namespace Zu.Firefox
 
         public async Task<string> GetWindowType(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowTypeCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
         public async Task<string> GoBack(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoBackCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> GoForward(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoForwardCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> ImportScript(string script,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ImportScriptCommand(script);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
-        public async Task<string> IsElementDisplayed(string elementId,
+        public async Task<bool> IsElementDisplayed(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementDisplayedCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
-            return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            return ResultValueConverter.ToBool(comm1.Result);
         }
 
-        public async Task<string> IsElementEnabled(string elementId,
+        public async Task<bool> IsElementEnabled(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementEnabledCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
-            return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            return ResultValueConverter.ToBool(comm1.Result);
         }
 
-        public async Task<string> IsElementSelected(string elementId,
+        public async Task<bool> IsElementSelected(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementSelectedCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
-            return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            return ResultValueConverter.ToBool(comm1.Result);
         }
 
         public async Task<string> MaximizeWindow(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new MaximizeWindowCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> Refresh(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new RefreshCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SendKeysToDialog(string value,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SendKeysToDialogCommand(value);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SendKeysToElement(string elementId, string value,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SendKeysToElementCommand(elementId, value);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SessionTearDown(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SessionTearDownCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SetTimeouts(TimeoutType elementId, int ms,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetTimeoutsCommand(elementId, ms);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SetWindowPosition(int x, int y,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowPositionCommand(x, y);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SetWindowSize(int width, int height,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowSizeCommand(width, height);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SwitchToFrame(string frameId, string element = null, bool doFocus = true,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToFrameCommand(frameId, element, doFocus);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SwitchToParentFrame(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToParentFrameCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> SwitchToWindow(string name,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToWindowCommand(name);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<string> TakeScreenshot(string elementId, string highlights, string full, string hash,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new TakeScreenshotCommand(elementId, highlights, full, hash);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error.ToString();
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
             return "ok";
         }
 
         public async Task<JToken> GetClientContext(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetContextCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -569,7 +606,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> SetContextChrome(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetContextCommand(SetContextCommand.Contexts.chrome);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -579,7 +616,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> SetContextContent(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetContextCommand(SetContextCommand.Contexts.content);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
@@ -724,8 +761,6 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             }
         }
 
-        public Contexts CurrentContext { get; set; }
-
         public async Task<Contexts> GetContext(CancellationToken cancellationToken = new CancellationToken())
         {
             var res = await GetClientContext(cancellationToken);
@@ -803,7 +838,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             }
             _connectionM2 = new DebuggerConnectionMarionette(new NetworkClientFactory());
             _connectionM2.OutputMessage += _connectionM2_OutputMessage;
-            _debuggerEndpointUri2 = new UriBuilder {Scheme = "tcp", Host = "127.0.0.1", Port = port2}.Uri;
+            _debuggerEndpointUri2 = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port2 }.Uri;
             //_connectionM.OutputMessage += _connection_OutputMessage;
             await Task.Factory.StartNew(() =>
             {
@@ -844,10 +879,11 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
 
 
         public async Task<JToken> ExecuteScript(string script, string filename = null,
-            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken())
+            string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken(), params object[] args)
         {
-            if (clientMarionette == null) return "error: no clientMarionette";
-            var comm1 = new ExecuteScriptCommand(script) {filename = filename, sandbox = sandbox};
+            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
+            var comm1 = new ExecuteScriptCommand(script) { filename = filename, sandbox = sandbox };
+            if (args.Length > 0) comm1.Args = args.Select(v => v.ToString()).ToArray();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) return comm1.Error;
             return comm1.Result;
@@ -887,6 +923,32 @@ try {{
 }}
 return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancellationToken);
             return res;
+        }
+
+
+        Task<Screenshot> IAsyncWebBrowserClient.TakeScreenshot(string elementId, string highlights, string full, string hash, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<JToken> ExecuteAsyncScript(string script, string filename = null, string sandbox = "defaultSandbox", CancellationToken cancellationToken = default(CancellationToken), params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WebPoint> GetElementLocation(string elementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<WebSize> GetElementSize(string elementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> SubmitElement(string elementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            throw new NotImplementedException();
         }
     }
 }

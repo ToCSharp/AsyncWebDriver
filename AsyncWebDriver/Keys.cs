@@ -1,6 +1,8 @@
-// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Zu.AsyncWebDriver
@@ -391,5 +393,77 @@ namespace Zu.AsyncWebDriver
         /// </summary>
         public static readonly string Command = Convert.ToString(Convert.ToChar(0xE03D, CultureInfo.InvariantCulture),
             CultureInfo.InvariantCulture);
+
+        //System.Windows.Clipboard.SetText(string.Join(Environment.NewLine, typeof(Zu.AsyncWebDriver.Keys).GetFields().Select(v => $"\t\t\t{{ (char)0x{((int)(((string)v.GetValue(null))[0])).ToString("X")}, 0x00 }}, // {v.Name} ")))
+        //https://msdn.microsoft.com/en-us/En-en/library/windows/desktop/dd375731(v=vs.85).aspx
+        public static Dictionary<char, int> KeyToVirtualKeyCode = new Dictionary<char, int>
+        {
+            { (char)0xE000, 0x00 }, // Null 
+			{ (char)0xE001, 0x03 }, // Cancel 
+			{ (char)0xE002, 0x00 }, // Help 
+			{ (char)0xE003, 0x08 }, // Backspace 
+			{ (char)0xE004, 0x09 }, // Tab 
+			{ (char)0xE005, 0x0C }, // Clear 
+			{ (char)0xE006, 0x0D }, // Return 
+			{ (char)0xE007, 0x0D }, // Enter 
+			{ (char)0xE008, 0x10 }, // Shift 
+			//{ (char)0xE008, 0x10 }, // LeftShift 
+			{ (char)0xE009, 0x11 }, // Control 
+			//{ (char)0xE009, 0x11 }, // LeftControl 
+			{ (char)0xE00A, 0x12 }, // Alt 
+			//{ (char)0xE00A, 0x12 }, // LeftAlt 
+			{ (char)0xE00B, 0x13 }, // Pause 
+			{ (char)0xE00C, 0x1B }, // Escape 
+			{ (char)0xE00D, 0x20 }, // Space 
+			{ (char)0xE00E, 0x21 }, // PageUp 
+			{ (char)0xE00F, 0x22 }, // PageDown 
+			{ (char)0xE010, 0x23 }, // End 
+			{ (char)0xE011, 0x24 }, // Home 
+			{ (char)0xE012, 0x25 }, // Left 
+			//{ (char)0xE012, 0x25 }, // ArrowLeft 
+			{ (char)0xE013, 0x26 }, // Up 
+			//{ (char)0xE013, 0x26 }, // ArrowUp 
+			{ (char)0xE014, 0x27 }, // Right 
+			//{ (char)0xE014, 0x27 }, // ArrowRight 
+			{ (char)0xE015, 0x28 }, // Down 
+			//{ (char)0xE015, 0x28 }, // ArrowDown 
+			{ (char)0xE016, 0x2D }, // Insert 
+			{ (char)0xE017, 0x2E }, // Delete 
+			{ (char)0xE018, 0x00 }, // Semicolon 
+			{ (char)0xE019, 0x00 }, // Equal 
+			{ (char)0xE01A, 0x60 }, // NumberPad0 
+			{ (char)0xE01B, 0x61 }, // NumberPad1 
+			{ (char)0xE01C, 0x62 }, // NumberPad2 
+			{ (char)0xE01D, 0x63 }, // NumberPad3 
+			{ (char)0xE01E, 0x64 }, // NumberPad4 
+			{ (char)0xE01F, 0x65 }, // NumberPad5 
+			{ (char)0xE020, 0x66 }, // NumberPad6 
+			{ (char)0xE021, 0x67 }, // NumberPad7 
+			{ (char)0xE022, 0x68 }, // NumberPad8 
+			{ (char)0xE023, 0x69 }, // NumberPad9 
+			{ (char)0xE024, 0x6A }, // Multiply 
+			{ (char)0xE025, 0x6B }, // Add 
+			{ (char)0xE026, 0x6C }, // Separator 
+			{ (char)0xE027, 0x6D }, // Subtract 
+			{ (char)0xE028, 0x6E }, // Decimal 
+			{ (char)0xE029, 0x6F }, // Divide 
+			{ (char)0xE031, 0x70 }, // F1 
+			{ (char)0xE032, 0x71 }, // F2 
+			{ (char)0xE033, 0x72 }, // F3 
+			{ (char)0xE034, 0x73 }, // F4 
+			{ (char)0xE035, 0x74 }, // F5 
+			{ (char)0xE036, 0x75 }, // F6 
+			{ (char)0xE037, 0x76 }, // F7 
+			{ (char)0xE038, 0x77 }, // F8 
+			{ (char)0xE039, 0x78 }, // F9 
+			{ (char)0xE03A, 0x79 }, // F10 
+			{ (char)0xE03B, 0x7A }, // F11 
+			{ (char)0xE03C, 0x7B }, // F12 
+			{ (char)0xE03D, 0x00 }, // Meta 
+			//(char)0xE03D, 0x00 }, // Command 
+        };
+
+     
+
     }
 }

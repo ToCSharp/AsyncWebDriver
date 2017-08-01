@@ -1,8 +1,10 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+// This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.AsyncWebDriver
 {
@@ -51,15 +53,15 @@ namespace Zu.AsyncWebDriver
         Task<bool> Selected(CancellationToken cancellationToken = new CancellationToken());
 
         /// <summary>
-        ///     Gets a <see cref="Point" /> object containing the coordinates of the upper-left corner
+        ///     Gets a <see cref="WebPoint" /> object containing the coordinates of the upper-left corner
         ///     of this element relative to the upper-left corner of the page.
         /// </summary>
-        Task<Point> Location(CancellationToken cancellationToken = new CancellationToken());
+        Task<WebPoint> Location(CancellationToken cancellationToken = new CancellationToken());
 
         /// <summary>
-        ///     Gets a <see cref="Size" /> object containing the height and width of this element.
+        ///     Gets a <see cref="WebSize" /> object containing the height and width of this element.
         /// </summary>
-        Task<Size> Size(CancellationToken cancellationToken = new CancellationToken());
+        Task<WebSize> Size(CancellationToken cancellationToken = new CancellationToken());
 
         /// <summary>
         ///     Gets a value indicating whether or not this element is displayed.
