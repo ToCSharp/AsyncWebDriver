@@ -76,15 +76,9 @@ PM> Install-Package AsyncChromeDriver
      await Task.Delay(500);
      await query.SendKeys(Keys.Enter);
 ```
-Add usings
-```csharp
-using Zu.AsyncWebDriver;
-using Zu.AsyncWebDriver.Remote;
-using Zu.Firefox;
-```
 
 ## Examples
-Look at AsyncFirefoxDriverExample.
+Look at AsyncFirefoxDriverExample, [AsyncChromeDriverExample](https://github.com/ToCSharp/AsyncChromeDriver/tree/master/AsyncChromeDriverExample).
 
 Run built Example in release tab.
 
