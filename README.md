@@ -17,47 +17,68 @@ More extensions in [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/As
 
 Debugger, all what addons and extensions can do, we can do with AsyncFirefoxDriver (coming soon).
 
+# [AsyncChromeDriver](https://github.com/ToCSharp/AsyncChromeDriver)
+Chrome WebDriver and Chrome DevTools in one library.
+
+It connects directly to Chrome DevTools and is async from this connection. No need in chromedriver.
+
+
 ## Other browsers
-AsyncFirefoxDriver is the only one so far. 
-For now we cannot provide something new compared to selenium. 
-If it will be interestring we can add drivers with async/await pattern.
+If it will be interestring we can add async drivers.
 
 ## Usage
-### Install AsyncFirefoxDriver via NuGet
+### Install via NuGet
 
 If you want to include AsyncFirefoxDriver in your project, you can [install it directly from NuGet](https://www.nuget.org/packages/AsyncFirefoxDriver/)
 ```
 PM> Install-Package AsyncFirefoxDriver
 ```
-### Write code example
-```csharp
-            var profileName = "default";
-            if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
-                FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
-            FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
-            var firefoxDriver = new AsyncFirefoxDriver(profileName);
-            await firefoxDriver.Connect();
-            var webDriver = new WebDriver(firefoxDriver);
-            await webDriver.SetContextContent();
-            await webDriver.GoToUrl("https://www.google.com/");
-            var query = await webDriver.FindElement(By.Name("q"));
-            foreach (var v in "ToCSharp".ToList())
-            {
-                await Task.Delay(500 + new Random().Next(500));
-                await query.SendKeys(v.ToString());
-            }
-            await Task.Delay(500);
-            await query.SendKeys(Keys.Enter);
+If you want to include AsyncChromeDriver, you can [install it directly from NuGet](https://www.nuget.org/packages/AsyncChromeDriver/)
 ```
-Add usings
+PM> Install-Package AsyncChromeDriver
+```
+### Write code example
+
+#### Chrome
 ```csharp
-using Zu.AsyncWebDriver;
-using Zu.AsyncWebDriver.Remote;
-using Zu.Firefox;
+     var asyncChromeDriver = new AsyncChromeDriver();
+     var webDriver = new WebDriver(asyncChromeDriver);
+     await webDriver.GoToUrl("https://www.google.com/");
+     var query = await webDriver.FindElement(By.Name("q"));
+     foreach (var v in "ToCSharp".ToList())
+     {
+        await Task.Delay(500 + new Random().Next(500));
+        await query.SendKeys(v.ToString());
+      }
+      await Task.Delay(500);
+      await query.SendKeys(Keys.Enter);
+      var allCookies = await asyncChromeDriver.DevTools.Session.Network.GetAllCookies(new GetAllCookiesCommand());
+
+```
+
+#### Firefox
+```csharp
+     var profileName = "default";
+     if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
+         FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
+     FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
+     var firefoxDriver = new AsyncFirefoxDriver(profileName);
+     await firefoxDriver.Connect();
+     var webDriver = new WebDriver(firefoxDriver);
+     await webDriver.SetContextContent();
+     await webDriver.GoToUrl("https://www.google.com/");
+     var query = await webDriver.FindElement(By.Name("q"));
+     foreach (var v in "ToCSharp".ToList())
+     {
+         await Task.Delay(500 + new Random().Next(500));
+         await query.SendKeys(v.ToString());
+     }
+     await Task.Delay(500);
+     await query.SendKeys(Keys.Enter);
 ```
 
 ## Examples
-Look at AsyncFirefoxDriverExample.
+Look at AsyncFirefoxDriverExample, [AsyncChromeDriverExample](https://github.com/ToCSharp/AsyncChromeDriver/tree/master/AsyncChromeDriverExample).
 
 Run built Example in release tab.
 
