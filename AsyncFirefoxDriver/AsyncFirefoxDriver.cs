@@ -577,14 +577,14 @@ namespace Zu.Firefox
             return "ok";
         }
 
-        public async Task<string> TakeScreenshot(string elementId, string highlights, string full, string hash,
+        public async Task<Screenshot> TakeScreenshot(string elementId, string highlights, string full, string hash,
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new TakeScreenshotCommand(elementId, highlights, full, hash);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
-            return "ok";
+            throw new NotImplementedException(nameof(TakeScreenshot));
         }
 
         public async Task<JToken> GetClientContext(CancellationToken cancellationToken = new CancellationToken())
@@ -925,11 +925,6 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
             return res;
         }
 
-
-        Task<Screenshot> IAsyncWebBrowserClient.TakeScreenshot(string elementId, string highlights, string full, string hash, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<JToken> ExecuteAsyncScript(string script, string filename = null, string sandbox = "defaultSandbox", CancellationToken cancellationToken = default(CancellationToken), params object[] args)
         {

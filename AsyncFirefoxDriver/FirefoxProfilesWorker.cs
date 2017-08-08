@@ -77,7 +77,7 @@ namespace Zu.Firefox
             var process = new Process();
             process.StartInfo.FileName =
                 FirefoxBinaryFileName; // @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
-            process.StartInfo.Arguments = $@"-no-remote -P ""{key}""";
+            process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{key}""";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
 
@@ -97,7 +97,7 @@ namespace Zu.Firefox
         {
             var process = new Process();
             process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
-            process.StartInfo.Arguments = $@"-no-remote -P ""{key}""";
+            process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{key}""";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.Start();
@@ -117,7 +117,7 @@ namespace Zu.Firefox
             if (string.IsNullOrWhiteSpace(key)) return null;
             var process = new Process();
             process.StartInfo.FileName = FirefoxBinaryFileName;
-            process.StartInfo.Arguments = $@"-no-remote -P ""{key}"" -offline";
+            process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{key}"" -offline";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.Start();
@@ -134,7 +134,7 @@ namespace Zu.Firefox
         {
             var process = new Process();
             process.StartInfo.FileName = FirefoxDeveloperBinaryFileName;
-            process.StartInfo.Arguments = $@"-no-remote -P ""{key}"" -offline";
+            process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{key}"" -offline";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.Start();
@@ -211,8 +211,9 @@ namespace Zu.Firefox
             var profileDir = GetProfileDir(profileName);
             if (!string.IsNullOrWhiteSpace(profileDir))
             {
-                AddWriteUserPreference(profileDir, "marionette.defaultPrefs.port", port.ToString());
-                AddWriteUserPreference(profileDir, "marionette.defaultPrefs.enabled", "true");
+                //AddWriteUserPreference(profileDir, "marionette.defaultPrefs.port", port.ToString());
+                AddWriteUserPreference(profileDir, "marionette.port", port.ToString());
+                //AddWriteUserPreference(profileDir, "marionette.defaultPrefs.enabled", "true");
             }
         }
 
@@ -331,7 +332,7 @@ namespace Zu.Firefox
 
                 process = new Process();
                 process.StartInfo.FileName = FirefoxBinaryFileName;
-                process.StartInfo.Arguments = $@"-no-remote -P ""{firefoxProfileStartName}{i}""";
+                process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{firefoxProfileStartName}{i}""";
                 process.StartInfo.UseShellExecute = false;
                 process.Start();
                 Thread.Sleep(10000);
@@ -347,7 +348,8 @@ namespace Zu.Firefox
         public static int GetMarionettePortFromProfileDir(string profileDir)
         {
             if (string.IsNullOrWhiteSpace(profileDir)) return -1;
-            var port = ReadAllPreferences(profileDir).FirstOrDefault(v => v.Name == "marionette.defaultPrefs.port");
+            //var port = ReadAllPreferences(profileDir).FirstOrDefault(v => v.Name == "marionette.defaultPrefs.port");
+            var port = ReadAllPreferences(profileDir).FirstOrDefault(v => v.Name == "marionette.port");
             if (port == null) return 0;
             int p;
             if (int.TryParse(port.Val, out p)) return p;
