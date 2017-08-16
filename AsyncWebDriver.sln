@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15 
-VisualStudioVersion = 15.0.26403.7
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncWebDriver", "AsyncWebDriver\AsyncWebDriver.csproj", "{489FD59F-D739-4144-89B8-B5A719BCB120}"
 EndProject
@@ -14,6 +14,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncFirefoxDriverExample", "AsyncFirefoxDriverExample\AsyncFirefoxDriverExample.csproj", "{BD7131D5-5703-4639-A6F8-4F445EA38582}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZuRequestListener", "ZuRequestListener\ZuRequestListener.csproj", "{BC277712-931F-4201-9CD2-16CD92565F93}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2FD5CA3-69E0-4F8A-8137-8DB197162AA6}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		NOTICE = NOTICE
+		README.md = README.md
+		THIRD-PARTY-NOTICES = THIRD-PARTY-NOTICES
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

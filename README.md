@@ -18,9 +18,12 @@ More extensions in [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/As
 Debugger, all what addons and extensions can do, we can do with AsyncFirefoxDriver (coming soon).
 
 # [AsyncChromeDriver](https://github.com/ToCSharp/AsyncChromeDriver)
-Chrome WebDriver and Chrome DevTools in one library.
-
+Chrome WebDriver and Chrome DevTools in one library.  
 It connects directly to Chrome DevTools and is async from this connection. No need in chromedriver.
+
+# [AsyncOperaDriver](https://github.com/ToCSharp/AsyncOperaDriver)
+Opera WebDriver and Opera DevTools in one library.  
+It connects directly to Opera DevTools and is async from this connection. No need in operadriver.
 
 
 ## Other browsers
