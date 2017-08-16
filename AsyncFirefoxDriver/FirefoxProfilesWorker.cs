@@ -350,7 +350,7 @@ namespace Zu.Firefox
             if (string.IsNullOrWhiteSpace(profileDir)) return -1;
             //var port = ReadAllPreferences(profileDir).FirstOrDefault(v => v.Name == "marionette.defaultPrefs.port");
             var port = ReadAllPreferences(profileDir).FirstOrDefault(v => v.Name == "marionette.port");
-            if (port == null) return 0;
+            if (port == null) return 2828;
             int p;
             if (int.TryParse(port.Val, out p)) return p;
             return 0;
