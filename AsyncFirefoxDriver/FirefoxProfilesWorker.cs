@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.FileUtils;
+using Zu.WebBrowser;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
@@ -66,18 +68,95 @@ namespace Zu.Firefox
             return profiles;
         }
 
+        public static void RemoveProfile(string profileName, bool deleteDir = true)
+        {
+            var userDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var appDataDirectory = Path.Combine(userDir, "Mozilla", "Firefox");
+            var profilesIniFile = Path.Combine(appDataDirectory, "profiles.ini");
+            if (File.Exists(profilesIniFile))
+            {
+                var reader = new IniFileReader(profilesIniFile);
+                var dir = GetProfileDir(profileName);
+                var prKey = reader.iniFileStore.FirstOrDefault(v => v.Value.Any(v2 => v2.Key == "Name" && v2.Value == profileName)).Key;
+                if (!string.IsNullOrWhiteSpace(prKey)) reader.iniFileStore.Remove(prKey);
+                reader.SaveSettings();
+                if (deleteDir && !string.IsNullOrWhiteSpace(dir) && Directory.Exists(dir))
+                {
+                    try
+                    {
+                        Directory.Delete(dir, true);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            Thread.Sleep(2000);
+                            Directory.Delete(dir, true);
+                        }
+                        catch { }
+                    }
+                }
+            }
+
+        }
+
+        public static async Task<DriverProcessInfo> OpenFirefoxProfile(FirefoxDriverConfig config = null)
+        {
+            if (config == null) config = new FirefoxDriverConfig().SetIsDefaultProfile();
+            if (config.IsTempProfile)
+            {
+                if (string.IsNullOrWhiteSpace(config.ProfileName))
+                {
+                    config.ProfileName = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+                }
+                await CreateFirefoxProfile(config.ProfileName, Path.GetFileName(config.ProfileName));
+            }
+            string name = Path.GetFileName(config.ProfileName);
+            var currentPort = GetMarionettePort(name ?? "default");
+            if (currentPort != config.Port) SetMarionettePort(name, config.Port);
+            var args = (config.OpenOffline ? " -offline" : "") +
+                        //Headless available in Firefox 55+ on Linux, and Firefox 56+ on Windows/Mac OS X.
+                        (config.Headless ? " -headless" : "");
+
+            DriverProcessInfo res = new DriverProcessInfo { UserDir = config.ProfileName, Port = config.Port };
+            if(config.IsDefaultProfile) await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(null, args));
+            else await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(Path.GetFileName(config.ProfileName), args));
+            return res;
+        }
+
         public static string GetProfileDir(string profileName)
         {
             return GetProfiles().FirstOrDefault(v => v.Key == profileName).Value;
         }
 
-        public static Process OpenFirefoxProfile(string key)
+        public static ProcessWithJobObject OpenFirefoxProfileWithJobObject(string key, string addArgs = null)
+        {
+            var args = $@"-marionette -no-remote" + (string.IsNullOrWhiteSpace(key) ? "" : $@" -P ""{key}""");
+            if (!string.IsNullOrWhiteSpace(addArgs)) args += " " + addArgs;
+
+            var processJob = new ProcessWithJobObject();
+            var process = processJob.StartProc(FirefoxBinaryFileName, args);
+
+            Thread.Sleep(1000);
+
+            // wait for closing previos Firefox
+            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            {
+                var reader = process.StandardOutput;
+                var v = reader.ReadToEnd();
+            }
+            return processJob;
+        }
+
+        public static Process OpenFirefoxProfile(string key, string addArgs = null)
         {
             if (string.IsNullOrWhiteSpace(key)) return null;
             var process = new Process();
             process.StartInfo.FileName =
                 FirefoxBinaryFileName; // @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
-            process.StartInfo.Arguments = $@"-marionette -no-remote -P ""{key}""";
+            var args = $@"-marionette -no-remote -P ""{key}""";
+            if (!string.IsNullOrWhiteSpace(addArgs)) args += " " + addArgs;
+            process.StartInfo.Arguments = args;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
 
@@ -160,7 +239,7 @@ namespace Zu.Firefox
                 process.StartInfo.Arguments = $@"-CreateProfile ""{profileName} {profileDir}""";
                 process.StartInfo.UseShellExecute = false;
                 process.Start();
-                Thread.Sleep(5000);
+                Thread.Sleep(2000);
                 process.Close();
             });
             return "ok";

@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasicTypes\Cookie.cs" />
+    <Compile Include="BasicTypes\DriverConfig.cs" />
     <Compile Include="BasicTypes\ReturnedCookie.cs" />
     <Compile Include="BasicTypes\Screenshot.cs" />
     <Compile Include="BasicTypes\WebPoint.cs" />
@@ -65,6 +66,8 @@
     <Compile Include="AsyncInteractions\ITimeouts.cs" />
     <Compile Include="AsyncInteractions\ITouchScreen.cs" />
     <Compile Include="AsyncInteractions\IWindow.cs" />
+    <Compile Include="Process\DriverProcessInfo.cs" />
+    <Compile Include="Process\ProcessWithJobObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

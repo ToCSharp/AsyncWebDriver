@@ -27,6 +27,8 @@ namespace Zu.Firefox
         public IDebuggerClient clientMarionette;
         public DebuggerClientMarionette clientMarionette2;
 
+        public FirefoxDriverConfig Config { get; set; }
+
 
         private List<Tuple<string, Action<JToken>>> eventAsyncActions = new List<Tuple<string, Action<JToken>>>();
 
@@ -34,31 +36,80 @@ namespace Zu.Firefox
         private object lock1 = new object();
 
         private readonly object lock2 = new object();
-        public int port;
-        public int port2;
+        public int Port { get => Config.Port; set => Config.SetPort(value); }
+        public int Port2;
         private int scriptInd;
+
+        public AsyncFirefoxDriver(DriverConfig config)
+            : this(new FirefoxDriverConfig(config))
+        {
+        }
+        public AsyncFirefoxDriver(FirefoxDriverConfig config = null)
+            //: this(FirefoxProfilesWorker.GetMarionettePort(profileName))
+        {
+            if (config == null) Config = new FirefoxDriverConfig().SetIsTempProfile();
+            else Config = config;
+
+            if (Config.IsDefaultProfile) Config.SetProfileName("default");
+
+            if (Config.Port == 0)
+            {
+                Config.Port = 11000 + new Random().Next(2000);
+            }
+            Port2 = Port + 10000;
+        }
 
         public AsyncFirefoxDriver(string profileName)
             : this(FirefoxProfilesWorker.GetMarionettePort(profileName))
         {
+            Config.ProfileName = profileName;
         }
 
         public AsyncFirefoxDriver(int port, int port2 = 0)
         {
+            Config = new FirefoxDriverConfig();
             CurrentContext = Contexts.Chrome;
-            this.port = port;
-            this.port2 = port2;
-            if (this.port2 == 0) this.port2 = this.port + 10000;
+            Port = port;
+            Port2 = port2;
+            if (Port2 == 0) Port2 = Port + 10000;
         }
+
 
         public int ConnectTimeoutMs { get; set; } = 10000;
         public bool DoConnect2 { get; set; } = true;
+        public bool DoConnectWhenCheckConnected { get; set; } = true;
+        private bool isConnected = false;
+
+        public async Task CheckConnected(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (!DoConnectWhenCheckConnected) return;
+            DoConnectWhenCheckConnected = false;
+            if (!isConnected)
+            {
+                isConnected = true;
+                await Connect(cancellationToken);
+            }
+        }
+        public async Task<DriverProcessInfo> OpenFirefoxProfile(FirefoxDriverConfig config)
+        {
+            DriverProcessInfo res = null;
+            await Task.Run(async () => res = await FirefoxProfilesWorker.OpenFirefoxProfile(config)); // userDir, Port, isHeadless));
+            return res;
+        }
 
         public async Task<string> Connect(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (port == 0) return "Error: MarionettePort not set";
+            if (Port == 0) return "Error: MarionettePort not set";
+            DoConnectWhenCheckConnected = false;
+
+            if (!Config.DoNotOpenChromeProfile)
+            {
+                DriverProcess = await OpenFirefoxProfile(Config);
+                if (Config.IsTempProfile) await Task.Delay(Config.TempDirCreateDelay);
+            }
+
             _connectionM = new DebuggerConnectionMarionette(new NetworkClientFactory());
-            _debuggerEndpointUri = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port }.Uri;
+            _debuggerEndpointUri = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = Port }.Uri;
             //_connectionM.OutputMessage += _connection_OutputMessage;
             var r = "connected";
             await Task.Factory.StartNew(async () =>
@@ -108,7 +159,7 @@ namespace Zu.Firefox
                 var res2 = await Connect2();
             }
             await SetContextChrome(cancellationToken);
-            return "Marionette " + port + (_connectionM2?.Connected == true ? " Marionette2 " + port2 : "");
+            return "Marionette " + Port + (_connectionM2?.Connected == true ? " Marionette2 " + Port2 : "");
         }
         #endregion
 
@@ -119,7 +170,7 @@ namespace Zu.Firefox
         {
             get
             {
-                if (mouse == null) mouse = new FirefoxDriverMouse();
+                if (mouse == null) mouse = new FirefoxDriverMouse(this);
                 return mouse;
             }
             set
@@ -129,11 +180,13 @@ namespace Zu.Firefox
         }
 
         private IKeyboard keyboard;
+        private DriverConfig config;
+
         public IKeyboard Keyboard
         {
             get
             {
-                if (keyboard == null) keyboard = new FirefoxDriverKeyboard();
+                if (keyboard == null) keyboard = new FirefoxDriverKeyboard(this);
                 return keyboard;
             }
             set
@@ -144,6 +197,8 @@ namespace Zu.Firefox
 
         public async Task<string> GoToUrl(string url, CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
+            await SetContextContent();
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetCommand(url);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -153,6 +208,7 @@ namespace Zu.Firefox
 
         public async Task<string> AcceptDialog(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new AcceptDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -163,6 +219,7 @@ namespace Zu.Firefox
         public async Task<string> ClearElement(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClearElementCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -172,6 +229,7 @@ namespace Zu.Firefox
 
         public async Task<string> ClearImportedScripts(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClearImportedScriptsCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -182,6 +240,7 @@ namespace Zu.Firefox
         public async Task<string> ClickElement(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClickElementCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -191,15 +250,30 @@ namespace Zu.Firefox
 
         public async Task<string> Close(CancellationToken cancellationToken = new CancellationToken())
         {
-            if (clientMarionette == null) throw new Exception("error: no clientMarionette");
-            var comm1 = new CloseCommand();
-            await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            //await CheckConnected(cancellationToken);
+            //if (clientMarionette == null) throw new Exception("error: no clientMarionette");
+            //var comm1 = new CloseCommand();
+            //await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
+            //if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (DriverProcess != null) await DriverProcess.CloseAsync(cancellationToken);
+            DriverProcess = null;
+            if (Config.IsTempProfile) await Task.Run(() => FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName)));
+
+
             return "ok";
         }
 
+        public void CloseSync()
+        {
+            DriverProcess?.Close();
+            DriverProcess = null;
+            if(Config.IsTempProfile) FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName));
+        }
+
+
         public async Task<string> DismissDialog(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new DismissDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -209,6 +283,7 @@ namespace Zu.Firefox
 
         public async Task<string> CloseChromeWindow(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new CloseChromeWindowCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -219,6 +294,7 @@ namespace Zu.Firefox
         public async Task<JToken> FindElement(string strategy, string expr, string startNode = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new FindElementCommand(strategy, expr, startNode);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -229,6 +305,7 @@ namespace Zu.Firefox
         public async Task<JToken> FindElements(string strategy, string expr, string startNode = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new FindElementsCommand(strategy, expr, startNode);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -238,6 +315,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetActiveElement(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetActiveElementCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -247,6 +325,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetActiveFrame(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetActiveFrameCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -256,6 +335,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetChromeWindowHandle(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -265,6 +345,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetChromeWindowHandles(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandlesCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -274,6 +355,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetUrl(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetCurrentUrlCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -284,6 +366,7 @@ namespace Zu.Firefox
         public async Task<string> GetElementAttribute(string elementId, string attrName,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementAttributeCommand(elementId, attrName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -294,6 +377,7 @@ namespace Zu.Firefox
         public async Task<string> GetElementProperty(string elementId, string propName,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementPropertyCommand(elementId, propName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -304,6 +388,7 @@ namespace Zu.Firefox
         public async Task<WebRect> GetElementRect(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementRectCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -314,6 +399,7 @@ namespace Zu.Firefox
         public async Task<string> GetElementTagName(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementTagNameCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -324,6 +410,7 @@ namespace Zu.Firefox
         public async Task<string> GetElementText(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementTextCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -334,6 +421,7 @@ namespace Zu.Firefox
         public async Task<string> GetElementValueOfCssProperty(string elementId, string propName,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetElementValueOfCssPropertyCommand(elementId, propName);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -343,6 +431,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetPageSource(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetPageSourceCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -352,6 +441,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetTextFromDialog(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTextFromDialogCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -361,6 +451,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetTitle(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTitleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -370,6 +461,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetWindowHandle(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandleCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -379,6 +471,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetWindowHandles(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandlesCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -388,6 +481,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetWindowPosition(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowPositionCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -397,6 +491,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetWindowSize(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowSizeCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -406,6 +501,7 @@ namespace Zu.Firefox
 
         public async Task<string> GetWindowType(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowTypeCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -415,6 +511,7 @@ namespace Zu.Firefox
 
         public async Task<string> GoBack(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoBackCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -424,6 +521,7 @@ namespace Zu.Firefox
 
         public async Task<string> GoForward(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoForwardCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -434,6 +532,7 @@ namespace Zu.Firefox
         public async Task<string> ImportScript(string script,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ImportScriptCommand(script);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -444,6 +543,7 @@ namespace Zu.Firefox
         public async Task<bool> IsElementDisplayed(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementDisplayedCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -454,6 +554,7 @@ namespace Zu.Firefox
         public async Task<bool> IsElementEnabled(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementEnabledCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -464,6 +565,7 @@ namespace Zu.Firefox
         public async Task<bool> IsElementSelected(string elementId,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new IsElementSelectedCommand(elementId);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -473,6 +575,7 @@ namespace Zu.Firefox
 
         public async Task<string> MaximizeWindow(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new MaximizeWindowCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -482,6 +585,7 @@ namespace Zu.Firefox
 
         public async Task<string> Refresh(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new RefreshCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -492,6 +596,7 @@ namespace Zu.Firefox
         public async Task<string> SendKeysToDialog(string value,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SendKeysToDialogCommand(value);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -502,6 +607,7 @@ namespace Zu.Firefox
         public async Task<string> SendKeysToElement(string elementId, string value,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SendKeysToElementCommand(elementId, value);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -511,6 +617,7 @@ namespace Zu.Firefox
 
         public async Task<string> SessionTearDown(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SessionTearDownCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -521,6 +628,7 @@ namespace Zu.Firefox
         public async Task<string> SetTimeouts(TimeoutType elementId, int ms,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetTimeoutsCommand(elementId, ms);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -531,6 +639,7 @@ namespace Zu.Firefox
         public async Task<string> SetWindowPosition(int x, int y,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowPositionCommand(x, y);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -541,6 +650,7 @@ namespace Zu.Firefox
         public async Task<string> SetWindowSize(int width, int height,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowSizeCommand(width, height);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -551,6 +661,7 @@ namespace Zu.Firefox
         public async Task<string> SwitchToFrame(string frameId, string element = null, bool doFocus = true,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToFrameCommand(frameId, element, doFocus);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -560,6 +671,7 @@ namespace Zu.Firefox
 
         public async Task<string> SwitchToParentFrame(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToParentFrameCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -570,6 +682,7 @@ namespace Zu.Firefox
         public async Task<string> SwitchToWindow(string name,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToWindowCommand(name);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -580,6 +693,7 @@ namespace Zu.Firefox
         public async Task<Screenshot> TakeScreenshot(string elementId, string highlights, string full, string hash,
             CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new TakeScreenshotCommand(elementId, highlights, full, hash);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -589,6 +703,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> GetClientContext(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetContextCommand();
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -606,6 +721,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> SetContextChrome(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetContextCommand(SetContextCommand.Contexts.chrome);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -616,6 +732,7 @@ namespace Zu.Firefox
 
         public async Task<JToken> SetContextContent(CancellationToken cancellationToken = new CancellationToken())
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetContextCommand(SetContextCommand.Contexts.content);
             await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
@@ -625,6 +742,7 @@ namespace Zu.Firefox
         }
 
         public string FilesBasePath { get; set; } = "js\\";
+        public DriverProcessInfo DriverProcess { get; set; }
 
         public async Task<JToken> AddSendEventFunc(string name = "top.zuSendEvent",
             CancellationToken cancellationToken = new CancellationToken())
@@ -796,7 +914,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             {
                 var p = await GetString("top.zuMServer.port");
                 if (int.TryParse(p, out int p1))
-                    port2 = p1;
+                    Port2 = p1;
             }
             else
             {
@@ -824,7 +942,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
                 var res = await ExecuteScript($@"
             var s;
             try {{
-                s = new MarionetteServer2({port2}, true);
+                s = new MarionetteServer2({Port2}, true);
                 s.start();
             }} catch (e) {{
                 return e.toString();
@@ -838,7 +956,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             }
             _connectionM2 = new DebuggerConnectionMarionette(new NetworkClientFactory());
             _connectionM2.OutputMessage += _connectionM2_OutputMessage;
-            _debuggerEndpointUri2 = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = port2 }.Uri;
+            _debuggerEndpointUri2 = new UriBuilder { Scheme = "tcp", Host = "127.0.0.1", Port = Port2 }.Uri;
             //_connectionM.OutputMessage += _connection_OutputMessage;
             await Task.Factory.StartNew(() =>
             {
@@ -881,6 +999,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
         public async Task<JToken> ExecuteScript(string script, string filename = null,
             string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken(), params object[] args)
         {
+            await CheckConnected(cancellationToken);
             if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ExecuteScriptCommand(script) { filename = filename, sandbox = sandbox };
             if (args.Length > 0) comm1.Args = args.Select(v => v.ToString()).ToArray();
@@ -945,5 +1064,6 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
         {
             throw new NotImplementedException();
         }
+
     }
 }

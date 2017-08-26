@@ -25,6 +25,7 @@ namespace Zu.WebBrowser
         Task<string> ClearImportedScripts(CancellationToken cancellationToken = new CancellationToken());
         Task<string> ClickElement(string elementId, CancellationToken cancellationToken = new CancellationToken());
         Task<string> Close(CancellationToken cancellationToken = new CancellationToken());
+        void CloseSync();
         Task<string> DismissDialog(CancellationToken cancellationToken = new CancellationToken());
         Task<string> CloseChromeWindow(CancellationToken cancellationToken = new CancellationToken());
 

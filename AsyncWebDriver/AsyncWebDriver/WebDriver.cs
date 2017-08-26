@@ -661,6 +661,12 @@ namespace Zu.AsyncWebDriver.Remote
                 await browserClient.Close(cancellationToken);
         }
 
+        public void CloseSync()
+        {
+            if (browserClient != null)
+                browserClient.CloseSync();
+        }
+
         public async Task Quit(CancellationToken cancellationToken = new CancellationToken())
         {
             if (browserClient != null)

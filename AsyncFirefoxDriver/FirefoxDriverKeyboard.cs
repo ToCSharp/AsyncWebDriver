@@ -9,18 +9,28 @@ namespace Zu.Firefox
 {
     internal class FirefoxDriverKeyboard : IKeyboard
     {
-        public Task PressKey(string keyToPress, CancellationToken cancellationToken = default(CancellationToken))
+        private AsyncFirefoxDriver asyncFirefoxDriver;
+
+        public FirefoxDriverKeyboard(AsyncFirefoxDriver asyncFirefoxDriver)
         {
+            this.asyncFirefoxDriver = asyncFirefoxDriver;
+        }
+
+        public async Task PressKey(string keyToPress, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task ReleaseKey(string keyToRelease, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ReleaseKey(string keyToRelease, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task SendKeys(string keySequence, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SendKeys(string keySequence, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
     }

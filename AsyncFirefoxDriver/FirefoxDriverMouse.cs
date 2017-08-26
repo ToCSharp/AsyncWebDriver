@@ -10,68 +10,88 @@ namespace Zu.Firefox
 {
     internal class FirefoxDriverMouse : IMouse
     {
-        public Task Click(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        private AsyncFirefoxDriver asyncFirefoxDriver;
+
+        public FirefoxDriverMouse(AsyncFirefoxDriver asyncFirefoxDriver)
         {
+            this.asyncFirefoxDriver = asyncFirefoxDriver;
+        }
+
+        public async Task Click(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task Click(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Click(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task ContextClick(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ContextClick(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task ContextClick(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ContextClick(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task DoubleClick(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DoubleClick(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task DoubleClick(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DoubleClick(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseDown(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseDown(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseDown(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseDown(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseMove(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseMove(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseMove(ICoordinates where, int offsetX, int offsetY, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseMove(ICoordinates where, int offsetX, int offsetY, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseMove(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseMove(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseUp(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseUp(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
 
-        public Task MouseUp(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task MouseUp(WebPoint location, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
             throw new NotImplementedException();
         }
     }

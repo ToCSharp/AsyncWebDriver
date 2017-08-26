@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Zu.FileUtils
 {
@@ -29,7 +31,8 @@ namespace Zu.FileUtils
     public class IniFileReader
     {
         #region Private members
-        private Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>(); 
+        public Dictionary<string, Dictionary<string, string>> iniFileStore = new Dictionary<string, Dictionary<string, string>>();
+        private string iniFilePath;
         #endregion
 
         #region Constructor
@@ -43,6 +46,7 @@ namespace Zu.FileUtils
             {
                 throw new ArgumentNullException(nameof(fileName), "File name must not be null or empty");
             }
+            iniFilePath = fileName;
 
             if (!File.Exists(fileName))
             {
@@ -64,13 +68,13 @@ namespace Zu.FileUtils
                             this.iniFileStore.Add(sectionName, section);
                         }
 
-                        sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2).ToUpperInvariant();
+                        sectionName = iniFileLine.Substring(1, iniFileLine.Length - 2); //.ToUpperInvariant();
                         section = new Dictionary<string, string>();
                     }
                     else
                     {
                         string[] entryParts = iniFileLine.Split(new char[] { '=' }, 2);
-                        string name = entryParts[0].ToUpperInvariant();
+                        string name = entryParts[0];//.ToUpperInvariant();
                         string value = string.Empty;
                         if (entryParts.Length > 1)
                         {
@@ -83,8 +87,43 @@ namespace Zu.FileUtils
             }
 
             this.iniFileStore.Add(sectionName, section);
-        } 
+        }
         #endregion
+
+        public void DeleteSecton(String sectionName)
+        {
+            if(iniFileStore.ContainsKey(sectionName))
+            {
+                iniFileStore.Remove(sectionName);
+            }
+        }
+
+        public void SaveSettings(String newFilePath)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var section in iniFileStore)
+            {
+                sb.AppendLine("[" + section.Key + "]");
+
+                foreach (var sectionPair in section.Value)
+                {
+                    sb.AppendLine(sectionPair.Key + "=" + sectionPair.Value);
+                }
+
+                sb.AppendLine();
+            }
+            File.WriteAllText(newFilePath, sb.ToString());
+        }
+
+        /// <summary>
+        /// Save settings back to ini file.
+        /// </summary>
+        public void SaveSettings()
+        {
+            SaveSettings(iniFilePath);
+        }
+
 
         #region Properties
         /// <summary>
@@ -109,33 +148,37 @@ namespace Zu.FileUtils
         /// <returns>The value associated with the given section and key.</returns>
         public string GetValue(string sectionName, string valueName)
         {
-            if (string.IsNullOrEmpty(sectionName))
-            {
-                throw new ArgumentNullException(nameof(sectionName), "Section name cannot be null or empty");
-            }
+            var sn = sectionName.ToLowerInvariant();
+            var vn = valueName.ToLowerInvariant();
+            return iniFileStore.FirstOrDefault(v => v.Key.ToLowerInvariant() == sn).Value?.FirstOrDefault(v => v.Key.ToLowerInvariant() == vn).Value;
 
-            string lowerCaseSectionName = sectionName.ToUpperInvariant();
+            //if (string.IsNullOrEmpty(sectionName))
+            //{
+            //    throw new ArgumentNullException(nameof(sectionName), "Section name cannot be null or empty");
+            //}
 
-            if (string.IsNullOrEmpty(valueName))
-            {
-                throw new ArgumentNullException(nameof(valueName), "Text name cannot be null or empty");
-            }
+            //string lowerCaseSectionName = sectionName.ToUpperInvariant();
 
-            string lowerCaseValueName = valueName.ToUpperInvariant();
+            //if (string.IsNullOrEmpty(valueName))
+            //{
+            //    throw new ArgumentNullException(nameof(valueName), "Text name cannot be null or empty");
+            //}
 
-            if (!this.iniFileStore.ContainsKey(lowerCaseSectionName))
-            {
-                throw new ArgumentException("Section does not exist: " + sectionName, nameof(sectionName));
-            }
+            //string lowerCaseValueName = valueName.ToUpperInvariant();
 
-            Dictionary<string, string> section = this.iniFileStore[lowerCaseSectionName];
+            //if (!this.iniFileStore.ContainsKey(lowerCaseSectionName))
+            //{
+            //    throw new ArgumentException("Section does not exist: " + sectionName, nameof(sectionName));
+            //}
 
-            if (!section.ContainsKey(lowerCaseValueName))
-            {
-                throw new ArgumentException("Text does not exist: " + valueName, nameof(valueName));
-            }
+            //Dictionary<string, string> section = this.iniFileStore[lowerCaseSectionName];
 
-            return section[lowerCaseValueName];
+            //if (!section.ContainsKey(lowerCaseValueName))
+            //{
+            //    throw new ArgumentException("Text does not exist: " + valueName, nameof(valueName));
+            //}
+
+            //return section[lowerCaseValueName];
         }
         #endregion
     }

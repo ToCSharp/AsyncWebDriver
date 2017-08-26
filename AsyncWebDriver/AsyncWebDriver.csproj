@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncWebDriver\AsyncWebDriver.cs" />
     <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\RemoteCoordinates.cs" />
     <Compile Include="AsyncWebDriver\RemoteNavigator.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="NoSuchWindowException.cs" />
     <Compile Include="NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AsyncWebDriver\WebDriver.cs" />
     <Compile Include="WebDriverException.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -131,5 +131,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
