@@ -40,6 +40,10 @@ If you want to include AsyncChromeDriver, you can [install it directly from NuGe
 ```
 PM> Install-Package AsyncChromeDriver
 ```
+And Opera [NuGet](https://www.nuget.org/packages/AsyncOperaDriver/)
+```
+PM> Install-Package AsyncOperaDriver
+```
 ### Write code example
 
 #### Chrome
@@ -79,15 +83,43 @@ PM> Install-Package AsyncChromeDriver
      await Task.Delay(500);
      await query.SendKeys(Keys.Enter);
 ```
+#### Open
+```csharp
+     IAsyncWebBrowserClient browserClient = null;
+     DriverConfig config = null;
+     if (chbOpenProfileHeadless.IsChecked == true)
+     {
+         var (width, height) = GetWidthHeight();
+         config = new DriverConfig().SetHeadless().SetWindowSize(width, height).SetIsDefaultProfile();
+     }
+     else config = new DriverConfig().SetIsDefaultProfile();
+
+     if (rbOpenFirefox.IsChecked == true)
+     {
+         asyncFirefoxDriver = new AsyncFirefoxDriver(config);
+         browserClient = asyncFirefoxDriver;
+     }
+     else if (rbOpenChrome.IsChecked == true)
+     {
+         asyncChromeDriver = new AsyncChromeDriver(config);
+         browserClient = asyncChromeDriver;
+     }
+     else if (rbOpenOpera.IsChecked == true)
+     {
+         asyncOperaDriver = new AsyncOperaDriver(config);
+         browserClient = asyncOperaDriver;
+     }
+
+     webDriver = new WebDriver(browserClient);
+     driversToClose.Add(webDriver);
+     await webDriver.GoToUrl("https://www.google.com/"); // browser opens here
+     var mess = $"opened on port {config.Port} in dir {config.UserDir} \nWhen close, dir will NOT be DELETED";
+```
 
 ## Examples
-Look at AsyncFirefoxDriverExample, [AsyncChromeDriverExample](https://github.com/ToCSharp/AsyncChromeDriver/tree/master/AsyncChromeDriverExample).
+Look at AsyncFirefoxDriverExample, AllDriversExample, [AsyncChromeDriverExample](https://github.com/ToCSharp/AsyncChromeDriver/tree/master/AsyncChromeDriverExample).
 
 Run built Example in release tab.
-
-## ZuRequestListener
-ZuRequestListener is AsyncFirefoxDriver extension. 
-It is example how to extend WebDriver functionality. Does not work well in Multiprocess Firefox. 
 
 ## [AsyncFirefoxDriverExtensions](https://github.com/ToCSharp/AsyncFirefoxDriverExtensions)
 * LiveIp to get ip
