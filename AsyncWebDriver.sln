@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsyncWebDriver", "AsyncWebDriver\AsyncWebDriver.csproj", "{489FD59F-D739-4144-89B8-B5A719BCB120}"
 EndProject
@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		THIRD-PARTY-NOTICES = THIRD-PARTY-NOTICES
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllDriversExample", "AllDriversExaple\AllDriversExample.csproj", "{A71D9721-D90E-4C0D-9B0D-F8554BA888D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,8 +55,15 @@ Global
 		{BC277712-931F-4201-9CD2-16CD92565F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC277712-931F-4201-9CD2-16CD92565F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC277712-931F-4201-9CD2-16CD92565F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A71D9721-D90E-4C0D-9B0D-F8554BA888D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A71D9721-D90E-4C0D-9B0D-F8554BA888D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A71D9721-D90E-4C0D-9B0D-F8554BA888D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A71D9721-D90E-4C0D-9B0D-F8554BA888D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E55EFE5-2DDF-4043-8564-D83FF8498E6E}
 	EndGlobalSection
 EndGlobal
