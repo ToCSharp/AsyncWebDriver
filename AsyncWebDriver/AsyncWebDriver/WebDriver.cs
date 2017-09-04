@@ -990,7 +990,7 @@ namespace Zu.AsyncWebDriver.Remote
         private static object[] ConvertArgumentsToJavaScriptObjects(object[] args)
         {
             if (args == null)
-                return new object[] {null};
+                return new object[] { null };
 
             for (var i = 0; i < args.Length; i++)
                 args[i] = ConvertObjectToJavaScriptObject(args[i]);
@@ -998,28 +998,55 @@ namespace Zu.AsyncWebDriver.Remote
             return args;
         }
 
-        public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500)
+        public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), attemptsCount, delayMs);
-            else return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs);
+            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs, cancellationToken);
         }
 
-        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500)
+        public Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (notWebElementId != null) return WaitForWebElement(FindElementByName(name), attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementByName(name), notWebElementId, attemptsCount, delayMs, cancellationToken);
+        }
+
+        public Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (notWebElementId != null) return WaitForWebElement(FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementByCssSelector(cssSelector), notWebElementId, attemptsCount, delayMs, cancellationToken);
+        }
+
+        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             for (int i = 0; i < attemptsCount; i++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await Task.Delay(delayMs);
+                cancellationToken.ThrowIfCancellationRequested();
                 var el = await Task.Run(async () => await func);
                 if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
             }
             return null;
         }
 
-        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500)
+        public Task<IWebElement> WaitForWebElement(Task<IWebElement> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return WaitForWebElement(func, notWebElement?.Id, attemptsCount, delayMs, cancellationToken);
+        }
+
+        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken())
         {
             for (int i = 0; i < attemptsCount; i++)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await Task.Delay(delayMs);
+                cancellationToken.ThrowIfCancellationRequested();
                 var el = await Task.Run(async () => await func);
                 if (notWebElementId != null && el?.Id == notWebElementId) continue;
                 if (!string.IsNullOrWhiteSpace(el?.Id)) return el;

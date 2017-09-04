@@ -183,7 +183,9 @@ namespace AsyncFirefoxDriverExample
                 await asyncDriver.SetContextContent();
                 var res2 = await asyncDriver.GoToUrl("https://www.google.com/");
                 //var query = await asyncDriver.FindElement(By.Name("q"));
-                var query = await asyncDriver.WaitForElementWithId("lst-ib");
+                var query = await asyncDriver.WaitForElementWithName("q");
+                query = await asyncDriver.WaitForElementWithId("lst-ib");
+                query = await asyncDriver.WaitForWebElement(asyncDriver.FindElement(By.Name("q")));
                 foreach (var v in tbSendKeys.Text.ToList())
                 {
                     await Task.Delay(500 + new Random().Next(1000));
@@ -192,7 +194,8 @@ namespace AsyncFirefoxDriverExample
                 await Task.Delay(500);
                 await query.SendKeys(Keys.Enter);
                 await Task.Delay(2000);
-                query = await asyncDriver.FindElement(By.Name("q"));
+                query = await asyncDriver.WaitForElementWithId("lst-ib");
+                //query = await asyncDriver.WaitForElementWithName("q");
                 await query.SendKeys(Keys.ArrowDown);
                 await Task.Delay(1000);
                 await query.SendKeys(Keys.ArrowDown);
