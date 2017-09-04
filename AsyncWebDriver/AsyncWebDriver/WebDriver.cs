@@ -48,13 +48,9 @@ namespace Zu.AsyncWebDriver.Remote
 
         public bool IsSpecificationCompliant { get; set; }
 
-        public int SimpleCommandsTimeoutMs { get; set; }
+        public int SimpleCommandsTimeoutMs { get; set; } = 5000;
 
-            = 5000;
-
-        public int GoToUrlTimeoutMs { get; set; }
-
-            = 30000;
+        public int GoToUrlTimeoutMs { get; set; } = 30000;
 
         /// <summary>
         ///     Finds the first element in the page that matches the CSS Class supplied
@@ -1001,5 +997,35 @@ namespace Zu.AsyncWebDriver.Remote
 
             return args;
         }
+
+        public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500)
+        {
+            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), attemptsCount, delayMs);
+            else return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs);
+        }
+
+        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500)
+        {
+            for (int i = 0; i < attemptsCount; i++)
+            {
+                await Task.Delay(delayMs);
+                var el = await Task.Run(async () => await func);
+                if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
+            }
+            return null;
+        }
+
+        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500)
+        {
+            for (int i = 0; i < attemptsCount; i++)
+            {
+                await Task.Delay(delayMs);
+                var el = await Task.Run(async () => await func);
+                if (notWebElementId != null && el?.Id == notWebElementId) continue;
+                if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
+            }
+            return null;
+        }
+
     }
 }

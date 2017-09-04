@@ -29,28 +29,12 @@ namespace AsyncFirefoxDriverExample
             InitializeComponent();
         }
 
-        private async Task<string> Make_ffDriver(string profileName = "default", bool doOpenSecondPort = true)
-        {
-            if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
-                FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
-            FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
-
-            ffDriver = new AsyncFirefoxDriver(profileName);
-            ffDriver.DoConnect2 = doOpenSecondPort;
-            return await ffDriver.Connect();
-        }
-
-        private async Task<string> Prepare()
+        private string Prepare()
         {
             if (ffDriver == null)
             {
-                var res = await Make_ffDriver(tbProfileName.Text, cbDoOpenSecondPort.IsChecked == true);
-                if (res == "Error: MarionettePort not set")
-                    tbRes.Text = res + ". Go to tab Profiles and set MarionettePort port to profile." +
-                                 Environment.NewLine + Environment.NewLine + tbRes.Text;
-                else tbRes.Text = res + Environment.NewLine + Environment.NewLine + tbRes.Text;
-                if (res.StartsWith("Error"))
-                    return res;
+                var profileName = tbProfileName.Text;
+                ffDriver = new AsyncFirefoxDriver(profileName);
                 asyncDriver = new WebDriver(ffDriver);
             }
             return "ok";
@@ -58,7 +42,7 @@ namespace AsyncFirefoxDriverExample
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (await Prepare() != "ok") return;
+            if (Prepare() != "ok") return;
 
             var url = tbUrl.Text;
 
@@ -187,17 +171,19 @@ namespace AsyncFirefoxDriverExample
 
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            await Prepare();
+            if (Prepare() != "ok") return;
+            await ffDriver.CheckConnected();
         }
 
         private async void Button_Click_8(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (await Prepare() != "ok") return;
+                if (Prepare() != "ok") return;
                 await asyncDriver.SetContextContent();
                 var res2 = await asyncDriver.GoToUrl("https://www.google.com/");
-                var query = await asyncDriver.FindElement(By.Name("q"));
+                //var query = await asyncDriver.FindElement(By.Name("q"));
+                var query = await asyncDriver.WaitForElementWithId("lst-ib");
                 foreach (var v in tbSendKeys.Text.ToList())
                 {
                     await Task.Delay(500 + new Random().Next(1000));
@@ -223,9 +209,9 @@ namespace AsyncFirefoxDriverExample
             }
         }
 
-        private async void Button_Click_9(object sender, RoutedEventArgs e)
+        private void Button_Click_9(object sender, RoutedEventArgs e)
         {
-            if (await Prepare() != "ok") return;
+            if (Prepare() != "ok") return;
             // set breakpoint here
             var syncDriver = new SyncWebDriver(asyncDriver);
             syncDriver.SetContextContent();

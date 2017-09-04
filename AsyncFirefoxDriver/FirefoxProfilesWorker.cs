@@ -119,8 +119,8 @@ namespace Zu.Firefox
                         (config.Headless ? " -headless" : "");
 
             DriverProcessInfo res = new DriverProcessInfo { UserDir = config.ProfileName, Port = config.Port };
-            if(config.IsDefaultProfile) await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(null, args));
-            else await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(Path.GetFileName(config.ProfileName), args));
+            if(config.IsDefaultProfile) await Task.Run(() => res.Proc = OpenFirefoxProfile(null, args));
+            else await Task.Run(() => res.Proc = OpenFirefoxProfile(Path.GetFileName(config.ProfileName), args));
             return res;
         }
 
@@ -139,12 +139,12 @@ namespace Zu.Firefox
 
             Thread.Sleep(1000);
 
-            // wait for closing previos Firefox
-            if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
-            {
-                var reader = process.StandardOutput;
-                var v = reader.ReadToEnd();
-            }
+            //// wait for closing previos Firefox
+            //if (process.MainWindowTitle != "" && process.MainWindowTitle != "Mozilla Firefox")
+            //{
+            //    var reader = process.StandardOutput;
+            //    var v = reader.ReadToEnd();
+            //}
             return processJob;
         }
 

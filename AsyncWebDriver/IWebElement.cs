@@ -18,6 +18,8 @@ namespace Zu.AsyncWebDriver
     /// </remarks>
     public interface IWebElement : ISearchContext
     {
+        string Id { get; }
+
         /// <summary>
         ///     Gets the tag name of this element.
         /// </summary>

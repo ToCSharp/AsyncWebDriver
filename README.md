@@ -66,8 +66,6 @@ PM> Install-Package AsyncOperaDriver
 #### Firefox
 ```csharp
      var profileName = "default";
-     if (FirefoxProfilesWorker.GetMarionettePort(profileName) == 0)
-         FirefoxProfilesWorker.SetMarionettePort(profileName, 5432);
      FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
      var firefoxDriver = new AsyncFirefoxDriver(profileName);
      await firefoxDriver.Connect();

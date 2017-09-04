@@ -35,14 +35,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncFirefoxDriver, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncFirefoxDriver.1.1.4\lib\net452\AsyncFirefoxDriver.dll</HintPath>
-    </Reference>
-    <Reference Include="AsyncWebDriver, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.1.4\lib\net452\AsyncWebDriver.dll</HintPath>
+    <Reference Include="AsyncWebDriver, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.1.5\lib\net452\AsyncWebDriver.dll</HintPath>
     </Reference>
     <Reference Include="IWebBrowserClient, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.1.4\lib\net452\IWebBrowserClient.dll</HintPath>
+      <HintPath>..\packages\AsyncWebDriver.1.1.5\lib\net452\IWebBrowserClient.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -57,9 +54,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WebBrowserCommunication, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncFirefoxDriver.1.1.4\lib\net452\WebBrowserCommunication.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -111,6 +105,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AsyncFirefoxDriver\AsyncFirefoxDriver.csproj">
+      <Project>{13891dba-94c7-45aa-b9bd-77ac7b56c379}</Project>
+      <Name>AsyncFirefoxDriver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZuRequestListener\ZuRequestListener.csproj">
       <Project>{bc277712-931f-4201-9cd2-16cd92565f93}</Project>
       <Name>ZuRequestListener</Name>
