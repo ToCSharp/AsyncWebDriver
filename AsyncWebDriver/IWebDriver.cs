@@ -108,5 +108,18 @@ namespace Zu.AsyncWebDriver
         ///     a frame or window.
         /// </returns>
         ITargetLocator SwitchTo();
+
+        Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
+        Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
+        Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
+        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
+        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
+        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
+            CancellationToken cancellationToken = new CancellationToken());
     }
 }
