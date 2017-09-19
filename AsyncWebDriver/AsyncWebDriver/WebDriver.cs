@@ -1011,22 +1011,22 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementById(id), attemptsCount, delayMs, cancellationToken);
         }
 
         public Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementByName(name), attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementByName(name), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(FindElementByName(name), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementByName(name), attemptsCount, delayMs, cancellationToken);
         }
 
         public Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementByCssSelector(cssSelector), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(FindElementByCssSelector(cssSelector), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
         }
 
         public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500,
