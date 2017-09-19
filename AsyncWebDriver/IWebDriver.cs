@@ -118,11 +118,11 @@ namespace Zu.AsyncWebDriver
             CancellationToken cancellationToken = new CancellationToken());
         Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500,
+        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
+        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
+        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken());
     }
 }

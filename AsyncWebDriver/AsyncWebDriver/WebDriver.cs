@@ -1011,25 +1011,25 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementById(id), notWebElementId, attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementById(id), attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(async () => await FindElementById(id), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(async () => await FindElementById(id), attemptsCount, delayMs, cancellationToken);
         }
 
         public Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementByName(name), notWebElementId, attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementByName(name), attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(async () => await FindElementByName(name), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(async () => await FindElementByName(name), attemptsCount, delayMs, cancellationToken);
         }
 
         public Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (notWebElementId != null) return WaitForWebElement(FindElementByCssSelector(cssSelector), notWebElementId, attemptsCount, delayMs, cancellationToken);
-            else return WaitForWebElement(FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
+            if (notWebElementId != null) return WaitForWebElement(async () => await FindElementByCssSelector(cssSelector), notWebElementId, attemptsCount, delayMs, cancellationToken);
+            else return WaitForWebElement(async () => await FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
         }
 
-        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, int attemptsCount = 20, int delayMs = 500,
+        public async Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
             for (int i = 0; i < attemptsCount; i++)
@@ -1037,19 +1037,19 @@ namespace Zu.AsyncWebDriver.Remote
                 cancellationToken.ThrowIfCancellationRequested();
                 await Task.Delay(delayMs, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-                var el = await Task.Run(async () => await func);
+                var el = await func();
                 if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
             }
             return null;
         }
 
-        public Task<IWebElement> WaitForWebElement(Task<IWebElement> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
+        public Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
             return WaitForWebElement(func, notWebElement?.Id, attemptsCount, delayMs, cancellationToken);
         }
 
-        public async Task<IWebElement> WaitForWebElement(Task<IWebElement> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
+        public async Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
             for (int i = 0; i < attemptsCount; i++)
@@ -1057,7 +1057,7 @@ namespace Zu.AsyncWebDriver.Remote
                 cancellationToken.ThrowIfCancellationRequested();
                 await Task.Delay(delayMs, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-                var el = await Task.Run(async () => await func);
+                var el = await func();
                 if (notWebElementId != null && el?.Id == notWebElementId) continue;
                 if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
             }

@@ -186,7 +186,7 @@ namespace AsyncFirefoxDriverExample
                 //var query = await asyncDriver.FindElement(By.Name("q"));
                 var query = await asyncDriver.WaitForElementWithName("q");
                 query = await asyncDriver.WaitForElementWithId("lst-ib");
-                query = await asyncDriver.WaitForWebElement(asyncDriver.FindElement(By.Name("q")));
+                query = await asyncDriver.WaitForWebElement(async () => await asyncDriver.FindElement(By.Name("q")));
                 foreach (var v in tbSendKeys.Text.ToList())
                 {
                     await Task.Delay(500 + new Random().Next(1000));
