@@ -30,11 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncWebDriver, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\vs2015\betfair\MyBetsServer2\packages\AsyncWebDriver.1.1.4\lib\net452\AsyncWebDriver.dll</HintPath>
-    </Reference>
-    <Reference Include="IWebBrowserClient, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\vs2015\betfair\MyBetsServer2\packages\AsyncWebDriver.1.1.4\lib\net452\IWebBrowserClient.dll</HintPath>
+    <Reference Include="IAsyncWebBrowserClient, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IAsyncWebBrowserClient.0.1.0\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\vs2017\WebData\VMWebData2\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -59,6 +56,12 @@
   <ItemGroup>
     <EmbeddedResource Include="js\base64.js" />
     <EmbeddedResource Include="js\TracingListener.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AsyncFirefoxDriver\AsyncFirefoxDriver.csproj">
+      <Project>{13891dba-94c7-45aa-b9bd-77ac7b56c379}</Project>
+      <Name>AsyncFirefoxDriver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

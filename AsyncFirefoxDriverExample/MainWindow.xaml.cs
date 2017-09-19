@@ -12,6 +12,7 @@ using Zu.AsyncWebDriver;
 using Zu.AsyncWebDriver.Remote;
 using Zu.Browser;
 using Zu.Firefox;
+using Zu.WebBrowser.BasicTypes;
 
 namespace AsyncFirefoxDriverExample
 {

@@ -8,7 +8,7 @@ using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
-    public class RemoteTargetLocator : ITargetLocator
+    public class RemoteTargetLocator : IWebDriverTargetLocator
     {
         private readonly WebDriver driver;
 
@@ -22,7 +22,7 @@ namespace Zu.AsyncWebDriver.Remote
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
 
-            var res = await driver.browserClient.GetActiveElement(cancellationToken);
+            var res = await driver.browserClient.Elements.GetActiveElement(cancellationToken);
             return driver.GetElementFromResponse(res);
         }
 
@@ -31,9 +31,10 @@ namespace Zu.AsyncWebDriver.Remote
             throw new NotImplementedException();
         }
 
-        public Task<IWebDriver> DefaultContent(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> DefaultContent(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            await driver.browserClient.TargetLocator.SwitchToFrame(null);
+            return driver;
         }
 
         public async Task<IWebDriver> Frame(int frameIndex,
@@ -42,30 +43,49 @@ namespace Zu.AsyncWebDriver.Remote
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
 
-            var res =
-                await driver.browserClient.SwitchToFrame(frameIndex.ToString(), cancellationToken: cancellationToken);
+            await driver.browserClient.TargetLocator.SwitchToFrame(frameIndex, cancellationToken: cancellationToken);
             return driver;
         }
 
-        public Task<IWebDriver> Frame(string frameName, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> Frame(string frameName, CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver?.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            await driver.browserClient.TargetLocator.SwitchToFrame(frameName, cancellationToken: cancellationToken);
+            return driver;
         }
 
-        public Task<IWebDriver> Frame(IWebElement frameElement,
+        public async Task<IWebDriver> Frame(IWebElement frameElement,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (frameElement == null)
+            {
+                throw new ArgumentNullException("frameElement", "Frame element cannot be null");
+            }
+            if (driver?.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            await driver.browserClient.TargetLocator.SwitchToFrameByElement(frameElement.Id, cancellationToken: cancellationToken);
+            return driver;
         }
 
-        public Task<IWebDriver> ParentFrame(CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> ParentFrame(CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver?.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            await driver.browserClient.TargetLocator.SwitchToParentFrame(cancellationToken);
+            return driver;
         }
 
-        public Task<IWebDriver> Window(string windowName, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> Window(string windowName, CancellationToken cancellationToken = new CancellationToken())
         {
-            throw new NotImplementedException();
+            if (driver?.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            await driver.browserClient.TargetLocator.SwitchToWindow(windowName, cancellationToken);
+            return driver;
         }
     }
 }

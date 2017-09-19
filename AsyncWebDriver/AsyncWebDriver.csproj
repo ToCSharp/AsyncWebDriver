@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IAsyncWebBrowserClient, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IAsyncWebBrowserClient.0.1.0\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -44,28 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
-    <Compile Include="AsyncWebDriver\RemoteCoordinates.cs" />
-    <Compile Include="AsyncWebDriver\RemoteNavigator.cs" />
-    <Compile Include="AsyncWebDriver\RemoteOptions.cs" />
-    <Compile Include="AsyncWebDriver\SyncRemoteTargetLocator.cs" />
     <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
-    <Compile Include="AsyncWebDriver\SyncWebDriver.cs" />
-    <Compile Include="AsyncWebDriver\SyncWebElement.cs" />
+    <Compile Include="SyncWrapper\SyncRemoteTargetLocator.cs" />
+    <Compile Include="SyncWrapper\SyncWebDriver.cs" />
+    <Compile Include="SyncWrapper\SyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\TaskExt.cs" />
     <Compile Include="By.cs" />
-    <Compile Include="HTML5\AppCacheStatus.cs" />
-    <Compile Include="HTML5\IApplicationCache.cs" />
-    <Compile Include="HTML5\IHasApplicationCache.cs" />
-    <Compile Include="HTML5\IHasLocationContext.cs" />
-    <Compile Include="HTML5\IHasWebStorage.cs" />
-    <Compile Include="HTML5\ILocalStorage.cs" />
-    <Compile Include="HTML5\ILocationContext.cs" />
-    <Compile Include="HTML5\ISessionStorage.cs" />
-    <Compile Include="HTML5\IWebStorage.cs" />
-    <Compile Include="HTML5\Location.cs" />
     <Compile Include="IHasInputDevices.cs" />
     <Compile Include="IHasTouchScreen.cs" />
-    <Compile Include="ILogs.cs" />
     <Compile Include="Interactions\Actions.cs" />
     <Compile Include="Interactions\ButtonReleaseAction.cs" />
     <Compile Include="Interactions\ClickAction.cs" />
@@ -105,28 +94,21 @@
     <Compile Include="Internal\IWrapsElement.cs" />
     <Compile Include="Internal\ReturnedCookie.cs" />
     <Compile Include="InvalidSelectorException.cs" />
-    <Compile Include="IOptions.cs" />
     <Compile Include="ISearchContext.cs" />
-    <Compile Include="ITargetLocator.cs" />
+    <Compile Include="IWebDriverTargetLocator.cs" />
     <Compile Include="IWebDriver.cs" />
     <Compile Include="IWebElement.cs" />
-    <Compile Include="Keys.cs" />
-    <Compile Include="LogEntry.cs" />
-    <Compile Include="LogLevel.cs" />
-    <Compile Include="LogType.cs" />
     <Compile Include="NoSuchElementException.cs" />
     <Compile Include="NoSuchFrameException.cs" />
     <Compile Include="NoSuchWindowException.cs" />
     <Compile Include="NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AsyncWebDriver\WebDriver.cs" />
+    <Compile Include="SyncWrapper\SyncAlert.cs" />
+    <Compile Include="SyncWrapper\SyncNavigation.cs" />
+    <Compile Include="SyncWrapper\SyncKeyboard.cs" />
+    <Compile Include="SyncWrapper\SyncMouse.cs" />
     <Compile Include="WebDriverException.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IAsyncWebBrowserClient\IAsyncWebBrowserClient.csproj">
-      <Project>{5148b07e-f81f-4f3b-b522-b8c312531152}</Project>
-      <Name>IAsyncWebBrowserClient</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,11 +12,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using Zu.AsyncWebDriver.Html5;
 using Zu.AsyncWebDriver.Internal;
 using Zu.WebBrowser;
 using Zu.WebBrowser.BasicTypes;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BrowserOptions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -415,8 +415,9 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.ExecuteScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
-                return res;
+                //var res = await browserClient.JavaScriptExecutor.ExecuteScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.JavaScriptExecutor.ExecuteScript(script, cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res; // (string)res?["value"];
             }
             catch (Exception ex)
             {
@@ -432,8 +433,9 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.ExecuteAsyncScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
-                return res;
+                //var res = await browserClient.JavaScriptExecutor.ExecuteAsyncScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.JavaScriptExecutor.ExecuteAsyncScript(script, cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                return res; // (string)res?["value"];
             }
             catch (Exception ex)
             {
@@ -448,7 +450,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.TakeScreenshot(null, null, null, null, cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.Screenshot.GetScreenshot(/*null, null, null, null, */cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
             catch (Exception ex)
@@ -510,7 +512,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// </example>
         public IOptions Manage()
         {
-            return new RemoteOptions(this);
+            return browserClient.Options; // new RemoteOptions(this);
         }
 
         /// <summary>
@@ -525,7 +527,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// </example>
         public INavigation Navigate()
         {
-            return new RemoteNavigator(this);
+            return browserClient.Navigation; // new RemoteNavigator(this);
         }
 
         /// <summary>
@@ -538,7 +540,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// driver.SwitchTo().Frame("FrameName");
         /// </code>
         /// </example>
-        public ITargetLocator SwitchTo()
+        public RemoteTargetLocator SwitchTo()
         {
             return new RemoteTargetLocator(this);
         }
@@ -560,7 +562,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GetUrl(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.Navigation.GetUrl(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
             catch (Exception ex)
@@ -576,8 +578,8 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GoToUrl(url, cancellationToken).TimeoutAfter(GoToUrlTimeoutMs);
-                return res;
+                await browserClient.Navigation.GoToUrl(url, cancellationToken).TimeoutAfter(GoToUrlTimeoutMs);
+                return "";
             }
             catch (Exception ex)
             {
@@ -624,7 +626,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GetWindowHandle(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.TargetLocator.GetWindowHandle(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
             catch (Exception ex)
@@ -633,7 +635,7 @@ namespace Zu.AsyncWebDriver.Remote
             }
         }
 
-        public async Task<ReadOnlyCollection<string>> WindowHandles(
+        public async Task<List<string>> WindowHandles(
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (browserClient == null)
@@ -641,9 +643,9 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await browserClient.GetWindowHandles(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
-                var res2 = new ReadOnlyCollection<string>((res as JArray)?.Select(v => v.ToString())?.ToList());
-                return res2;
+                var res = await browserClient.TargetLocator.GetWindowHandles(cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                //var res2 = new ReadOnlyCollection<string>((res as JArray)?.Select(v => v.ToString())?.ToList());
+                return res;
             }
             catch (Exception ex)
             {
@@ -671,19 +673,22 @@ namespace Zu.AsyncWebDriver.Remote
 
         public async Task<string> GetContext(CancellationToken cancellationToken = new CancellationToken())
         {
-            return browserClient == null
+            var bc = browserClient as WebBrowser.Firefox.IAsyncWebBrowserClientFirefox;
+            return bc == null
                 ? "None"
-                : (await browserClient?.GetContext(cancellationToken) == Contexts.Chrome ? "Chrome" : "Content");
+                : (await bc?.GetContext(cancellationToken) == Zu.WebBrowser.Firefox.Contexts.Chrome ? "Chrome" : "Content");
         }
 
         public async Task<JToken> SetContextChrome(CancellationToken cancellationToken = new CancellationToken())
         {
-            return browserClient == null ? null : await browserClient.SetContextChrome(cancellationToken);
+            var bc = browserClient as WebBrowser.Firefox.IAsyncWebBrowserClientFirefox;
+            return bc == null ? null : await bc.SetContextChrome(cancellationToken);
         }
 
         public async Task<JToken> SetContextContent(CancellationToken cancellationToken = new CancellationToken())
         {
-            return browserClient == null ? null : await browserClient.SetContextContent(cancellationToken);
+            var bc = browserClient as WebBrowser.Firefox.IAsyncWebBrowserClientFirefox;
+            return bc == null ? null : await bc.SetContextContent(cancellationToken);
         }
 
         public async Task<IWebElement> FindElementByIdStartsWith(string id,
@@ -770,6 +775,11 @@ namespace Zu.AsyncWebDriver.Remote
             //}
             return element;
         }
+        public IWebElement GetElementFromResponse(string id)
+        {
+            var element = CreateElement(id);
+            return element;
+        }
 
         /// <summary>
         ///     Finds the elements that are in the response
@@ -852,7 +862,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var commandResponse = await browserClient
+                var commandResponse = await browserClient.Elements
                     .FindElement(mechanism, value, cancellationToken: cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return GetElementFromResponse(commandResponse);
@@ -870,7 +880,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var commandResponse = await browserClient.ClickElement(elementId, cancellationToken)
+                await browserClient.Elements.Click(elementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -885,7 +895,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var commandResponse = await browserClient.ClearElement(elementId, cancellationToken)
+                var commandResponse = await browserClient.Elements.ClearElement(elementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -907,7 +917,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var commandResponse = await browserClient
+                var commandResponse = await browserClient.Elements
                     .FindElements(mechanism, value, cancellationToken: cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return GetElementsFromResponse(commandResponse);
@@ -1025,7 +1035,7 @@ namespace Zu.AsyncWebDriver.Remote
             for (int i = 0; i < attemptsCount; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(delayMs);
+                await Task.Delay(delayMs, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 var el = await Task.Run(async () => await func);
                 if (!string.IsNullOrWhiteSpace(el?.Id)) return el;
@@ -1045,7 +1055,7 @@ namespace Zu.AsyncWebDriver.Remote
             for (int i = 0; i < attemptsCount; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                await Task.Delay(delayMs);
+                await Task.Delay(delayMs, cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
                 var el = await Task.Run(async () => await func);
                 if (notWebElementId != null && el?.Id == notWebElementId) continue;

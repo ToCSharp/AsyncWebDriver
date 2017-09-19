@@ -19,6 +19,7 @@ namespace Zu.WebBrowser
     {
         IMouse Mouse { get; }
         IKeyboard Keyboard { get; }
+        IOptions Options { get; }
 
         Task<string> AcceptDialog(CancellationToken cancellationToken = new CancellationToken());
         Task<string> ClearElement(string elementId, CancellationToken cancellationToken = new CancellationToken());
@@ -113,6 +114,9 @@ namespace Zu.WebBrowser
             CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> SwitchToFrame(string frameId, string element = null, bool doFocus = true,
+            CancellationToken cancellationToken = new CancellationToken());
+
+        Task<string> SwitchToFrame(int frameInd, bool doFocus = true,
             CancellationToken cancellationToken = new CancellationToken());
 
         Task<string> SwitchToParentFrame(CancellationToken cancellationToken = new CancellationToken());

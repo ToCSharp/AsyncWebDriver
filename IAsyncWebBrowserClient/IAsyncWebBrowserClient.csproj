@@ -46,11 +46,15 @@
   <ItemGroup>
     <Compile Include="BasicTypes\Cookie.cs" />
     <Compile Include="BasicTypes\DriverConfig.cs" />
+    <Compile Include="BasicTypes\LogEntry.cs" />
+    <Compile Include="BasicTypes\LogLevel.cs" />
+    <Compile Include="BasicTypes\LogType.cs" />
     <Compile Include="BasicTypes\ReturnedCookie.cs" />
     <Compile Include="BasicTypes\Screenshot.cs" />
     <Compile Include="BasicTypes\WebPoint.cs" />
     <Compile Include="BasicTypes\WebRect.cs" />
     <Compile Include="BasicTypes\WebSize.cs" />
+    <Compile Include="AsyncInteractions\ILogs.cs" />
     <Compile Include="IAsyncWebBrowserClient.cs" />
     <Compile Include="IAsyncWebBrowserWorker.cs" />
     <Compile Include="AsyncInteractions\IAction.cs" />
@@ -63,9 +67,10 @@
     <Compile Include="AsyncInteractions\IMouse.cs" />
     <Compile Include="AsyncInteractions\INavigation.cs" />
     <Compile Include="AsyncInteractions\ITakesScreenshot.cs" />
-    <Compile Include="AsyncInteractions\ITimeouts.cs" />
+    <Compile Include="BrowserSettings\ITimeouts.cs" />
     <Compile Include="AsyncInteractions\ITouchScreen.cs" />
     <Compile Include="AsyncInteractions\IWindow.cs" />
+    <Compile Include="BrowserSettings\IOptions.cs" />
     <Compile Include="Process\DriverProcessInfo.cs" />
     <Compile Include="Process\ProcessWithJobObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -410,7 +410,7 @@ namespace Zu.AsyncWebDriver.Remote
         ///     Gets the coordinates identifying the location of this element using
         ///     various frames of reference.
         /// </summary>
-        public ICoordinates Coordinates => new RemoteCoordinates(this);
+        public ICoordinates Coordinates => driver.browserClient.Coordinates; // new RemoteCoordinates(this);
 
         string IWebElementReference.ElementReferenceId
         {
@@ -443,7 +443,7 @@ namespace Zu.AsyncWebDriver.Remote
             var res = "";
             try
             {
-                res = await driver.browserClient.GetElementText(InternalElementId, cancellationToken)
+                res = await driver.browserClient.Elements.GetElementText(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -471,7 +471,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.GetElementTagName(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.GetElementTagName(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
@@ -492,7 +492,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.GetElementText(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.GetElementText(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
@@ -512,7 +512,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.IsElementEnabled(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.IsElementEnabled(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
@@ -532,7 +532,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.IsElementSelected(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.IsElementSelected(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
@@ -553,7 +553,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             //try
             //{
-                var res = await driver.browserClient.GetElementLocation(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.GetElementLocation(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             //}
@@ -573,7 +573,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             //try
             //{
-                var res = await driver.browserClient.GetElementSize(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.GetElementSize(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             //}
@@ -598,7 +598,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.IsElementDisplayed(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.IsElementDisplayed(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
             }
@@ -623,7 +623,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.ClearElement(InternalElementId, cancellationToken)
+                var res = await driver.browserClient.Elements.ClearElement(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -651,7 +651,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.SendKeysToElement(InternalElementId, text, cancellationToken)
+                var res = await driver.browserClient.Elements.SendKeysToElement(InternalElementId, text, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -684,9 +684,9 @@ namespace Zu.AsyncWebDriver.Remote
 
                 try
                 {
-                    var res = await driver.browserClient.IsElementEnabled(InternalElementId, cancellationToken)
+                    var res = await driver.browserClient.Elements.IsElementEnabled(InternalElementId, cancellationToken)
                         .TimeoutAfter(SimpleCommandsTimeoutMs);
-                    var res2 = await driver.browserClient.SubmitElement(InternalElementId, cancellationToken: cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
+                    var res2 = await driver.browserClient.Elements.SubmitElement(InternalElementId, cancellationToken: cancellationToken).TimeoutAfter(SimpleCommandsTimeoutMs);
                 }
                 catch (Exception ex)
                 {
@@ -712,7 +712,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient.ClickElement(InternalElementId, cancellationToken)
+                await driver.browserClient.Elements.Click(InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -765,7 +765,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient
+                var res = await driver.browserClient.Elements
                     .GetElementAttribute(InternalElementId, attributeName, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
@@ -796,7 +796,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient
+                var res = await driver.browserClient.Elements
                     .GetElementValueOfCssProperty(InternalElementId, propertyName, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
@@ -857,7 +857,7 @@ namespace Zu.AsyncWebDriver.Remote
 
             try
             {
-                var res = await driver.browserClient
+                var res = await driver.browserClient.Elements
                     .GetElementProperty(InternalElementId, propertyName, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
                 return res;
@@ -949,7 +949,7 @@ namespace Zu.AsyncWebDriver.Remote
             JToken res = null;
             try
             {
-                res = await driver.browserClient.FindElement(mechanism, value, InternalElementId, cancellationToken)
+                res = await driver.browserClient.Elements.FindElement(mechanism, value, InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)
@@ -981,7 +981,7 @@ namespace Zu.AsyncWebDriver.Remote
             JToken res = null;
             try
             {
-                res = await driver.browserClient.FindElements(mechanism, value, InternalElementId, cancellationToken)
+                res = await driver.browserClient.Elements.FindElements(mechanism, value, InternalElementId, cancellationToken)
                     .TimeoutAfter(SimpleCommandsTimeoutMs);
             }
             catch (Exception ex)

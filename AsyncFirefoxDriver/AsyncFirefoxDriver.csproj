@@ -31,11 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncWebDriver, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.1.5\lib\net452\AsyncWebDriver.dll</HintPath>
-    </Reference>
-    <Reference Include="IWebBrowserClient, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.1.5\lib\net452\IWebBrowserClient.dll</HintPath>
+    <Reference Include="IAsyncWebBrowserClient, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\IAsyncWebBrowserClient.0.1.0\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -50,10 +47,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverAlert.cs" />
     <Compile Include="FirefoxDriverConfig.cs" />
-    <Compile Include="FirefoxDriverKeyboard.cs" />
-    <Compile Include="FirefoxDriverMouse.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverCoordinates.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverElements.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverJavaScriptExecutor.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverNavigation.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverOptions.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverScreenshot.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverTargetLocator.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverTimeouts.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverTouchScreen.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverKeyboard.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverMouse.cs" />
     <Compile Include="FirefoxProfilesWorker.cs" />
+    <Compile Include="IAsyncFirefoxDriver.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverWindow.cs" />
     <Compile Include="IniFileReader.cs" />
     <Compile Include="KeyValuePairVM.cs" />
     <Compile Include="AsyncFirefoxDriver.cs" />
@@ -111,7 +120,7 @@
     <Compile Include="MarionetteDebuggerCommand.cs" />
     <Compile Include="MarionetteDebuggerCommandString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultValueConverter.cs" />
+    <Compile Include="IAsyncWebBrowserClient\ResultValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

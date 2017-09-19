@@ -13,7 +13,7 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 {
     public class SetTimeoutsCommand : MarionetteDebuggerCommand
     {
-        //public enum TimeoutType { @implicit, script, page_load };
+        public enum TimeoutType { @implicit, script, page_load };
         public SetTimeoutsCommand(TimeoutType timeoutType, int ms, int id = 0, string commandName = "timeouts") : base(id, commandName)
         {
             TimeoutTyp = timeoutType;

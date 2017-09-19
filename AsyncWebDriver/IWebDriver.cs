@@ -2,10 +2,13 @@
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.AsyncWebDriver.Remote;
+using Zu.WebBrowser;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BrowserOptions;
 
 namespace Zu.AsyncWebDriver
 {
@@ -70,7 +73,7 @@ namespace Zu.AsyncWebDriver
         /// <summary>
         ///     Gets the window handles of open browser windows.
         /// </summary>
-        Task<ReadOnlyCollection<string>> WindowHandles(CancellationToken cancellationToken = new CancellationToken());
+        Task<List<string>> WindowHandles(CancellationToken cancellationToken = new CancellationToken());
 
         /// <summary>
         ///     Close the current window, quitting the browser if it is the last window currently open.
@@ -104,10 +107,10 @@ namespace Zu.AsyncWebDriver
         ///     Instructs the driver to send future commands to a different frame or window.
         /// </summary>
         /// <returns>
-        ///     An <see cref="ITargetLocator" /> object which can be used to select
+        ///     An <see cref="RemoteTargetLocator" /> object which can be used to select
         ///     a frame or window.
         /// </returns>
-        ITargetLocator SwitchTo();
+        RemoteTargetLocator SwitchTo();
 
         Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken());

@@ -5,13 +5,15 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Zu.Firefox;
 using Zu.WebBrowser;
+using Zu.WebBrowser.Firefox;
 
 namespace Zu.Browser
 {
     public class ZuRequestListener
     {
-        private IAsyncWebBrowserClient browserClient;
+        private AsyncFirefoxDriver browserClient;
         public event EventHandler<JToken> StartRequest;
         public event EventHandler<JToken> StopRequest;
 
@@ -20,7 +22,7 @@ namespace Zu.Browser
 
         public bool DoSendBinary { get; set; } = false;
         public string SaveAllFilesToFolder { get; set; } = null;
-        public ZuRequestListener(IAsyncWebBrowserClient browserClient)
+        public ZuRequestListener(AsyncFirefoxDriver browserClient)
         {
             this.browserClient = browserClient;
         }
@@ -28,8 +30,8 @@ namespace Zu.Browser
         public async Task<JToken> EvalFile(string fileName, string dir = "js", bool inChrome = true)
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
-            if (inChrome) await browserClient?.SetContext(Contexts.Chrome);
-            else await browserClient?.SetContext(Contexts.Content);
+            if (inChrome) await browserClient?.SetContextChrome();
+            else await browserClient?.SetContextContent();
 
             var assem = this.GetType().Assembly;
             var resPath = !string.IsNullOrWhiteSpace(dir) ? $"{assem.GetName().Name}.{dir.Replace('\\', '.').Trim('.')}.{fileName}" : $"{assem.GetName().Name}.{fileName}";
@@ -43,7 +45,7 @@ namespace Zu.Browser
                         code = reader.ReadToEnd();
                     }
                 }
-                return await browserClient?.ExecuteScript(code, Path.GetFullPath(fileName));
+                return await ((FirefoxDriverJavaScriptExecutor)browserClient?.JavaScriptExecutor).ExecuteScript(code, Path.GetFullPath(fileName));
             }
             else
             {

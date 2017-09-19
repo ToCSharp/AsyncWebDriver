@@ -19,6 +19,18 @@ namespace Zu.AsyncWebDriver.Remote
             }
             throw new TimeoutException("The operation has timed out.");
         }
+        public static async Task TimeoutAfter(this Task task, int timeout)
+        {
+            //var timeoutCancellationTokenSource = new CancellationTokenSource();
+            var completedTask = await Task.WhenAny(task, Task.Delay(timeout/*, timeoutCancellationTokenSource.Token*/));
+            if (completedTask == task)
+            {
+                //timeoutCancellationTokenSource.Cancel();
+                await task;
+                return;
+            }
+            throw new TimeoutException("The operation has timed out.");
+        }
 
         //todo. It not working
         //public static TResult DoSync<TResult>(this Task<TResult> task)

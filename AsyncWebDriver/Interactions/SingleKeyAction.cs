@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.AsyncWebDriver.Interactions.Internal
 {
