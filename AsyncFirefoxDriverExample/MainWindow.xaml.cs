@@ -255,5 +255,10 @@ namespace AsyncFirefoxDriverExample
             var profileName = (lbProfiles.SelectedItem as Tuple<string, string>)?.Item1;
             FirefoxProfilesWorker.OpenFirefoxProfileOffline(profileName);
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (asyncDriver != null) asyncDriver.CloseSync();
+        }
     }
 }
