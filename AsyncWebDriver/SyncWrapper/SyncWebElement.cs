@@ -37,7 +37,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public WebPoint LocationOnScreenOnceScrolledIntoView => GetLocationOnScreenOnceScrolledIntoView();
 
-        public ICoordinates Coordinates => AsyncElement.Coordinates;
+        public SyncCoordinates Coordinates => new SyncCoordinates(AsyncElement.Coordinates);
 
         public string OuterHtml => GetProperty("outerHTML");
         public string InnerHtml => GetProperty("innerHTML");

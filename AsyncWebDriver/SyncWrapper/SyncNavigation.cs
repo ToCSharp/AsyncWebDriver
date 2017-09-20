@@ -23,11 +23,14 @@ namespace Zu.AsyncWebDriver.Remote
 
         public void GoToUrl(string url)
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => {
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Task.Run(async () => {
                 await navigation.GoToUrl(url);
                 //todo: remove delay
                 await Task.Delay(50);
-                MRes.Set(); }); MRes.Wait();
+                MRes.Set(); });
+            MRes.Wait();
         }
 
         public void GoToUrl(Uri url)
