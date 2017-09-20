@@ -22,7 +22,7 @@ namespace Zu.AsyncWebDriver.Remote
 {
     public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName,
         IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector,
-        ITakesScreenshot, IHasInputDevices, IHasWebStorage, IHasLocationContext, IHasApplicationCache
+        ITakesScreenshot, IHasInputDevices, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IActionExecutor
     {
         /// <summary>
         ///     The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -1064,5 +1064,25 @@ namespace Zu.AsyncWebDriver.Remote
             return null;
         }
 
+        public Task<bool> IsActionExecutor(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+            return browserClient.ActionExecutor.IsActionExecutor(cancellationToken);
+        }
+
+        public Task PerformActions(IList<ActionSequence> actionSequenceList, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+            return browserClient.ActionExecutor.PerformActions(actionSequenceList, cancellationToken);
+        }
+
+        public Task ResetInputState(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+            return browserClient.ActionExecutor.ResetInputState(cancellationToken);
+        }
     }
 }
