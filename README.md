@@ -50,7 +50,7 @@ PM> Install-Package AsyncOperaDriver
      var asyncChromeDriver = new AsyncChromeDriver();
      var webDriver = new WebDriver(asyncChromeDriver);
      await webDriver.GoToUrl("https://www.google.com/");
-     var query = await webDriver.WaitForElementWithName("q));
+     var query = await webDriver.WaitForElementWithName("q");
      //await query.SendKeys("ToCSharp");
      foreach (var v in "ToCSharp".ToList())
      {
@@ -68,14 +68,9 @@ PM> Install-Package AsyncOperaDriver
 #### Firefox
 ```csharp
      var webDriver = new WebDriver(new AsyncFirefoxDriver());
-     await webDriver.SetContextContent();
      await webDriver.GoToUrl("https://www.google.com/");
      var query = await webDriver.FindElement(By.Name("q"));
-     foreach (var v in "ToCSharp".ToList())
-     {
-         await Task.Delay(500 + new Random().Next(500));
-         await query.SendKeys(v.ToString());
-     }
+     await query.SendKeys("ToCSharp");
      await Task.Delay(500);
      await query.SendKeys(Keys.Enter);
 ```
