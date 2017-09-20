@@ -8,7 +8,7 @@ AsyncWebDriver has synchronous wrapper [SyncWebDriver](https://github.com/ToCSha
 
 ## [AsyncFirefoxDriver](https://github.com/ToCSharp/AsyncWebDriver/tree/master/AsyncFirefoxDriver)
 It is Firefox driver. It connects directly to Marionette and is async from this connection. No need in geckodriver.
-AsyncFirefoxDriver implements IWebBrowserClient and can be used as AsyncWebDriver. 
+AsyncFirefoxDriver implements [IAsyncWebBrowserClient](https://github.com/ToCSharp/IAsyncWebBrowserClient) interfaces and can be used as AsyncWebDriver. 
 
 But the main MISSION of this project is to provide Firefox specific capabilities.
 Reqest listener and profiles worker already here.
@@ -19,12 +19,11 @@ Debugger, all what addons and extensions can do, we can do with AsyncFirefoxDriv
 
 ## [AsyncChromeDriver](https://github.com/ToCSharp/AsyncChromeDriver)
 Chrome WebDriver and Chrome DevTools in one library.  
-It connects directly to Chrome DevTools and is async from this connection. No need in chromedriver.
+It connects directly to Chrome DevTools and is async from this connection. No need in chromedriver.exe.
 
 ## [AsyncOperaDriver](https://github.com/ToCSharp/AsyncOperaDriver)
 Opera WebDriver and Opera DevTools in one library.  
-It connects directly to Opera DevTools and is async from this connection. No need in operadriver.
-
+It connects directly to Opera DevTools and is async from this connection. No need in operadriver.exe.
 
 ### Other browsers
 If it will be interestring we can add async drivers.
@@ -51,25 +50,24 @@ PM> Install-Package AsyncOperaDriver
      var asyncChromeDriver = new AsyncChromeDriver();
      var webDriver = new WebDriver(asyncChromeDriver);
      await webDriver.GoToUrl("https://www.google.com/");
-     var query = await webDriver.FindElement(By.Name("q"));
+     var query = await webDriver.WaitForElementWithName("q));
+     //await query.SendKeys("ToCSharp");
      foreach (var v in "ToCSharp".ToList())
      {
         await Task.Delay(500 + new Random().Next(500));
         await query.SendKeys(v.ToString());
       }
       await Task.Delay(500);
+      var prevQuery = await webDriver.FindElement(By.Name("q"));
       await query.SendKeys(Keys.Enter);
+      query = await webDriver.WaitForElementWithName("q", prevQuery?.Id);
       var allCookies = await asyncChromeDriver.DevTools.Session.Network.GetAllCookies(new GetAllCookiesCommand());
 
 ```
 
 #### Firefox
 ```csharp
-     var profileName = "default";
-     FirefoxProfilesWorker.OpenFirefoxProfile(profileName);
-     var firefoxDriver = new AsyncFirefoxDriver(profileName);
-     await firefoxDriver.Connect();
-     var webDriver = new WebDriver(firefoxDriver);
+     var webDriver = new WebDriver(new AsyncFirefoxDriver());
      await webDriver.SetContextContent();
      await webDriver.GoToUrl("https://www.google.com/");
      var query = await webDriver.FindElement(By.Name("q"));
