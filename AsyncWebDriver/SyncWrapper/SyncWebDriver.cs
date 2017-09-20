@@ -14,6 +14,7 @@ using Zu.AsyncWebDriver.Remote;
 using Zu.WebBrowser.AsyncInteractions;
 using Zu.WebBrowser;
 using Zu.WebBrowser.BrowserOptions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.AsyncWebDriver.Remote
 {
@@ -194,6 +195,18 @@ namespace Zu.AsyncWebDriver.Remote
             }
         }
 
+        public Screenshot GetScreenshot()
+        {
+            try
+            {
+                Screenshot res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.GetScreenshot(); MRes.Set(); }); MRes.Wait(); return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string GoToUrl(string url)
         {
             string res = null;
@@ -262,5 +275,19 @@ namespace Zu.AsyncWebDriver.Remote
             return false;
         }
 
+        public bool IsActionExecutor()
+        {
+            bool res = false; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.IsActionExecutor(); MRes.Set(); }); MRes.Wait(); return res;
+        }
+
+        public void PerformActions(IList<ActionSequence> actionSequenceList)
+        {
+            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.PerformActions(actionSequenceList); MRes.Set(); }); MRes.Wait();
+        }
+
+        public void ResetInputState()
+        {
+            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.ResetInputState(); MRes.Set(); }); MRes.Wait();
+        }
     }
 }

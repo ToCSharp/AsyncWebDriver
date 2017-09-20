@@ -212,6 +212,8 @@ namespace Zu.Firefox
 
         public ITouchScreen TouchScreen { get { if (touchScreen == null) touchScreen = new FirefoxDriverTouchScreen(this); return touchScreen; } }
 
+        public IActionExecutor ActionExecutor { get { if (actionExecutor == null) actionExecutor = new FirefoxDriverActionExecutor(this); return actionExecutor; } }
+
         private IMouse mouse;
         private IKeyboard keyboard;
         private DriverConfig config;
@@ -224,6 +226,7 @@ namespace Zu.Firefox
         private FirefoxDriverCoordinates coordinates;
         private FirefoxDriverScreenshot screenshot;
         private FirefoxDriverTouchScreen touchScreen;
+        private FirefoxDriverActionExecutor actionExecutor;
 
         #endregion
 
