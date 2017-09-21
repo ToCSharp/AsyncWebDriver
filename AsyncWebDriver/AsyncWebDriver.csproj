@@ -48,8 +48,12 @@
   <ItemGroup>
     <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
+    <Compile Include="SyncWrapper\SyncCookieJar.cs" />
     <Compile Include="SyncWrapper\SyncCoordinates.cs" />
+    <Compile Include="SyncWrapper\SyncLogs.cs" />
+    <Compile Include="SyncWrapper\SyncOptions.cs" />
     <Compile Include="SyncWrapper\SyncRemoteTargetLocator.cs" />
+    <Compile Include="SyncWrapper\SyncTimeouts.cs" />
     <Compile Include="SyncWrapper\SyncWebDriver.cs" />
     <Compile Include="SyncWrapper\SyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\TaskExt.cs" />
@@ -109,6 +113,7 @@
     <Compile Include="SyncWrapper\SyncNavigation.cs" />
     <Compile Include="SyncWrapper\SyncKeyboard.cs" />
     <Compile Include="SyncWrapper\SyncMouse.cs" />
+    <Compile Include="SyncWrapper\SyncWindow.cs" />
     <Compile Include="WebDriverException.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -53,7 +53,8 @@ namespace Zu.AsyncWebDriver.Remote
 
         public object ExecuteAsyncScript(string script, params object[] args)
         {
-            object res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset();Task.Run(async () => { res = await AsyncDriver.ExecuteAsyncScript(script, default(CancellationToken), args); MRes.Set();}); MRes.Wait(); return res;
+            object res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset();Task.Run(async () => {
+                res = await AsyncDriver.ExecuteAsyncScript(script, default(CancellationToken), args); MRes.Set();}); MRes.Wait(); return res;
         }
 
         public object ExecuteScript(string script, params object[] args)
@@ -220,7 +221,7 @@ namespace Zu.AsyncWebDriver.Remote
             return res;
         }
 
-        public IOptions Manage() => AsyncDriver.Manage();
+        public SyncOptions Manage() => new SyncOptions(AsyncDriver.Manage());
         public SyncNavigation Navigate() => new SyncNavigation(AsyncDriver.Navigate());
         public SyncKeyboard Keyboard => new SyncKeyboard(AsyncDriver.Keyboard);
         public SyncMouse Mouse => new SyncMouse(AsyncDriver.Mouse);
