@@ -413,17 +413,19 @@ namespace Zu.AsyncWebDriver.Remote
             if (browserClient == null)
                 throw new WebDriverException("no browserClient");
 
-            try
-            {
+            //try
+            //{
                 //var res = await browserClient.JavaScriptExecutor.ExecuteScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
-                var res = await browserClient.JavaScriptExecutor.ExecuteScript(script, cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.JavaScriptExecutor.ExecuteScript(script, cancellationToken, ConvertArgumentsToJavaScriptObjects(args)).TimeoutAfter(SimpleCommandsTimeoutMs);
+                res = ParseJavaScriptReturnValue(res);
                 return res; // (string)res?["value"];
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return ex.ToString();
+            //}
         }
+
 
         public async Task<object> ExecuteAsyncScript(string script,
             CancellationToken cancellationToken = new CancellationToken(), params object[] args)
@@ -434,7 +436,8 @@ namespace Zu.AsyncWebDriver.Remote
             try
             {
                 //var res = await browserClient.JavaScriptExecutor.ExecuteAsyncScript(script, null, "defaultSandbox", cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
-                var res = await browserClient.JavaScriptExecutor.ExecuteAsyncScript(script, cancellationToken, args).TimeoutAfter(SimpleCommandsTimeoutMs);
+                var res = await browserClient.JavaScriptExecutor.ExecuteAsyncScript(script, cancellationToken, ConvertArgumentsToJavaScriptObjects(args)).TimeoutAfter(SimpleCommandsTimeoutMs);
+                res = ParseJavaScriptReturnValue(res);
                 return res; // (string)res?["value"];
             }
             catch (Exception ex)
@@ -1006,6 +1009,80 @@ namespace Zu.AsyncWebDriver.Remote
                 args[i] = ConvertObjectToJavaScriptObject(args[i]);
 
             return args;
+        }
+
+        private object ParseJavaScriptReturnValue(object responseValue)
+        {
+            object returnValue = null;
+
+            Dictionary<string, object> resultAsDictionary = responseValue as Dictionary<string, object>;
+            object[] resultAsArray = responseValue as object[];
+
+            if (resultAsDictionary != null)
+            {
+                if (resultAsDictionary.ContainsKey("element-6066-11e4-a52e-4f735466cecf"))
+                {
+                    string id = (string)resultAsDictionary["element-6066-11e4-a52e-4f735466cecf"];
+                    var element = this.CreateElement(id);
+                    returnValue = element;
+                }
+                else if (resultAsDictionary.ContainsKey("ELEMENT"))
+                {
+                    string id = (string)resultAsDictionary["ELEMENT"];
+                    var element = this.CreateElement(id);
+                    returnValue = element;
+                }
+                else
+                {
+                    // Recurse through the dictionary, re-parsing each value.
+                    string[] keyCopy = new string[resultAsDictionary.Keys.Count];
+                    resultAsDictionary.Keys.CopyTo(keyCopy, 0);
+                    foreach (string key in keyCopy)
+                    {
+                        resultAsDictionary[key] = this.ParseJavaScriptReturnValue(resultAsDictionary[key]);
+                    }
+
+                    returnValue = resultAsDictionary;
+                }
+            }
+            else if (resultAsArray != null)
+            {
+                bool allElementsAreWebElements = true;
+                List<object> toReturn = new List<object>();
+                foreach (object item in resultAsArray)
+                {
+                    object parsedItem = this.ParseJavaScriptReturnValue(item);
+                    IWebElement parsedItemAsElement = parsedItem as IWebElement;
+                    if (parsedItemAsElement == null)
+                    {
+                        allElementsAreWebElements = false;
+                    }
+
+                    toReturn.Add(parsedItem);
+                }
+
+                if (toReturn.Count > 0 && allElementsAreWebElements)
+                {
+                    List<IWebElement> elementList = new List<IWebElement>();
+                    foreach (object listItem in toReturn)
+                    {
+                        IWebElement itemAsElement = listItem as IWebElement;
+                        elementList.Add(itemAsElement);
+                    }
+
+                    returnValue = elementList.AsReadOnly();
+                }
+                else
+                {
+                    returnValue = toReturn.AsReadOnly();
+                }
+            }
+            else
+            {
+                returnValue = responseValue;
+            }
+
+            return returnValue;
         }
 
         public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
