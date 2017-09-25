@@ -21,12 +21,18 @@ namespace Zu.AsyncWebDriver.Remote
             TimeSpan res = default(TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await timeouts.GetAsynchronousJavaScript();
+                try
+                {
+                    res = await timeouts.GetAsynchronousJavaScript();
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
         public TimeSpan GetImplicitWait()
@@ -34,12 +40,18 @@ namespace Zu.AsyncWebDriver.Remote
             TimeSpan res = default(TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await timeouts.GetAsynchronousJavaScript();
+                try
+                {
+                    res = await timeouts.GetAsynchronousJavaScript();
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
         public TimeSpan GetPageLoad()
@@ -47,46 +59,70 @@ namespace Zu.AsyncWebDriver.Remote
             TimeSpan res = default(TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await timeouts.GetAsynchronousJavaScript();
+                try
+                {
+                    res = await timeouts.GetAsynchronousJavaScript();
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
         public void SetAsynchronousJavaScript(TimeSpan time)
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await timeouts.SetAsynchronousJavaScript(time);
+                try
+                {
+                    await timeouts.SetAsynchronousJavaScript(time);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void SetImplicitWait(TimeSpan implicitWait)
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await timeouts.SetImplicitWait(implicitWait);
+                try
+                {
+                    await timeouts.SetImplicitWait(implicitWait);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void SetPageLoad(TimeSpan time)
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await timeouts.SetPageLoad(time);
+                try
+                {
+                    await timeouts.SetPageLoad(time);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
 
     }

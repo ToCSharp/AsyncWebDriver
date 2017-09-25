@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,24 +22,36 @@ namespace Zu.AsyncWebDriver.Remote
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await cookies.AddCookie(cookie);
-                MRes.Set();
+                try
+                {
+                    await cookies.AddCookie(cookie);
+                    MRes.Set();
+                }
+                catch (Exception ex) { exception = ex; }
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
         public ReadOnlyCollection<Cookie> AllCookies()
         {
             ReadOnlyCollection<Cookie> res = null;
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await cookies.AllCookies();
+                try
+                {
+                    res = await cookies.AllCookies();
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
 
         }
@@ -46,47 +59,71 @@ namespace Zu.AsyncWebDriver.Remote
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await cookies.DeleteAllCookies();
+                try
+                {
+                    await cookies.DeleteAllCookies();
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void DeleteCookie(Cookie cookie)
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await cookies.DeleteCookie(cookie);
+                try
+                {
+                    await cookies.DeleteCookie(cookie);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void DeleteCookieNamed(string name)
         {
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                await cookies.DeleteCookieNamed(name);
+                try
+                {
+                    await cookies.DeleteCookieNamed(name);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
-
+            if (exception != null) throw exception;
         }
+
         public Cookie GetCookieNamed(string name)
         {
             Cookie res = null;
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await cookies.GetCookieNamed(name);
+                try
+                {
+                    res = await cookies.GetCookieNamed(name);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 

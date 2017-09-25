@@ -8,7 +8,7 @@ using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
-    public class SyncRemoteTargetLocator 
+    public class SyncRemoteTargetLocator
     {
         private readonly RemoteTargetLocator locator;
         //private ITargetLocator targetLocator;
@@ -28,13 +28,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebElement res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.ActiveElement();
-                if (r is AsyncWebElement) res = new SyncWebElement(r as AsyncWebElement);
+                try
+                {
+                    var r = await locator.ActiveElement();
+                    if (r is AsyncWebElement) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -43,13 +49,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncAlert res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r =  await locator.Alert();
-                res = new SyncAlert(r);
+                try
+                {
+                    var r = await locator.Alert();
+                    res = new SyncAlert(r);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -58,13 +70,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.DefaultContent();
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.DefaultContent();
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -73,13 +91,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.Frame(frameIndex);
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.Frame(frameIndex);
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -88,28 +112,40 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.Frame(frameName);
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.Frame(frameName);
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
-        public SyncWebDriver Frame(IWebElement frameElement)
+        public SyncWebDriver Frame(SyncWebElement frameElement)
         {
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.Frame(frameElement);
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.Frame(frameElement.AsyncElement);
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -118,13 +154,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.ParentFrame();
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.ParentFrame();
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -133,13 +175,19 @@ namespace Zu.AsyncWebDriver.Remote
             SyncWebDriver res = null;
             var mRes = new ManualResetEventSlim(true);
             mRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                var r = await locator.Window(windowName);
-                if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                try
+                {
+                    var r = await locator.Window(windowName);
+                    if (r is WebDriver) res = new SyncWebDriver(r as WebDriver);
+                }
+                catch (Exception ex) { exception = ex; }
                 mRes.Set();
             });
             mRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
     }

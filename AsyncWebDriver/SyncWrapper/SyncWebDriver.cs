@@ -34,21 +34,77 @@ namespace Zu.AsyncWebDriver.Remote
         public string Context { get => GetContext(); }
         public string GetContext()
         {
-            string res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.GetContext(); MRes.Set(); }); MRes.Wait(); return res;
+            string res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = await AsyncDriver.GetContext();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public void SetContextChrome()
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.SetContextChrome(); MRes.Set(); }); MRes.Wait();
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.SetContextChrome();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void SetContextContent()
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.SetContextContent(); MRes.Set(); }); MRes.Wait();
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.SetContextContent();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
 
         public string CurrentWindowHandle { get => GetCurrentWindowHandle(); }
         public string GetCurrentWindowHandle()
         {
-            string res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.CurrentWindowHandle(); MRes.Set(); }); MRes.Wait(); return res;
+            string res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = await AsyncDriver.CurrentWindowHandle();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public void Dispose() => AsyncDriver.Dispose();
@@ -65,16 +121,15 @@ namespace Zu.AsyncWebDriver.Remote
                 {
                     res = await AsyncDriver.ExecuteAsyncScript(script, default(CancellationToken), ReplaceWebElementsInArgs(args));
                     res = ReplaceWebElements(res);
-                    MRes.Set();
                 }
                 catch (Exception ex)
                 {
                     exception = ex;
                 }
+                MRes.Set();
             });
             MRes.Wait();
-            if (exception != null)
-                throw exception;
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -98,8 +153,7 @@ namespace Zu.AsyncWebDriver.Remote
                 MRes.Set();
             });
             MRes.Wait();
-            if (exception != null)
-                throw exception;
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -174,148 +228,556 @@ namespace Zu.AsyncWebDriver.Remote
 
         public void ClickElement(string elementId)
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.ClickElement(elementId); MRes.Set(); }); MRes.Wait();
-
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.ClickElement(elementId);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
         public void ClearElement(string elementId)
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.ClearElement(elementId); MRes.Set(); }); MRes.Wait();
-
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.ClearElement(elementId);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
 
         public SyncWebElement FindElement(By by)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElement(by); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElement(by);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByClassName(string className)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByClassName(className); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByClassName(className);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByCssSelector(string cssSelector)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByCssSelector(cssSelector); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByCssSelector(cssSelector);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementById(string id)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementById(id); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementById(id);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public SyncWebElement FindElementByIdStartsWith(string id)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByIdStartsWith(id); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByIdStartsWith(id);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public SyncWebElement FindElementByIdEndsWith(string id)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByIdEndsWith(id); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByIdEndsWith(id);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByLinkText(string linkText)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByLinkText(linkText); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByLinkText(linkText);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByName(string name)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByName(name); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByName(name);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByPartialLinkText(string partialLinkText)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByPartialLinkText(partialLinkText); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByPartialLinkText(partialLinkText);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByTagName(string tagName)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByTagName(tagName); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByTagName(tagName);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public SyncWebElement FindElementByXPath(string xpath)
         {
-            SyncWebElement res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementByXPath(xpath); if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement); MRes.Set(); }); MRes.Wait(); return res;
+            SyncWebElement res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementByXPath(xpath);
+                    if ((r as AsyncWebElement) != null) res = new SyncWebElement(r as AsyncWebElement);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public List<SyncWebElement> FindElements(By by)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElements(by); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElements(by);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> Children()
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.Children(); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.Children();
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByClassName(string className)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByClassName(className); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByClassName(className);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByCssSelector(string cssSelector)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByCssSelector(cssSelector); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByCssSelector(cssSelector);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsById(string id)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsById(id); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsById(id);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public List<SyncWebElement> FindElementsByIdStartsWith(string id)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByIdStartsWith(id); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByIdStartsWith(id);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
         public List<SyncWebElement> FindElementsByIdEndsWith(string id)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByIdEndsWith(id); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByIdEndsWith(id);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByLinkText(string linkText)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByLinkText(linkText); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByLinkText(linkText);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByName(string name)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByName(name); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByName(name);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByPartialLinkText(partialLinkText); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByPartialLinkText(partialLinkText);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByTagName(string tagName)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByTagName(tagName); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByTagName(tagName);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<SyncWebElement> FindElementsByXPath(string xpath)
         {
-            List<SyncWebElement> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { var r = await AsyncDriver.FindElementsByXPath(xpath); res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList(); MRes.Set(); }); MRes.Wait(); return res;
+            List<SyncWebElement> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var r = await AsyncDriver.FindElementsByXPath(xpath);
+                    res = r?.Where(a => (a as AsyncWebElement) != null).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public string Url { get => GetUrl(); }
         public string GetUrl()
         {
-            try
+            string res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
             {
-                string res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.GetUrl(); MRes.Set(); }); MRes.Wait(); return res;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+                try
+                {
+                    res = await AsyncDriver.GetUrl();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public Screenshot GetScreenshot()
         {
-            try
+            Screenshot res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
             {
-                Screenshot res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.GetScreenshot(); MRes.Set(); }); MRes.Wait(); return res;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
+                try
+                {
+                    res = await AsyncDriver.GetScreenshot();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public string GoToUrl(string url)
@@ -323,12 +785,18 @@ namespace Zu.AsyncWebDriver.Remote
             string res = null;
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
+            Exception exception = null;
             Task.Run(async () =>
             {
-                res = await AsyncDriver.GoToUrl(url);
+                try
+                {
+                    res = await AsyncDriver.GoToUrl(url);
+                }
+                catch (Exception ex) { exception = ex; }
                 MRes.Set();
             });
             MRes.Wait();
+            if (exception != null) throw exception;
             return res;
         }
 
@@ -339,24 +807,82 @@ namespace Zu.AsyncWebDriver.Remote
 
         public string PageSource()
         {
-            string res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.PageSource(); MRes.Set(); }); MRes.Wait(); return res;
+            string res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = await AsyncDriver.PageSource();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public void Quit()
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.Quit(); MRes.Set(); }); MRes.Wait();
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.Quit();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
 
         public SyncRemoteTargetLocator SwitchTo() => new SyncRemoteTargetLocator(AsyncDriver.SwitchTo());
 
         public string Title()
         {
-            string res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.Title(); MRes.Set(); }); MRes.Wait(); return res;
+            string res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = await AsyncDriver.Title();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public List<string> WindowHandles()
         {
-            List<string> res = null; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { try { res = (await AsyncDriver.WindowHandles()).ToList(); } finally { MRes.Set(); } }); MRes.Wait(); return res;
+            List<string> res = null;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = (await AsyncDriver.WindowHandles()).ToList();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public bool WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500)
@@ -389,17 +915,58 @@ namespace Zu.AsyncWebDriver.Remote
 
         public bool IsActionExecutor()
         {
-            bool res = false; var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { res = await AsyncDriver.IsActionExecutor(); MRes.Set(); }); MRes.Wait(); return res;
+            bool res = false;
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    res = await AsyncDriver.IsActionExecutor();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
+            return res;
         }
 
         public void PerformActions(IList<ActionSequence> actionSequenceList)
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.PerformActions(actionSequenceList); MRes.Set(); }); MRes.Wait();
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.PerformActions(actionSequenceList);
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
 
         public void ResetInputState()
         {
-            var MRes = new ManualResetEventSlim(true); MRes.Reset(); Task.Run(async () => { await AsyncDriver.ResetInputState(); MRes.Set(); }); MRes.Wait();
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.ResetInputState();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
     }
 }
