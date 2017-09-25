@@ -2,360 +2,444 @@
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Internal;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.AsyncWebDriver.Interactions
 {
     /// <summary>
-    ///     Provides a mechanism for building advanced interactions with the browser.
+    /// Provides a mechanism for building advanced interactions with the browser.
     /// </summary>
-    public class Actions
+    public class Actions : IAction
     {
-        private readonly IKeyboard keyboard;
-        private readonly IMouse mouse;
+        private IWebDriver driver;
+        private ActionBuilder actionBuilder = new ActionBuilder();
+        public PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
+        public KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
+
+        private IKeyboard keyboard;
+        private IMouse mouse;
         private CompositeAction action = new CompositeAction();
 
+        public CompositeAction Action => action;
+        public ActionBuilder ActionBuilder => actionBuilder;
+
         /// <summary>
-        ///     Initializes a new instance of the <see cref="Actions" /> class.
+        /// Initializes a new instance of the <see cref="Actions"/> class.
         /// </summary>
-        /// <param name="driver">The <see cref="IWebDriver" /> object on which the actions built will be performed.</param>
+        /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
         {
-            var inputDevicesDriver = driver as IHasInputDevices;
+            this.driver = driver;
+            IHasInputDevices inputDevicesDriver = driver as IHasInputDevices;
             if (inputDevicesDriver == null)
             {
-                var wrapper = driver as IWrapsDriver;
+                IWrapsDriver wrapper = driver as IWrapsDriver;
                 while (wrapper != null)
                 {
                     inputDevicesDriver = wrapper.WrappedDriver as IHasInputDevices;
                     if (inputDevicesDriver != null)
+                    {
+                        this.driver = wrapper.WrappedDriver;
                         break;
+                    }
+
                     wrapper = wrapper.WrappedDriver as IWrapsDriver;
                 }
             }
 
             if (inputDevicesDriver == null)
-                throw new ArgumentException(
-                    "The IWebDriver object must implement or wrap a driver that implements IHasInputDevices.",
-                    "driver");
-            keyboard = inputDevicesDriver.Keyboard;
-            mouse = inputDevicesDriver.Mouse;
+            {
+                throw new ArgumentException("The IWebDriver object must implement or wrap a driver that implements IHasInputDevices.", "driver");
+            }
+
+            this.keyboard = inputDevicesDriver.Keyboard;
+            this.mouse = inputDevicesDriver.Mouse;
         }
 
         /// <summary>
-        ///     Sends a modifier key down message to the browser.
+        /// Sends a modifier key down message to the browser.
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        /// <exception cref="ArgumentException">
-        ///     If the key sent is not is not one
-        ///     of <see cref="Keys.Shift" />, <see cref="Keys.Control" />, or <see cref="Keys.Alt" />.
-        /// </exception>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(string theKey)
         {
-            return KeyDown(null, theKey);
+            return this.KeyDown(null, theKey);
         }
 
         /// <summary>
-        ///     Sends a modifier key down message to the specified element in the browser.
+        /// Sends a modifier key down message to the specified element in the browser.
         /// </summary>
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        /// <exception cref="ArgumentException">
-        ///     If the key sent is not is not one
-        ///     of <see cref="Keys.Shift" />, <see cref="Keys.Control" />, or <see cref="Keys.Alt" />.
-        /// </exception>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
-            var target = GetLocatableFromElement(element);
-            action.AddAction(new KeyDownAction(keyboard, mouse, target, theKey));
+            if (string.IsNullOrEmpty(theKey))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "theKey");
+            }
+
+            ILocatable target = GetLocatableFromElement(element);
+            this.action.AddAction(new KeyDownAction(this.keyboard, this.mouse, target, theKey));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
+            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(theKey[0]));
+            this.actionBuilder.AddAction(new PauseInteraction(this.defaultKeyboard, TimeSpan.FromMilliseconds(100)));
             return this;
         }
 
         /// <summary>
-        ///     Sends a modifier key up message to the browser.
+        /// Sends a modifier key up message to the browser.
         /// </summary>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        /// <exception cref="ArgumentException">
-        ///     If the key sent is not is not one
-        ///     of <see cref="Keys.Shift" />, <see cref="Keys.Control" />, or <see cref="Keys.Alt" />.
-        /// </exception>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(string theKey)
         {
-            return KeyUp(null, theKey);
+            return this.KeyUp(null, theKey);
         }
 
         /// <summary>
-        ///     Sends a modifier up down message to the specified element in the browser.
+        /// Sends a modifier up down message to the specified element in the browser.
         /// </summary>
         /// <param name="element">The element to which to send the key command.</param>
         /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        /// <exception cref="ArgumentException">
-        ///     If the key sent is not is not one
-        ///     of <see cref="Keys.Shift" />, <see cref="Keys.Control" />, or <see cref="Keys.Alt" />.
-        /// </exception>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <exception cref="ArgumentException">If the key sent is not is not one
+        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {
-            var target = GetLocatableFromElement(element);
-            action.AddAction(new KeyUpAction(keyboard, mouse, target, theKey));
+            if (string.IsNullOrEmpty(theKey))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "theKey");
+            }
+
+            ILocatable target = GetLocatableFromElement(element);
+            this.action.AddAction(new KeyUpAction(this.keyboard, this.mouse, target, theKey));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
+            this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(theKey[0]));
             return this;
         }
 
         /// <summary>
-        ///     Sends a sequence of keystrokes to the browser.
+        /// Sends a sequence of keystrokes to the browser.
         /// </summary>
         /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(string keysToSend)
         {
-            return SendKeys(null, keysToSend);
+            return this.SendKeys(null, keysToSend);
         }
 
         /// <summary>
-        ///     Sends a sequence of keystrokes to the specified element in the browser.
+        /// Sends a sequence of keystrokes to the specified element in the browser.
         /// </summary>
         /// <param name="element">The element to which to send the keystrokes.</param>
         /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions SendKeys(IWebElement element, string keysToSend)
         {
-            var target = GetLocatableFromElement(element);
-            action.AddAction(new SendKeysAction(keyboard, mouse, target, keysToSend));
+            if (string.IsNullOrEmpty(keysToSend))
+            {
+                throw new ArgumentException("The key value must not be null or empty", "keysToSend");
+            }
+
+            ILocatable target = GetLocatableFromElement(element);
+            this.action.AddAction(new SendKeysAction(this.keyboard, this.mouse, target, keysToSend));
+            if (element != null)
+            {
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(element, 0, 0, TimeSpan.FromMilliseconds(250)));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            }
+
+            foreach (char key in keysToSend)
+            {
+                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyDown(key));
+                this.actionBuilder.AddAction(this.defaultKeyboard.CreateKeyUp(key));
+            }
+
             return this;
         }
 
         /// <summary>
-        ///     Clicks and holds the mouse button down on the specified element.
+        /// Clicks and holds the mouse button down on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to click and hold.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold(IWebElement onElement)
         {
-            var target = GetLocatableFromElement(onElement);
-            action.AddAction(new ClickAndHoldAction(mouse, target));
+            this.MoveToElement(onElement).ClickAndHold();
             return this;
         }
 
         /// <summary>
-        ///     Clicks and holds the mouse button at the last known mouse coordinates.
+        /// Clicks and holds the mouse button at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions ClickAndHold()
         {
-            return ClickAndHold(null);
+            this.action.AddAction(new ClickAndHoldAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
-        ///     Releases the mouse button on the specified element.
+        /// Releases the mouse button on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to release the button.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release(IWebElement onElement)
         {
-            var target = GetLocatableFromElement(onElement);
-            action.AddAction(new ButtonReleaseAction(mouse, target));
+            this.MoveToElement(onElement).Release();
             return this;
         }
 
         /// <summary>
-        ///     Releases the mouse button at the last known mouse coordinates.
+        /// Releases the mouse button at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Release()
         {
-            return Release(null);
+            this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
-        ///     Clicks the mouse on the specified element.
+        /// Clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to click.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click(IWebElement onElement)
         {
-            var target = GetLocatableFromElement(onElement);
-            action.AddAction(new ClickAction(mouse, target));
+            this.MoveToElement(onElement).Click();
             return this;
         }
 
         /// <summary>
-        ///     Clicks the mouse at the last known mouse coordinates.
+        /// Clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions Click()
         {
-            return Click(null);
+            this.action.AddAction(new ClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
-        ///     Double-clicks the mouse on the specified element.
+        /// Double-clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to double-click.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick(IWebElement onElement)
         {
-            var target = GetLocatableFromElement(onElement);
-            action.AddAction(new DoubleClickAction(mouse, target));
+            this.MoveToElement(onElement).DoubleClick();
             return this;
         }
 
         /// <summary>
-        ///     Double-clicks the mouse at the last known mouse coordinates.
+        /// Double-clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DoubleClick()
         {
-            return DoubleClick(null);
+            this.action.AddAction(new DoubleClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Left));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Left));
+            return this;
         }
 
         /// <summary>
-        ///     Moves the mouse to the specified element.
+        /// Moves the mouse to the specified element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement)
         {
-            var target = GetLocatableFromElement(toElement);
-            action.AddAction(new MoveMouseAction(mouse, target));
+            if (toElement == null)
+            {
+                throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", "toElement");
+            }
+
+            ILocatable target = GetLocatableFromElement(toElement);
+            this.action.AddAction(new MoveMouseAction(this.mouse, target));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, TimeSpan.FromMilliseconds(250)));
             return this;
         }
 
         /// <summary>
-        ///     Moves the mouse to the specified offset of the top-left corner of the specified element.
+        /// Moves the mouse to the specified offset of the top-left corner of the specified element.
         /// </summary>
         /// <param name="toElement">The element to which to move the mouse.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            var target = GetLocatableFromElement(toElement);
-            action.AddAction(new MoveToOffsetAction(mouse, target, offsetX, offsetY));
+            ILocatable target = GetLocatableFromElement(toElement);
+            this.action.AddAction(new MoveToOffsetAction(this.mouse, target, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
             return this;
         }
 
         /// <summary>
-        ///     Moves the mouse to the specified offset of the last known mouse coordinates.
+        /// Moves the mouse to the specified offset of the last known mouse coordinates.
         /// </summary>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
-            return MoveToElement(null, offsetX, offsetY);
-        }
-
-        /// <summary>
-        ///     Right-clicks the mouse on the specified element.
-        /// </summary>
-        /// <param name="onElement">The element on which to right-click.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        public Actions ContextClick(IWebElement onElement)
-        {
-            var target = GetLocatableFromElement(onElement);
-            action.AddAction(new ContextClickAction(mouse, target));
+            this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Pointer, offsetX, offsetY, TimeSpan.FromMilliseconds(250)));
             return this;
         }
 
         /// <summary>
-        ///     Right-clicks the mouse at the last known mouse coordinates.
+        /// Right-clicks the mouse on the specified element.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
-        public Actions ContextClick()
+        /// <param name="onElement">The element on which to right-click.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ContextClick(IWebElement onElement)
         {
-            return ContextClick(null);
+            this.MoveToElement(onElement).ContextClick();
+            return this;
         }
 
         /// <summary>
-        ///     Performs a drag-and-drop operation from one element to another.
+        /// Right-clicks the mouse at the last known mouse coordinates.
+        /// </summary>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions ContextClick()
+        {
+            this.action.AddAction(new ContextClickAction(this.mouse, null));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerDown(MouseButton.Right));
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerUp(MouseButton.Right));
+            return this;
+        }
+
+        /// <summary>
+        /// Performs a drag-and-drop operation from one element to another.
         /// </summary>
         /// <param name="source">The element on which the drag operation is started.</param>
         /// <param name="target">The element on which the drop is performed.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDrop(IWebElement source, IWebElement target)
         {
-            var startElement = GetLocatableFromElement(source);
-            var endElement = GetLocatableFromElement(target);
-            action.AddAction(new ClickAndHoldAction(mouse, startElement));
-            action.AddAction(new MoveMouseAction(mouse, endElement));
-            action.AddAction(new ButtonReleaseAction(mouse, endElement));
+            this.ClickAndHold(source).MoveToElement(target).Release(target);
             return this;
         }
 
         /// <summary>
-        ///     Performs a drag-and-drop operation on one element to a specified offset.
+        /// Performs a drag-and-drop operation on one element to a specified offset.
         /// </summary>
         /// <param name="source">The element on which the drag operation is started.</param>
         /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
         /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions" />.</returns>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
-            var startElement = GetLocatableFromElement(source);
-            action.AddAction(new ClickAndHoldAction(mouse, startElement));
-            action.AddAction(new MoveToOffsetAction(mouse, null, offsetX, offsetY));
-            action.AddAction(new ButtonReleaseAction(mouse, null));
+            this.ClickAndHold(source).MoveByOffset(offsetX, offsetY).Release();
             return this;
         }
 
         /// <summary>
-        ///     Builds the sequence of actions.
+        /// Builds the sequence of actions.
         /// </summary>
-        /// <returns>A composite <see cref="IAction" /> which can be used to perform the actions.</returns>
+        /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
         public IAction Build()
         {
-            var toReturn = action;
+            IAction toReturn = new BuiltAction(driver, actionBuilder, action);
             action = new CompositeAction();
+            actionBuilder = new ActionBuilder();
             return toReturn;
         }
 
         /// <summary>
-        ///     Performs the currently built action.
+        /// Performs the currently built action.
         /// </summary>
-        public void Perform()
+        public async Task Perform(CancellationToken cancellationToken = default(CancellationToken))
         {
-            Build().Perform();
+            IActionExecutor actionExecutor = this.driver as IActionExecutor;
+            if (await actionExecutor.IsActionExecutor(cancellationToken))
+            {
+                await actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+            }
+            else
+            {
+                await action.Perform();
+            }
         }
 
         /// <summary>
-        ///     Gets the <see cref="ILocatable" /> instance of the specified <see cref="IWebElement" />.
+        /// Gets the <see cref="ILocatable"/> instance of the specified <see cref="IWebElement"/>.
         /// </summary>
-        /// <param name="element">The <see cref="IWebElement" /> to get the location of.</param>
-        /// <returns>The <see cref="ILocatable" /> of the <see cref="IWebElement" />.</returns>
+        /// <param name="element">The <see cref="IWebElement"/> to get the location of.</param>
+        /// <returns>The <see cref="ILocatable"/> of the <see cref="IWebElement"/>.</returns>
         protected static ILocatable GetLocatableFromElement(IWebElement element)
         {
             if (element == null)
+            {
                 return null;
-            var target = element as ILocatable;
+            }
+
+            ILocatable target = element as ILocatable;
             if (target == null)
             {
-                var wrapper = element as IWrapsElement;
+                IWrapsElement wrapper = element as IWrapsElement;
                 while (wrapper != null)
                 {
                     target = wrapper.WrappedElement as ILocatable;
                     if (target != null)
+                    {
                         break;
+                    }
+
                     wrapper = wrapper.WrappedElement as IWrapsElement;
                 }
             }
 
             if (target == null)
-                throw new ArgumentException(
-                    "The IWebElement object must implement or wrap an element that implements ILocatable.", "element");
+            {
+                throw new ArgumentException("The IWebElement object must implement or wrap an element that implements ILocatable.", "element");
+            }
+
             return target;
         }
 
         /// <summary>
-        ///     Adds an action to current list of actions to be performed.
+        /// Adds an action to current list of actions to be performed.
         /// </summary>
-        /// <param name="actionToAdd">The <see cref="IAction" /> to be added.</param>
+        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
         protected void AddAction(IAction actionToAdd)
         {
-            action.AddAction(actionToAdd);
+            this.action.AddAction(actionToAdd);
         }
+
     }
 }
