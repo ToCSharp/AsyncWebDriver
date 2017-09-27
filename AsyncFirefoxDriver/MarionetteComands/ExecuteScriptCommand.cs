@@ -20,7 +20,7 @@ namespace MyCommunicationLib.Communication.MarionetteComands
         public string Code { get; set; }
 
 
-        public string[] Args { get; set; } = new string[0];
+        public object[] Args { get; set; } = new object[0];
         public bool newSandbox { get; set; } = false;
         public string sandbox { get; set; }
         public object scriptTimeout { get; set; }

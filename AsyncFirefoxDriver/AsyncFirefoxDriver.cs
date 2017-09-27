@@ -372,7 +372,7 @@ namespace Zu.Firefox
             //string s = (await Eval(path))?["value"]?.ToString();
             //return s;
             var res = await ((FirefoxDriverJavaScriptExecutor)JavaScriptExecutor).ExecuteScript($"return {path}.toString()", null, "defaultSandbox", cancellationToken);
-            return res?["value"].ToString();
+            return res.ToString(); //?["value"].ToString();
         }
 
         public async Task<JToken> SetContextChrome(CancellationToken cancellationToken = new CancellationToken())
@@ -388,19 +388,23 @@ namespace Zu.Firefox
 
         public async Task<JToken> SetContextContent(CancellationToken cancellationToken = new CancellationToken())
         {
-            await CheckConnected(cancellationToken);
-            if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
-            var comm1 = new SetContextCommand(SetContextCommand.Contexts.content);
-            await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error;
-            CurrentContext = Contexts.Content;
-            return comm1.Result;
+            try
+            {
+                await CheckConnected(cancellationToken);
+                if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
+                var comm1 = new SetContextCommand(SetContextCommand.Contexts.content);
+                await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+                if (comm1.Error != null) return comm1.Error;
+                CurrentContext = Contexts.Content;
+                return comm1.Result;
+            }
+            catch { throw; }
         }
 
         public string FilesBasePath { get; set; } = "js\\";
         public DriverProcessInfo DriverProcess { get; set; }
 
-        public async Task<JToken> AddSendEventFunc(string name = "top.zuSendEvent",
+        public async Task<object> AddSendEventFunc(string name = "top.zuSendEvent",
             CancellationToken cancellationToken = new CancellationToken())
         {
             var res = await ((FirefoxDriverJavaScriptExecutor)JavaScriptExecutor).ExecuteScript($@"{name} = function(mess) {{
@@ -415,7 +419,7 @@ return ""ok""
             return res;
         }
 
-        public async Task<JToken> AddSendEventFuncIfNo(string name = "top.zuSendEvent",
+        public async Task<object> AddSendEventFuncIfNo(string name = "top.zuSendEvent",
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (CurrentContext == Contexts.Content)
@@ -438,7 +442,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             return null;
         }
 
-        public async Task<JToken> SendEvent(string to, string mess, string funcname = "top.zuSendEvent",
+        public async Task<object> SendEvent(string to, string mess, string funcname = "top.zuSendEvent",
             CancellationToken cancellationToken = new CancellationToken())
         {
             var res = await EvalInChrome($@"{funcname}({{ ""to"": ""{to}"", ""value"": {mess}}})", null,
@@ -462,14 +466,14 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             }
         }
 
-        public async Task<JToken> Eval(string expression, string fileName = null, string sandbox = "defaultSandbox",
+        public async Task<object> Eval(string expression, string fileName = null, string sandbox = "defaultSandbox",
             CancellationToken cancellationToken = new CancellationToken())
         {
             var res = await ((FirefoxDriverJavaScriptExecutor)JavaScriptExecutor).ExecuteScript(expression, fileName, sandbox, cancellationToken);
             return res;
         }
 
-        public async Task<JToken> EvalInContent(string expression, string fileName = null,
+        public async Task<object> EvalInContent(string expression, string fileName = null,
             string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken()) // null)
         {
             if (CurrentContext == Contexts.Chrome)
@@ -478,7 +482,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             return res;
         }
 
-        public async Task<JToken> EvalInChrome(string expression, string fileName = null,
+        public async Task<object> EvalInChrome(string expression, string fileName = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (CurrentContext == Contexts.Content)
@@ -494,7 +498,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             return res?.ToString();
         }
 
-        public async Task<JToken> EvalFile(string fileName, string sandbox = "defaultSandbox",
+        public async Task<object> EvalFile(string fileName, string sandbox = "defaultSandbox",
             CancellationToken cancellationToken = new CancellationToken())
         {
             if (!File.Exists(fileName) && !string.IsNullOrWhiteSpace(FilesBasePath))
@@ -510,7 +514,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
         {
             var res = await Eval($"let res = 'undefined'; try {{ res = typeof ({path}); }} catch (ex) {{}} return res",
                 null, sandbox, cancellationToken);
-            var resStr = res?["value"].ToString();
+            var resStr = res?.ToString(); //?["value"].ToString();
             if (resStr == null || resStr == "undefined") return false;
             return true;
         }
@@ -669,7 +673,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js",
             }
         }
 
-        public async Task<JToken> TestMessage(string mess = "TestMessage",
+        public async Task<object> TestMessage(string mess = "TestMessage",
             CancellationToken cancellationToken = new CancellationToken())
         {
             var res = await ((FirefoxDriverJavaScriptExecutor)JavaScriptExecutor).ExecuteScript($@"

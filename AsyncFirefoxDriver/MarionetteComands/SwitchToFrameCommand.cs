@@ -12,13 +12,13 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 {
     public class SwitchToFrameCommand : MarionetteDebuggerCommand
     {
-        public SwitchToFrameCommand(string frameId, string element = null, bool doFocus = true, int id = 0, string commandName = "switchToWindow") : base(id, commandName)
+        public SwitchToFrameCommand(object frameId, string element = null, bool doFocus = true, int id = 0, string commandName = "switchToFrame") : base(id, commandName)
         {
             FrameId = frameId;
             Element = element;
             DoFocus = doFocus;
         }
-        public string FrameId { get; set; }
+        public object FrameId { get; set; }
         public string Element { get; set; }
         public bool DoFocus { get; set; }
 
@@ -73,7 +73,8 @@ namespace MyCommunicationLib.Communication.MarionetteComands
                    base.Id,
                    CommandName,
                    new {
-                        focus = DoFocus
+                       id = FrameId,
+                        //focus = DoFocus
                    }
 
                  });

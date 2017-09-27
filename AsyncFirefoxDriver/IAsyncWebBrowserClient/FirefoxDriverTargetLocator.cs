@@ -4,13 +4,16 @@ using MyCommunicationLib.Communication.MarionetteComands;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.AsyncWebDriver;
 using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.Firefox
 {
-    internal class FirefoxDriverTargetLocator: ITargetLocator
+    internal class FirefoxDriverTargetLocator : ITargetLocator
     {
         private IAsyncFirefoxDriver asyncFirefoxDriver;
 
@@ -54,9 +57,13 @@ namespace Zu.Firefox
             throw new System.NotImplementedException();
         }
 
-        public Task SwitchToFrame(int frameIndex, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SwitchToFrame(int frameIndex, CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new System.NotImplementedException();
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
+            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+            var comm1 = new SwitchToFrameCommand(frameIndex);
+            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
         }
 
         public Task SwitchToFrame(string frameName, CancellationToken cancellationToken = default(CancellationToken))
@@ -66,11 +73,65 @@ namespace Zu.Firefox
 
         public async Task SwitchToFrame(string frameName, string element = null, bool doFocus = true, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await asyncFirefoxDriver.CheckConnected(cancellationToken);
-            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
-            var comm1 = new SwitchToFrameCommand(frameName, element, doFocus);
-            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (frameName == null)
+            {
+                if (element == null)
+                {
+                    await asyncFirefoxDriver.CheckConnected(cancellationToken);
+                    if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+                    var comm1 = new SwitchToFrameCommand(frameName, element, doFocus);
+                    await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+                    if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+                }
+                else
+                {
+                    await asyncFirefoxDriver.CheckConnected(cancellationToken);
+                    if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+                    var comm1 = new SwitchToFrameCommand(frameName, element, doFocus);
+                    await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+                    if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+                }
+            }
+            else
+            {
+                string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+                var json = await asyncFirefoxDriver.Elements.FindElements("css selector", "frame[name='" + name + "'],iframe[name='" + name + "']");
+                var frameElements = GetElementsFromResponse(json);
+                if (frameElements.Count == 0)
+                {
+                    json = await asyncFirefoxDriver.Elements.FindElements("css selector", "frame#" + name + ",iframe#" + name);
+                    frameElements = GetElementsFromResponse(json);
+                    if (frameElements.Count == 0)
+                    {
+                        throw new NoSuchFrameException("No frame element found with name or id " + frameName);
+                    }
+                }
+
+                await SwitchToFrame(null, frameElements[0], doFocus, cancellationToken);
+            }
+        }
+        public List<string> GetElementsFromResponse(JToken response)
+        {
+            var toReturn = new List<string>();
+            if (response is JArray)
+                foreach (var item in response)
+                {
+                    string id = null;
+                    try
+                    {
+                        var json = item is JValue ? JToken.Parse(item.Value<string>()) : item;
+                        id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
+                        if (id == null)
+                            id = json?["ELEMENT"]?.ToString();
+                    }
+                    catch
+                    {
+                    }
+
+                    toReturn.Add(id);
+                }
+
+            return toReturn;
         }
 
         public Task SwitchToFrameByElement(string element, CancellationToken cancellationToken = default(CancellationToken))

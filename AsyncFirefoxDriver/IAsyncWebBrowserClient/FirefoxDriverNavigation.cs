@@ -48,12 +48,16 @@ namespace Zu.Firefox
 
         public async Task GoToUrl(string url, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await asyncFirefoxDriver.CheckConnected(cancellationToken);
-            await asyncFirefoxDriver.SetContextContent();
-            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
-            var comm1 = new GetCommand(url);
-            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            try
+            {
+                await asyncFirefoxDriver.CheckConnected(cancellationToken);
+                await asyncFirefoxDriver.SetContextContent();
+                if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+                var comm1 = new GetCommand(url);
+                await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+                if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            }
+            catch { throw; }
         }
 
         public Task GoToUrl(Uri url, CancellationToken cancellationToken = default(CancellationToken))

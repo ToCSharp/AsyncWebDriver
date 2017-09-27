@@ -41,7 +41,7 @@ namespace Zu.WebBrowser.Communication {
         /// <param name="cancellationToken">Cancellation token.</param>
         public async Task SendRequestAsync(DebuggerCommand command, CancellationToken cancellationToken = new CancellationToken()) {
             cancellationToken.ThrowIfCancellationRequested();
-
+            if (!_connection.Connected) throw new Exception("DebuggerConnectionMarionette not connected");
             try {
                 TaskCompletionSource<JToken> promise = _messages.GetOrAdd(command.Id, i => new TaskCompletionSource<JToken>());
                 _connection.SendMessage(command.ToString());

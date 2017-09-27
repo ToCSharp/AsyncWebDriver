@@ -50,6 +50,7 @@ namespace Zu.WebBrowser.Communication {
         /// <param name="message">Message.</param>
         public void SendMessage(string message) {
             if (!Connected) {
+                ConnectionClosed?.Invoke(this, EventArgs.Empty);
                 return;
             }
 
@@ -163,12 +164,19 @@ namespace Zu.WebBrowser.Communication {
                     await stream.FlushAsync().ConfigureAwait(false);
                 }
             } catch (SocketException) {
-            } catch (ObjectDisposedException) {
-            } catch (InvalidOperationException) {
-            } catch (IOException) {
-            } catch (Exception e) {
+            }
+            catch (ObjectDisposedException) {
+            }
+            catch (InvalidOperationException) {
+            }
+            catch (IOException) {
+            }
+            catch (Exception e) {
                 LiveLogger.WriteLine(string.Format(CultureInfo.CurrentCulture, "Failed to write message {0}.", e), typeof(DebuggerConnection));
-                throw;
+            }
+            finally
+            {
+                ConnectionClosed?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -251,17 +259,24 @@ namespace Zu.WebBrowser.Communication {
                     OutputMessage?.Invoke(this, new MessageEventArgs(message));
                 }
             } catch (SocketException) {
-            } catch (IOException) {
-            } catch (ObjectDisposedException) {
-            } catch (InvalidOperationException) {
-            } catch (DecoderFallbackException ex) {
+            }
+            catch (IOException) {
+            }
+            catch (ObjectDisposedException) {
+            }
+            catch (InvalidOperationException) {
+            }
+            catch (DecoderFallbackException ex) {
                 LiveLogger.WriteLine(string.Format(CultureInfo.InvariantCulture, "Error decoding response body: {0}", ex), typeof(DebuggerConnection));
-            } catch (JsonReaderException ex) {
+            }
+            catch (JsonReaderException ex) {
                 LiveLogger.WriteLine(string.Format(CultureInfo.InvariantCulture, "Error parsing JSON response: {0}", ex), typeof(DebuggerConnection));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 LiveLogger.WriteLine(string.Format(CultureInfo.InvariantCulture, "Message processing failed: {0}", ex), typeof(DebuggerConnection));
                 //throw;
-            } finally {
+            }
+            finally {
                 LiveLogger.WriteLine("Connection was closed.", typeof(DebuggerConnection));
 
                 ConnectionClosed?.Invoke(this, EventArgs.Empty);

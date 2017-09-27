@@ -57,7 +57,9 @@ namespace Zu.WebBrowser.Communication {
         public async Task SendRequestAsync(DebuggerCommand command, CancellationToken cancellationToken = new CancellationToken()) {
             cancellationToken.ThrowIfCancellationRequested();
 
-            try {
+            if (!_connection.Connected) throw new Exception("DebuggerConnection not connected");
+            try
+            {
                 TaskCompletionSource<JObject> promise = _messages.GetOrAdd(command.Id, i => new TaskCompletionSource<JObject>());
                 _connection.SendMessage(command.ToString());
                 cancellationToken.ThrowIfCancellationRequested();

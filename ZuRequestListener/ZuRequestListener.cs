@@ -27,7 +27,7 @@ namespace Zu.Browser
             this.browserClient = browserClient;
         }
 
-        public async Task<JToken> EvalFile(string fileName, string dir = "js", bool inChrome = true)
+        public async Task<object> EvalFile(string fileName, string dir = "js", bool inChrome = true)
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
             if (inChrome) await browserClient?.SetContextChrome();
