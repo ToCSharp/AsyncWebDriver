@@ -800,7 +800,7 @@ namespace Zu.AsyncWebDriver.Remote
             return res;
         }
 
-        public SyncOptions Manage() => new SyncOptions(AsyncDriver.Manage());
+        public SyncOptions Options() => new SyncOptions(AsyncDriver.Options());
         public SyncNavigation Navigate() => new SyncNavigation(AsyncDriver.Navigate());
         public SyncKeyboard Keyboard => new SyncKeyboard(AsyncDriver.Keyboard);
         public SyncMouse Mouse => new SyncMouse(AsyncDriver.Mouse);

@@ -92,7 +92,7 @@ namespace Zu.AsyncWebDriver
         ///     An <see cref="IOptions" /> object allowing the user to change
         ///     the settings of the driver.
         /// </returns>
-        IOptions Manage();
+        IOptions Options();
 
         /// <summary>
         ///     Instructs the driver to navigate the browser to another location.

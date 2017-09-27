@@ -119,8 +119,8 @@ namespace Zu.Firefox
                         (config.Headless ? " -headless" : "");
 
             DriverProcessInfo res = new DriverProcessInfo { UserDir = config.ProfileName, Port = config.Port };
-            if(config.IsDefaultProfile) await Task.Run(() => res.Proc = OpenFirefoxProfile(null, args));
-            else await Task.Run(() => res.Proc = OpenFirefoxProfile(Path.GetFileName(config.ProfileName), args));
+            if (config.IsDefaultProfile) await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(null, args));
+            else await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(Path.GetFileName(config.ProfileName), args));
             return res;
         }
 
@@ -242,9 +242,15 @@ namespace Zu.Firefox
                 Thread.Sleep(2000);
                 process.Close();
             });
+            AddDefaultPreferences(profileDir);
             return "ok";
         }
 
+        private static void AddDefaultPreferences(string profileDir)
+        {
+            if (!Directory.Exists(profileDir)) throw new ArgumentNullException($"{nameof(profileDir)} is null when {nameof(AddDefaultPreferences)}");
+            WriteUserPreferences(profileDir, FirefoxPreferences.DefaultPrefs);
+        }
 
         public static List<KeyValuePairVM> ReadAllPreferences(string dir)
         {
@@ -368,7 +374,7 @@ namespace Zu.Firefox
             WriteUserPreferences(dir, prefs);
         }
 
-        private static void WriteUserPreferences(string dir, Dictionary<string, string> prefs)
+        public static void WriteUserPreferences(string dir, Dictionary<string, string> prefs)
         {
             var f = Path.Combine(dir, UserPreferencesFileName);
             File.WriteAllText(f,

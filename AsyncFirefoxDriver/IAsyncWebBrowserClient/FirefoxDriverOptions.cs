@@ -4,7 +4,7 @@ using Zu.WebBrowser.BrowserOptions;
 
 namespace Zu.Firefox
 {
-    internal class FirefoxDriverOptions: IOptions
+    public class FirefoxDriverOptions: IOptions
     {
         private IAsyncFirefoxDriver asyncFirefoxDriver;
         private FirefoxDriverWindow window;

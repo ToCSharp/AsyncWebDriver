@@ -513,7 +513,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// driver.Manage().GetCookies();
         /// </code>
         /// </example>
-        public IOptions Manage()
+        public IOptions Options()
         {
             return browserClient.Options; // new RemoteOptions(this);
         }

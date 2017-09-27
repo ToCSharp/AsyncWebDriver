@@ -24,6 +24,9 @@ namespace AsyncFirefoxDriverExample
 
         private readonly ObservableCollection<ZuRequestInfo> loadedFiles = new ObservableCollection<ZuRequestInfo>();
         private ZuRequestListener requestListener;
+        private AsyncFirefoxDriver asyncFirefoxDriver;
+        private WebDriver webDriver;
+        private SyncWebDriver syncWebDriver;
 
         public MainWindow()
         {
@@ -259,6 +262,20 @@ namespace AsyncFirefoxDriverExample
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (asyncDriver != null) asyncDriver.CloseSync();
+            if (webDriver != null) webDriver.CloseSync();
+        }
+
+        private void Button_Click_12(object sender, RoutedEventArgs e)
+        {
+            asyncFirefoxDriver = new AsyncFirefoxDriver();
+            webDriver = new WebDriver(asyncFirefoxDriver);
+            syncWebDriver = new SyncWebDriver(webDriver);
+            syncWebDriver.GoToUrl("https://www.google.com/");
+        }
+
+        private void Button_Click_13(object sender, RoutedEventArgs e)
+        {
+            if (webDriver != null) webDriver.CloseSync();
         }
     }
 }

@@ -77,6 +77,12 @@
                     <Button Content="Open in Firefox Developer Edition" Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="193" Click="Button_Click_10"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="Open">
+                <Grid Background="#FFE5E5E5">
+                    <Button Content="open temp profile" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="122" Click="Button_Click_12"/>
+                    <Button Content="close" HorizontalAlignment="Left" Margin="160,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13"/>
+                </Grid>
+            </TabItem>
         </TabControl>
 
     </Grid>
