@@ -30,9 +30,41 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 
         public override string ToString()
         {
-            if(StartNode == null) return $"[0, {Id}, \"{CommandName}\", {{\"using\" : \"{Strategy}\", \"value\": \"{Expr?.Replace("\"", "\\\"")}\"}} ]";
-            return $"[0, {Id}, \"{CommandName}\", {{\"using\" : \"{Strategy}\", \"value\": \"{Expr?.Replace("\"", "\\\"")}\", \"element\": \"{StartNode.Replace("\"", "\\\"")}\"}} ]";
-          
+            if (StartNode == null)
+            {
+                return JsonConvert.SerializeObject(
+                    new object[]
+                        {
+                           0,
+                           Id,
+                           "findElement",
+                           new {
+                               @using = Strategy,
+                               value = Expr,
+                           }
+
+                        });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(
+                    new object[]
+                        {
+                           0,
+                           Id,
+                           "findElement",
+                           new {
+                               @using = Strategy,
+                               value = Expr,
+                               element = StartNode
+                           }
+
+                        });
+            }
+
+            //if (StartNode == null) return $"[0, {Id}, \"{CommandName}\", {{\"using\" : \"{Strategy}\", \"value\": \"{Expr?.Replace("\"", "\\\"")}\"}} ]";
+            //return $"[0, {Id}, \"{CommandName}\", {{\"using\" : \"{Strategy}\", \"value\": \"{Expr?.Replace("\"", "\\\"")}\", \"element\": \"{StartNode.Replace("\"", "\\\"")}\"}} ]";
+
         }
     }
 }

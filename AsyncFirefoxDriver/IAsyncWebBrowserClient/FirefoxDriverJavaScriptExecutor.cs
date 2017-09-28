@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
@@ -21,14 +22,9 @@ namespace Zu.Firefox
             this.asyncFirefoxDriver = asyncFirefoxDriver;
         }
 
-        public Task<object> ExecuteAsyncScript(string script, CancellationToken cancellationToken = default(CancellationToken), params object[] args)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public async Task<object> ExecuteScript(string script, CancellationToken cancellationToken = default(CancellationToken), params object[] args)
         {
-            var res = await ExecuteScript(script, null, "defaultSandbox", cancellationToken, args);
+            var res = await ExecuteScript(script, null, null/*"defaultSandbox"*/, cancellationToken, args);
             return res;
         }
 
@@ -40,7 +36,36 @@ namespace Zu.Firefox
             var comm1 = new ExecuteScriptCommand(script) { filename = filename, sandbox = sandbox };
             if (args.Length > 0) comm1.Args = args; //.Select(v => v.ToString()).ToArray();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error;
+            if (comm1.Error != null)
+            {
+                var err = comm1.Error["error"]?.ToString();
+                if (err == "javascript error") throw new InvalidOperationException(comm1.Error["message"].ToString() ?? comm1.Error.ToString());
+                /*if (err == "stale element reference") */throw new WebBrowserException(comm1.Error);
+            }
+            return ParseExecuteScriptReturnValue((comm1.Result as JObject)?["value"]); //comm1.Result;
+        }
+
+        public async Task<object> ExecuteAsyncScript(string script, CancellationToken cancellationToken = default(CancellationToken), params object[] args)
+        {
+            var res = await ExecuteAsyncScript(script, null, null/*"defaultSandbox"*/, cancellationToken, args);
+            return res;
+        }
+
+        public async Task<object> ExecuteAsyncScript(string script, string filename = null,
+    string sandbox = "defaultSandbox", CancellationToken cancellationToken = new CancellationToken(), params object[] args)
+        {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
+            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+            var comm1 = new ExecuteAsyncScriptCommand(script) { filename = filename, sandbox = sandbox };
+            if (args.Length > 0) comm1.Args = args; //.Select(v => v.ToString()).ToArray();
+            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+            if (comm1.Error != null)
+            {
+                var err = comm1.Error["error"]?.ToString();
+                if (err == "javascript error") throw new InvalidOperationException(comm1.Error["message"].ToString() ?? comm1.Error.ToString());
+                /*if (err == "stale element reference") */
+                throw new WebBrowserException(comm1.Error);
+            }
             return ParseExecuteScriptReturnValue((comm1.Result as JObject)?["value"]); //comm1.Result;
         }
 

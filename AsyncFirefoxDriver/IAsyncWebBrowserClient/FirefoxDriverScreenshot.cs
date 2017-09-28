@@ -31,7 +31,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new TakeScreenshotCommand(elementId, highlights, full, hash);
             await asyncFirefoxDriver.ClientMarionette.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             throw new NotImplementedException(nameof(TakeScreenshot));
         }
 

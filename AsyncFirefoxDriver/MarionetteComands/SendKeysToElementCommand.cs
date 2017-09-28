@@ -28,8 +28,19 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 
         public override string ToString()
         {
-            return $"[0, {Id}, \"{CommandName}\", {{\"id\": \"{ElementId}\", \"text\": \"{Text}\"}} ]";
-          
+            return JsonConvert.SerializeObject(
+               new object[]
+               {
+                   0,
+                   Id,
+                   CommandName,
+                   new {
+                       id = ElementId,
+                       value = Text
+                   }
+
+               });
+
         }
     }
 }

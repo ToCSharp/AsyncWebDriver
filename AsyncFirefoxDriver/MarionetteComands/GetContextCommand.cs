@@ -29,24 +29,6 @@ namespace MyCommunicationLib.Communication.MarionetteComands
                    0,
                    Id,
                    CommandName,
-                   //new {
-                   //     capabilities = new
-                   //     {
-                   //         desiredCapabilities = new
-                   //         {
-                   //             browserName = "firefox",
-                   //             marionette = true,
-                   //             platform = "ANY",
-                   //             version = ""
-                   //         },
-                   //         requiredCapabilities = new
-                   //         {
-
-                   //         }
-                   //     },
-                   //     //sessionId = null
-                   //}
-
                 });
 
         }

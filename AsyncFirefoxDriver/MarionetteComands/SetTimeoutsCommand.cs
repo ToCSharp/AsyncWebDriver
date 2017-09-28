@@ -13,13 +13,13 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 {
     public class SetTimeoutsCommand : MarionetteDebuggerCommand
     {
-        public enum TimeoutType { @implicit, script, page_load };
-        public SetTimeoutsCommand(TimeoutType timeoutType, int ms, int id = 0, string commandName = "timeouts") : base(id, commandName)
+        public enum TimeoutType { implicitWait, script, page_load };
+        public SetTimeoutsCommand(TimeoutType timeoutType, int ms, int id = 0, string commandName = "setTimeouts") : base(id, commandName)
         {
-            TimeoutTyp = timeoutType;
+            Type = timeoutType;
             Ms = ms;
         }
-        public TimeoutType TimeoutTyp { get; set; }
+        public TimeoutType Type { get; set; }
         public int Ms { get; set; }
 
         public override void ProcessResponse(JToken response)
@@ -29,7 +29,7 @@ namespace MyCommunicationLib.Communication.MarionetteComands
 
         public override string ToString()
         {
-            return $"[0, {Id}, \"{CommandName}\", {{{GetTimeoutTypeStr(TimeoutTyp)}: {Ms}}} ]";
+            return $"[0, {Id}, \"{CommandName}\", {{\"{GetTimeoutTypeStr(Type)}\": {Ms}}} ]";
 
         }
 
@@ -37,9 +37,9 @@ namespace MyCommunicationLib.Communication.MarionetteComands
         {
             switch(t)
             {
-                case TimeoutType.@implicit: return "implicit";
+                case TimeoutType.implicitWait: return "implicit";
                 case TimeoutType.script: return "script";
-                case TimeoutType.page_load: return "page load";
+                case TimeoutType.page_load: return "pageLoad"; //"page load"; //
             }
             return null;
         }

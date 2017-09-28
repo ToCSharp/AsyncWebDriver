@@ -10,15 +10,11 @@ using System.Threading.Tasks;
 
 namespace MyCommunicationLib.Communication.MarionetteComands
 {
-    public class GetElementValueOfCssPropertyCommand : MarionetteDebuggerCommand
+    public class GetTimeoutsCommand : MarionetteDebuggerCommand
     {
-        public GetElementValueOfCssPropertyCommand(string elementId, string propName, int id = 0, string commandName = "getElementValueOfCssProperty") : base(id, commandName)
+        public GetTimeoutsCommand(int id = 0, string commandName = "getTimeouts") : base(id, commandName)
         {
-            ElementId = elementId;
-            PropertyName = propName;
         }
-        public string ElementId { get; set; }
-        public string PropertyName { get; set; }
 
         public override void ProcessResponse(JToken response)
         {
@@ -28,17 +24,12 @@ namespace MyCommunicationLib.Communication.MarionetteComands
         public override string ToString()
         {
             return JsonConvert.SerializeObject(
-              new object[]
-              {
+                new object[]
+                {
                    0,
                    Id,
                    CommandName,
-                   new {
-                       id = ElementId,
-                       name = PropertyName
-                   }
-
-              });
+                });
 
         }
     }

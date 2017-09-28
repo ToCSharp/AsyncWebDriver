@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
@@ -24,7 +25,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTextFromDialogCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -34,7 +35,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new AcceptDialogCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task Dismiss(CancellationToken cancellationToken = default(CancellationToken))
@@ -43,7 +44,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new DismissDialogCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task SendKeys(string keysToSend, CancellationToken cancellationToken = default(CancellationToken))
@@ -52,7 +53,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SendKeysToDialogCommand(keysToSend);
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public Task SetAuthenticationCredentials(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))

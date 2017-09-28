@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
@@ -24,7 +25,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoBackCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task Forward(CancellationToken cancellationToken = default(CancellationToken))
@@ -33,7 +34,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GoForwardCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task<string> GetUrl(CancellationToken cancellationToken = default(CancellationToken))
@@ -42,7 +43,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetCurrentUrlCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -55,7 +56,7 @@ namespace Zu.Firefox
                 if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
                 var comm1 = new GetCommand(url);
                 await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-                if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+                if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             }
             catch { throw; }
         }
@@ -71,7 +72,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new RefreshCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
     }
 }

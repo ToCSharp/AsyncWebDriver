@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver;
 using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
@@ -28,7 +29,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandleCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -38,7 +39,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowHandlesCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return ResultValueConverter.WindowHandles(comm1.Result);
         }
 
@@ -63,7 +64,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToFrameCommand(frameIndex);
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public Task SwitchToFrame(string frameName, CancellationToken cancellationToken = default(CancellationToken))
@@ -81,7 +82,7 @@ namespace Zu.Firefox
                     if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
                     var comm1 = new SwitchToFrameCommand(frameName, element, doFocus);
                     await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-                    if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+                    if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
                 }
                 else
                 {
@@ -89,50 +90,30 @@ namespace Zu.Firefox
                     if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
                     var comm1 = new SwitchToFrameCommand(frameName, element, doFocus);
                     await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-                    if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+                    if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
                 }
             }
             else
             {
-                string name = Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+                string name = /*frameName; //*/ Regex.Replace(frameName, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
                 var json = await asyncFirefoxDriver.Elements.FindElements("css selector", "frame[name='" + name + "'],iframe[name='" + name + "']");
-                var frameElements = GetElementsFromResponse(json);
+                var frameElements = FirefoxDriverElements.GetElementsFromResponse(json);
                 if (frameElements.Count == 0)
                 {
                     json = await asyncFirefoxDriver.Elements.FindElements("css selector", "frame#" + name + ",iframe#" + name);
-                    frameElements = GetElementsFromResponse(json);
+                    frameElements = FirefoxDriverElements.GetElementsFromResponse(json);
                     if (frameElements.Count == 0)
                     {
-                        throw new NoSuchFrameException("No frame element found with name or id " + frameName);
+                        var e = new WebBrowserException("No frame element found with name or id " + frameName);
+                        e.Error = "No frame element found with name or id";
+                        throw e; // NoSuchFrameException("No frame element found with name or id " + frameName);
                     }
                 }
 
                 await SwitchToFrame(null, frameElements[0], doFocus, cancellationToken);
             }
         }
-        public List<string> GetElementsFromResponse(JToken response)
-        {
-            var toReturn = new List<string>();
-            if (response is JArray)
-                foreach (var item in response)
-                {
-                    string id = null;
-                    try
-                    {
-                        var json = item is JValue ? JToken.Parse(item.Value<string>()) : item;
-                        id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
-                        if (id == null)
-                            id = json?["ELEMENT"]?.ToString();
-                    }
-                    catch
-                    {
-                    }
 
-                    toReturn.Add(id);
-                }
-
-            return toReturn;
-        }
 
         public Task SwitchToFrameByElement(string element, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -145,7 +126,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToParentFrameCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task SwitchToWindow(string windowName, CancellationToken cancellationToken = default(CancellationToken))
@@ -154,7 +135,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SwitchToWindowCommand(windowName);
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
     }
 }

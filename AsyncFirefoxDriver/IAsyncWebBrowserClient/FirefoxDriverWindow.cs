@@ -24,7 +24,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowPositionCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return ResultValueConverter.ToWebPoint(comm1.Result);
         }
 
@@ -34,7 +34,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowPositionCommand(pos.X, pos.Y);
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task<WebSize> GetSize(CancellationToken cancellationToken = default(CancellationToken))
@@ -43,7 +43,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowSizeCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return ResultValueConverter.ToWebSize(comm1.Result);
         }
 
@@ -53,7 +53,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetWindowSizeCommand(size.Width, size.Height);
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
         public async Task Maximize(CancellationToken cancellationToken = default(CancellationToken))
@@ -62,7 +62,7 @@ namespace Zu.Firefox
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new MaximizeWindowCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
     }
 }

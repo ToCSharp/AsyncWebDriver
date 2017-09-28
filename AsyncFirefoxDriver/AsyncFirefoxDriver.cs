@@ -237,7 +237,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetPageSourceCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -248,7 +248,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetTitleCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -258,7 +258,7 @@ namespace Zu.Firefox
             //if (clientMarionette == null) throw new Exception("error: no clientMarionette");
             //var comm1 = new CloseCommand();
             //await clientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            //if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            //if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             if (DriverProcess != null) await DriverProcess.CloseAsync(cancellationToken);
             DriverProcess = null;
             if (Config.IsTempProfile) await Task.Run(() => FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName)));
@@ -279,7 +279,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new CloseChromeWindowCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return "ok";
         }
 
@@ -289,7 +289,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SessionTearDownCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return "ok";
         }
 
@@ -299,7 +299,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetActiveFrameCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -309,7 +309,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandleCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -319,7 +319,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetChromeWindowHandlesCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result;
         }
 
@@ -329,7 +329,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetWindowTypeCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
@@ -341,7 +341,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ImportScriptCommand(script);
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return "ok";
         }
 
@@ -351,7 +351,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new ClearImportedScriptsCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new Exception(comm1.Error.ToString());
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return "ok";
         }
 
@@ -363,7 +363,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new GetContextCommand();
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error;
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result;
         }
 
@@ -381,7 +381,7 @@ namespace Zu.Firefox
             if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new SetContextCommand(SetContextCommand.Contexts.chrome);
             await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) return comm1.Error;
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             CurrentContext = Contexts.Chrome;
             return comm1.Result;
         }
@@ -394,7 +394,7 @@ namespace Zu.Firefox
                 if (ClientMarionette == null) throw new Exception("error: no clientMarionette");
                 var comm1 = new SetContextCommand(SetContextCommand.Contexts.content);
                 await ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-                if (comm1.Error != null) return comm1.Error;
+                if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
                 CurrentContext = Contexts.Content;
                 return comm1.Result;
             }

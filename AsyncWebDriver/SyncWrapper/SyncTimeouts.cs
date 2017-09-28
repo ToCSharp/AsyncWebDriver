@@ -45,7 +45,7 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await timeouts.GetAsynchronousJavaScript();
+                    res = await timeouts.GetImplicitWait();
                 }
                 catch (Exception ex) { exception = ex; }
                 MRes.Set();
@@ -64,7 +64,7 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await timeouts.GetAsynchronousJavaScript();
+                    res = await timeouts.GetPageLoad();
                 }
                 catch (Exception ex) { exception = ex; }
                 MRes.Set();
