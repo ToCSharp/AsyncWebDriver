@@ -736,14 +736,15 @@ namespace Zu.AsyncWebDriver.Remote
                 throw new NoSuchElementException();
 
             string id = null;
-            //try
-            //{
-                var json = response is JValue ? JToken.Parse(response.Value<string>()) : response["value"];
-                id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
-                if (id == null)
-                    id = json?["ELEMENT"]?.ToString();
-            //}
-            //catch { throw; }
+            var json = response is JValue ? JToken.Parse(response.Value<string>()) : response["value"];
+            if (json is JValue)
+            {
+                if (((JValue)json).Value == null) return CreateElement(null);
+                else return CreateElement(((JValue)json).Value<string>());
+            }
+            id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
+            if (id == null)
+                id = json?["ELEMENT"]?.ToString();
 
             var element = CreateElement(id);
             //}
@@ -767,15 +768,18 @@ namespace Zu.AsyncWebDriver.Remote
                 foreach (var item in response)
                 {
                     string id = null;
-                    //try
-                    //{
-                        var json = item is JValue ? JToken.Parse(item.Value<string>()) : item;
+                    var json = item is JValue ? JToken.Parse(item.Value<string>()) : item;
+                    if (json is JValue)
+                    {
+                        if (((JValue)json).Value == null) id = null;
+                        else id = ((JValue)json).Value<string>();
+                    }
+                    else
+                    {
                         id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
                         if (id == null)
                             id = json?["ELEMENT"]?.ToString();
-                    //}
-                    //catch { throw }
-
+                    }
                     var element = CreateElement(id);
                     if (element != null)
                         toReturn.Add(element);

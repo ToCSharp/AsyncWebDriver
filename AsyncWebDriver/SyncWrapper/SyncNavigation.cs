@@ -46,7 +46,7 @@ namespace Zu.AsyncWebDriver.Remote
                 {
                     await navigation.GoToUrl(url);
                     //todo: remove delay
-                    await Task.Delay(50);
+                    await Task.Delay(200);
                 }
                 catch (Exception ex) { exception = ex; }
                 MRes.Set();
