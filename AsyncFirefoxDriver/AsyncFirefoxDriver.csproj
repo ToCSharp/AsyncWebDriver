@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncWebDriver, Version=1.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.2.9\lib\net452\AsyncWebDriver.dll</HintPath>
+    <Reference Include="AsyncWebDriver, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.2.11\lib\net452\AsyncWebDriver.dll</HintPath>
     </Reference>
     <Reference Include="IAsyncWebBrowserClient, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\AsyncChromeDriverExamplesAndTests\packages\IAsyncWebBrowserClient.0.1.8\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
