@@ -40,12 +40,27 @@
                         <ColumnDefinition Width="341*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="113*"/>
-                        <RowDefinition Height="272*"/>
+                        <RowDefinition Height="72"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <ListBox x:Name="lbFirefoxProfiles" Grid.Row="1"/>
-                    <Button Content="profiles" HorizontalAlignment="Left" Margin="45,52,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_8"/>
-                    <Button Content="delete profile and dir" HorizontalAlignment="Left" Margin="25,89,0,0" VerticalAlignment="Top" Width="160" Click="Button_Click_9"/>
+                    <Button Content="profiles" HorizontalAlignment="Left" Margin="41,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_8" Height="20"/>
+                    <Button Content="delete profile and dir" HorizontalAlignment="Left" Margin="24,35,0,0" VerticalAlignment="Top" Width="160" Click="Button_Click_9" Height="22"/>
+                    <Button Content="open headless Firefox and take Screenshot" Grid.Column="1" HorizontalAlignment="Left" Margin="41,20,0,0" VerticalAlignment="Top" Width="273" Click="Button_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="screenshot">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="34*"/>
+                        <ColumnDefinition Width="39*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26*"/>
+                        <RowDefinition Height="71*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="save screenshot" HorizontalAlignment="Left" Margin="25,38,0,0" VerticalAlignment="Top" Width="123" Click="Button_Click_7"/>
+                    <TextBox x:Name="tbScreenshotDir" Height="23" Margin="10,10,10,0" TextWrapping="Wrap" Text="C:\temp" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
         </TabControl>

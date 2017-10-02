@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Zu.AsyncWebDriver.Remote;
 using Zu.Chrome;
 using Zu.Firefox;
@@ -228,11 +219,35 @@ namespace AllDriversExample
             }
         }
 
-        private void Button_Click_7(object sender, RoutedEventArgs e)
+        private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
+            if (webDriver != null)
+            {
+                var dir = tbScreenshotDir.Text;
+                var screenshot = await webDriver.GetScreenshot();
+                //screenshot.SaveAsFile(GetFilePathToSaveScreenshot(), Zu.WebBrowser.BasicTypes.ScreenshotImageFormat.Png);
+                using (MemoryStream imageStream = new MemoryStream(screenshot.AsByteArray))
+                {
+                    System.Drawing.Image screenshotImage = System.Drawing.Image.FromStream(imageStream);
+                    screenshotImage.Save(GetFilePathToSaveScreenshot(dir), System.Drawing.Imaging.ImageFormat.Png);
+                }
+
+            }
+        }
+        private static string GetFilePathToSaveScreenshot(string dir = null)
+        {
+            dir = dir ?? @"C:\temp";
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            var i = 0;
+            var path = "";
+            do
+            {
+                i++;
+                path = Path.Combine(dir, $"screenshot{i}.png");
+            } while (File.Exists(path));
+            return path;
 
         }
-
         private void Button_Click_8(object sender, RoutedEventArgs e)
         {
             lbFirefoxProfiles.ItemsSource = FirefoxProfilesWorker.GetProfiles().Select(v => Tuple.Create(v.Key, v.Value));
@@ -272,5 +287,17 @@ namespace AllDriversExample
             }
         }
 
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetHeadless().SetWindowSize(1200, 900));
+            webDriver = new WebDriver(asyncFirefoxDriver);
+            await webDriver.GoToUrl("https://www.google.com/");
+            var screenshot = await webDriver.GetScreenshot();
+            using (MemoryStream imageStream = new MemoryStream(screenshot.AsByteArray))
+            {
+                System.Drawing.Image screenshotImage = System.Drawing.Image.FromStream(imageStream);
+                screenshotImage.Save(GetFilePathToSaveScreenshot(@"C:\temp"), System.Drawing.Imaging.ImageFormat.Png);
+            }
+        }
     }
 }

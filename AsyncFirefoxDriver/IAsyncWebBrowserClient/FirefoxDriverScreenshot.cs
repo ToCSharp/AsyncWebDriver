@@ -32,7 +32,7 @@ namespace Zu.Firefox
             var comm1 = new TakeScreenshotCommand(elementId, highlights, full, hash);
             await asyncFirefoxDriver.ClientMarionette.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
-            throw new NotImplementedException(nameof(TakeScreenshot));
+            return new Screenshot((string)comm1.Result?["value"]);
         }
 
 
