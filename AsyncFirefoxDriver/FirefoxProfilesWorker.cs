@@ -116,7 +116,8 @@ namespace Zu.Firefox
             if (currentPort != config.Port) SetMarionettePort(name, config.Port);
             var args = (config.OpenOffline ? " -offline" : "") +
                         //Headless available in Firefox 55+ on Linux, and Firefox 56+ on Windows/Mac OS X.
-                        (config.Headless ? " -headless" : "");
+                        (config.Headless ? " -headless" : "") + 
+                        (string.IsNullOrWhiteSpace(config.CommandLineArgumets) ? "" : " " + config.CommandLineArgumets);
 
             DriverProcessInfo res = new DriverProcessInfo { UserDir = config.ProfileName, Port = config.Port };
             if (config.IsDefaultProfile) await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(null, args));
