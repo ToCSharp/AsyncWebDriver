@@ -629,6 +629,13 @@ namespace Zu.AsyncWebDriver.Remote
             catch { throw; }
         }
 
+        public Task Open(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (browserClient == null)
+                throw new WebDriverException("no browserClient");
+            return browserClient.CheckConnected(cancellationToken);
+        }
+
         public async Task Close(CancellationToken cancellationToken = new CancellationToken())
         {
             if (browserClient != null)

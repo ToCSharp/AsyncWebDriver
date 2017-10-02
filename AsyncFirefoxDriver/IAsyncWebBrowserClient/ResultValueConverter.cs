@@ -58,6 +58,11 @@ namespace Zu.Firefox
             throw new NotImplementedException();
         }
 
-
+        internal static bool ValueIsNull(JToken res)
+        {
+            if (res == null) return true;
+            if (res?["value"] is JValue && (res?["value"] as JValue)?.Value == null) return true;
+            return false;
+        }
     }
 }

@@ -104,8 +104,8 @@ namespace Zu.Firefox
                     frameElements = FirefoxDriverElements.GetElementsFromResponse(json);
                     if (frameElements.Count == 0)
                     {
-                        var e = new WebBrowserException("No frame element found with name or id " + frameName);
-                        e.Error = "No frame element found with name or id";
+                        var e = new WebBrowserException("No frame element found with name or id " + frameName, "no such frame");
+                        //e.Error = "No frame element found with name or id";
                         throw e; // NoSuchFrameException("No frame element found with name or id " + frameName);
                     }
                 }

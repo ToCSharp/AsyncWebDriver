@@ -30,6 +30,24 @@ namespace Zu.AsyncWebDriver.Remote
 
         public void Close()
         {
+            AsyncDriver.CloseSync();
+        }
+        public void Open()
+        {
+            var MRes = new ManualResetEventSlim(true);
+            MRes.Reset();
+            Exception exception = null;
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await AsyncDriver.Open();
+                }
+                catch (Exception ex) { exception = ex; }
+                MRes.Set();
+            });
+            MRes.Wait();
+            if (exception != null) throw exception;
         }
         public string Context { get => GetContext(); }
         public string GetContext()

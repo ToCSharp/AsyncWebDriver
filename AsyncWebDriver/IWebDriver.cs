@@ -76,6 +76,11 @@ namespace Zu.AsyncWebDriver
         Task<List<string>> WindowHandles(CancellationToken cancellationToken = new CancellationToken());
 
         /// <summary>
+        /// Openes browser if the last window currently not open.
+        /// </summary>
+        Task Open(CancellationToken cancellationToken = new CancellationToken());
+
+        /// <summary>
         ///     Close the current window, quitting the browser if it is the last window currently open.
         /// </summary>
         Task Close(CancellationToken cancellationToken = new CancellationToken());

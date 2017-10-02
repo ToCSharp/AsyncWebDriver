@@ -8,6 +8,7 @@ using Zu.WebBrowser.BasicTypes;
 using MyCommunicationLib.Communication.MarionetteComands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Zu.Firefox
 {
@@ -41,6 +42,29 @@ namespace Zu.Firefox
 
         public async Task<JToken> FindElement(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
         {
+            try
+            {
+                var res = await FindElementNotWait(strategy, expr, startNode, cancellationToken);
+                if (ResultValueConverter.ValueIsNull(res))
+                {
+                    var implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
+                    if (implicitWait != default(TimeSpan))
+                    {
+                        var waitEnd = DateTime.Now + implicitWait;
+                        while (ResultValueConverter.ValueIsNull(res) && DateTime.Now < waitEnd)
+                        {
+                            Thread.Sleep(50);
+                            res = await FindElementNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+                        }
+                    }
+                }
+                if (ResultValueConverter.ValueIsNull(res)) throw new WebBrowserException($"Element not found by {strategy} = {expr}", "no such element");
+                return res;
+            }
+            catch { throw; }
+        }
+        public async Task<JToken> FindElementNotWait(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
             await asyncFirefoxDriver.CheckConnected(cancellationToken);
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
             var comm1 = new FindElementCommand(strategy, expr, startNode);
@@ -50,6 +74,27 @@ namespace Zu.Firefox
         }
 
         public async Task<JToken> FindElements(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+            if ((res as JArray)?.Any() != true)
+            {
+                var implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
+                if (implicitWait != default(TimeSpan))
+                {
+                    var waitEnd = DateTime.Now + implicitWait;
+                    while (((res as JArray)?.Any() != true) && DateTime.Now < waitEnd)
+                    {
+                        Thread.Sleep(50);
+                        res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+                    }
+                }
+            }
+            if (res == null) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
+            return res;
+            //return asyncChromeDriver.WindowCommands.FindElements(strategy, expr, startNode, cancellationToken);
+        }
+
+        public async Task<JToken> FindElementsNotWait(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await asyncFirefoxDriver.CheckConnected(cancellationToken);
             if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
