@@ -111,6 +111,7 @@ namespace Zu.Firefox
                 }
                 await CreateFirefoxProfile(config.ProfileName, Path.GetFileName(config.ProfileName));
             }
+            if (config.UserPreferences != null) AddWriteUserPreferences(config.ProfileName, config.UserPreferences);
             string name = Path.GetFileName(config.ProfileName);
             var currentPort = GetMarionettePort(name ?? "default");
             if (currentPort != config.Port) SetMarionettePort(name, config.Port);
@@ -133,7 +134,7 @@ namespace Zu.Firefox
         public static ProcessWithJobObject OpenFirefoxProfileWithJobObject(string key, string addArgs = null)
         {
             var args = $@"-marionette -no-remote" + (string.IsNullOrWhiteSpace(key) ? "" : $@" -P ""{key}""");
-            if (!string.IsNullOrWhiteSpace(addArgs)) args += " " + addArgs;
+            if (!string.IsNullOrWhiteSpace(addArgs)) args += " " + addArgs.Trim();
 
             var processJob = new ProcessWithJobObject();
             var process = processJob.StartProc(FirefoxBinaryFileName, args);
@@ -237,7 +238,7 @@ namespace Zu.Firefox
             {
                 var process = new Process();
                 process.StartInfo.FileName = FirefoxBinaryFileName;
-                process.StartInfo.Arguments = $@"-CreateProfile ""{profileName} {profileDir}""";
+                process.StartInfo.Arguments = $@"-no-remote -CreateProfile ""{profileName} {profileDir}""";
                 process.StartInfo.UseShellExecute = false;
                 process.Start();
                 Thread.Sleep(2000);
