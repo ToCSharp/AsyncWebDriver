@@ -27,6 +27,7 @@ namespace AsyncFirefoxDriverExample
         private AsyncFirefoxDriver asyncFirefoxDriver;
         private WebDriver webDriver;
         private SyncWebDriver syncWebDriver;
+        private WebDriver devToolsWebDriver;
 
         public MainWindow()
         {
@@ -276,6 +277,88 @@ namespace AsyncFirefoxDriverExample
         private void Button_Click_13(object sender, RoutedEventArgs e)
         {
             if (webDriver != null) webDriver.CloseSync();
+        }
+
+        private async void Button_Click_14(object sender, RoutedEventArgs e)
+        {
+            if (asyncFirefoxDriver == null) return;
+            await asyncFirefoxDriver.OpenBrowserDevTools();
+            tbOpenRes.Text = "BrowserDevTools opened";
+        }
+
+        private async void Button_Click_15(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                asyncFirefoxDriver = new AsyncFirefoxDriver();
+                await asyncFirefoxDriver.Connect();
+                webDriver = new WebDriver(asyncFirefoxDriver);
+                var browserDevToolsDriver = await asyncFirefoxDriver.OpenBrowserDevTools();
+                // browserDevToolsDriver is AsyncFirefoxDriver
+                devToolsWebDriver = new WebDriver(browserDevToolsDriver);
+                //await asyncFirefoxDriver.SetContextChrome();
+                await browserDevToolsDriver.Options.Timeouts.SetImplicitWait(TimeSpan.FromSeconds(2));
+                //await devToolsWebDriver.SwitchTo().Frame("toolbox-iframe");
+                var inspectorTab = await devToolsWebDriver.FindElementByXPath("//*[@id=\"toolbox-tab-inspector\"]"); //.FindElementById("toolbox-tab-inspector");
+                await inspectorTab.Click();
+                tbOpenRes.Text = "BrowserDevTools opened and clicked on toolbox-tab-inspector";
+            }
+            catch (Exception ex)
+            {
+                tbOpenRes.Text = ex.ToString();
+            }
+        }
+
+        private void Button_Click_16(object sender, RoutedEventArgs e)
+        {
+            var syncDevTools = new SyncWebDriver(devToolsWebDriver);
+            var s = "";
+            try
+            {
+                //TODO not works now
+                syncDevTools.SetContextContent();
+                syncDevTools.SwitchTo().Frame("toolbox-iframe");
+                var el = syncDevTools.FindElementByXPath("//*[@id=\"toolbox-tab-inspector\"]");
+            }
+            catch { }
+            try
+            {
+                var el = syncDevTools.FindElementById("toolbox-tab-inspector");
+            }
+            catch { }
+        }
+
+        private void Button_Click_17(object sender, RoutedEventArgs e)
+        {
+            asyncFirefoxDriver?.BrowserDevTools?.CloseSync();
+        }
+
+        private async void Button_Click_18(object sender, RoutedEventArgs e)
+        {
+            if (asyncFirefoxDriver == null) return;
+            await asyncFirefoxDriver.OpenBrowserDevTools(9876, false);
+            tbOpenRes.Text = "BrowserDevTools opened in XUL";
+        }
+
+        private async void Button_Click_19(object sender, RoutedEventArgs e)
+        {
+            var src = tbJavaScriptEvalSource.Text;
+            try
+            {
+                var res = await asyncFirefoxDriver.JavaScriptExecutor.ExecuteScript(src);
+                tbJavaScriptEvalRes.Text = res?.ToString();
+            }
+            catch (Exception ex)
+            {
+                tbJavaScriptEvalRes.Text = ex.ToString();
+            }
+        }
+
+        private async void Button_Click_20(object sender, RoutedEventArgs e)
+        {
+            if (asyncFirefoxDriver == null) return;
+            await asyncFirefoxDriver.OpenBrowserDevTools2();
+            tbOpenRes.Text = "BrowserDevTools opened";
         }
     }
 }

@@ -77,10 +77,33 @@
                     <Button Content="Open in Firefox Developer Edition" Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="193" Click="Button_Click_10"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Open">
+            <TabItem Header="Open" IsSelected="True">
                 <Grid Background="#FFE5E5E5">
-                    <Button Content="open temp profile" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="122" Click="Button_Click_12"/>
-                    <Button Content="close" HorizontalAlignment="Left" Margin="160,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="114"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Button Content="open temp profile" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="122" Click="Button_Click_12" Height="20"/>
+                    <Button Content="close" HorizontalAlignment="Left" Margin="160,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_13" Height="20"/>
+                    <Button Content="open DevTools in Browser window" HorizontalAlignment="Left" Margin="26,35,0,0" VerticalAlignment="Top" Width="209" Click="Button_Click_14" Height="20"/>
+                    <Button Content="open temp profile and DevTools" HorizontalAlignment="Left" Margin="26,86,0,0" VerticalAlignment="Top" Width="201" Click="Button_Click_15" Height="20"/>
+                    <TextBox x:Name="tbOpenRes" TextWrapping="Wrap" Grid.Row="1"/>
+                    <Button Content="do" HorizontalAlignment="Left" Margin="279,86,0,0" VerticalAlignment="Top" Width="96" Click="Button_Click_16"/>
+                    <Button Content="close DevTools" HorizontalAlignment="Left" Margin="269,60,0,0" VerticalAlignment="Top" Width="120" Click="Button_Click_17"/>
+                    <Button Content="open DevTools in XUL" HorizontalAlignment="Left" Margin="26,60,0,0" VerticalAlignment="Top" Width="209" Click="Button_Click_18"/>
+                    <Button Content="open DevTools in Browser window v2" HorizontalAlignment="Left" Margin="253,35,0,0" VerticalAlignment="Top" Width="236" Click="Button_Click_20"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="JavaScript">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="5*"/>
+                    </Grid.RowDefinitions>
+                    <Button Content="Execute" HorizontalAlignment="Left" Margin="57,0,0,9" VerticalAlignment="Bottom" Width="75" Click="Button_Click_19" Grid.Row="1"/>
+                    <TextBox x:Name="tbJavaScriptEvalSource" TextWrapping="Wrap"/>
+                    <TextBox x:Name="tbJavaScriptEvalRes" Grid.Row="2" TextWrapping="Wrap" Text="TextBox"/>
                 </Grid>
             </TabItem>
         </TabControl>

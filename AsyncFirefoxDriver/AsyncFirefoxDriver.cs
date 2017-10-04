@@ -267,6 +267,7 @@ namespace Zu.Firefox
 
         public void CloseSync()
         {
+            BrowserDevTools?.CloseSync();
             DriverProcess?.Close();
             DriverProcess = null;
             if (Config.IsTempProfile) FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName));
@@ -403,6 +404,7 @@ namespace Zu.Firefox
 
         public string FilesBasePath { get; set; } = "js\\";
         public DriverProcessInfo DriverProcess { get; set; }
+        public AsyncFirefoxDriver BrowserDevTools { get; private set; }
 
         public async Task<object> AddSendEventFunc(string name = "top.zuSendEvent",
             CancellationToken cancellationToken = new CancellationToken())
@@ -692,6 +694,126 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
         }
 
 
+        string DBG_XUL = "chrome://devtools/content/framework/toolbox-process-window.xul";
+        string CHROME_DEBUGGER_PROFILE_NAME = "chrome_debugger_profile";
 
+        public async Task StartDebuggerServer(int port = 9876, bool webSocket = false, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            //http://searchfox.org/mozilla-central/source/devtools/shared/gcli/commands/listen.js
+            var script = @"
+(function () {
+    var { require } = Cu.import('resource://devtools/shared/Loader.jsm', {});
+    const { XPCOMUtils } = require('resource://gre/modules/XPCOMUtils.jsm');
+    XPCOMUtils.defineLazyModuleGetter(this, 'DevToolsLoader',
+    'resource://devtools/shared/Loader.jsm');
+
+    var preferences = require('sdk/preferences/service');
+    preferences.set('devtools.debugger.prompt-connection', false);
+    preferences.set('devtools.debugger.remote-port', " + port + @");
+    preferences.set('devtools.chrome.enabled', true);
+    preferences.set('devtools.debugger.remote-enabled', true);
+
+    // Create a separate loader instance, so that we can be sure to receive
+    // a separate instance of the DebuggingServer from the rest of the
+    // devtools.  This allows us to safely use the tools against even the
+    // actors and DebuggingServer itself, especially since we can mark
+    // serverLoader as invisible to the debugger (unlike the usual loader
+    // settings).
+    let serverLoader = new DevToolsLoader();
+    serverLoader.invisibleToDebugger = true;
+    let { DebuggerServer: debuggerServer } = serverLoader.require('devtools/server/main');
+    debuggerServer.init();
+    debuggerServer.addBrowserActors();
+    //debuggerServer.registerActors({ root: true, browser: true, tab: true });
+    debuggerServer.allowChromeProcess = true; //!l10n.hiddenByChromePref();
+    let listener = debuggerServer.createListener();
+    let webSocket = "+ webSocket.ToString().ToLower() + @";
+      //if (args.protocol === 'websocket') {
+      //  webSocket = true;
+      //} else if (args.protocol === 'mozilla-rdp') {
+      //  webSocket = false;
+      //}
+    listener.portOrPath = " + port + @";
+    listener.webSocket = webSocket;
+    listener.open();
+}());
+";
+            await SetContextChrome(cancellationToken);
+            await JavaScriptExecutor.ExecuteScript(script, cancellationToken);
+            await SetContextContent(cancellationToken);
+
+        }
+
+        // TODO Errors and not work with content
+        public async Task<AsyncFirefoxDriver> OpenBrowserDevTools(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await StartDebuggerServer(port, false, cancellationToken);
+
+            //var path = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+            //var debuggerPort = 9876;
+            var devToolsPrefs = new Dictionary<string, string>
+            {
+                { "devtools.debugger.prompt-connection", "false" },
+                { "devtools.debugger.remote-enabled", "true" },
+                { "devtools.debugger.remote-port", port.ToString() },
+                { "devtools.debugger.chrome-debugging-port", port.ToString() },
+                { "devtools.chrome.enabled", "true" }
+
+            };
+            //var devToolsProfileName = Path.Combine(Config.UserDir, CHROME_DEBUGGER_PROFILE_NAME); // + new Random().Next(1000).ToString();
+            var devToolsProfileDir = Path.Combine(Config.UserDir, CHROME_DEBUGGER_PROFILE_NAME); //Path.GetTempPath(), devToolsProfileName); // Path.Combine(path, CHROME_DEBUGGER_PROFILE_NAME);
+            var devToolsProfileName = CHROME_DEBUGGER_PROFILE_NAME + new Random().Next(1000).ToString();
+            if (Directory.Exists(devToolsProfileDir)) Directory.Delete(devToolsProfileDir, true);
+            await FirefoxProfilesWorker.CreateFirefoxProfile(devToolsProfileDir, devToolsProfileName);
+
+            var prefsFile = Path.Combine(Config.UserDir, "prefs.js");
+            if (File.Exists(prefsFile)) File.Copy(prefsFile, Path.Combine(devToolsProfileDir, "prefs.js"), true);
+            FirefoxProfilesWorker.AddWriteUserPreferences(devToolsProfileDir, devToolsPrefs);
+
+
+            var xulURI = DBG_XUL;
+            var args = new string[] {
+     //"-no-remote",
+     "-foreground",
+     //"-profile", this._dbgProfilePath,
+     "-chrome", xulURI
+            };
+            var argsStr = string.Join(" ", args);
+            var configDevTools = new FirefoxDriverConfig()
+                .SetProfileName(devToolsProfileName);
+            if(!openInBrowserWindow) configDevTools.SetCommandLineArgumets(argsStr);
+
+            BrowserDevTools = new AsyncFirefoxDriver(configDevTools);
+            await BrowserDevTools.Connect();
+            if(openInBrowserWindow) await BrowserDevTools.Navigation.GoToUrl(DBG_XUL);
+            return BrowserDevTools;
+        }
+
+        // TODO Errors and not work with content
+        public async Task<AsyncFirefoxDriver> OpenBrowserDevTools2(int port = 9876, bool openInBrowserWindow = true)
+        {
+            //http://searchfox.org/mozilla-central/source/devtools/shared/gcli/commands/listen.js
+            var script = @"
+(function () {
+    var { require } = Cu.import('resource://devtools/shared/Loader.jsm', {});
+    var { BrowserToolboxProcess } = require('resource://devtools/client/framework/ToolboxProcess.jsm');
+ 
+    var preferences = require('sdk/preferences/service');
+    preferences.set('devtools.debugger.prompt-connection', false);
+    preferences.set('devtools.debugger.remote-port', " + port + @");
+    preferences.set('devtools.chrome.enabled', true);
+    preferences.set('devtools.debugger.remote-enabled', true);
+
+    BrowserToolboxProcess.init();
+}());
+";
+            var evalInTop = "top.eval(`" + script + "`)";
+            await SetContextChrome();
+            await JavaScriptExecutor.ExecuteScript(evalInTop);// script);
+            await SetContextContent();
+
+
+            return null;
+        }
     }
 }
