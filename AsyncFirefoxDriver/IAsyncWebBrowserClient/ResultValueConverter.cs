@@ -55,7 +55,16 @@ namespace Zu.Firefox
 
         internal static List<string> WindowHandles(JToken result)
         {
-            throw new NotImplementedException();
+            var res = new List<string>();
+            var arr = result as JArray;
+            if(arr != null)
+            {
+                foreach (var item in arr)
+                {
+                    res.Add(item.ToString());
+                }
+            }
+            return res;
         }
 
         internal static bool ValueIsNull(JToken res)

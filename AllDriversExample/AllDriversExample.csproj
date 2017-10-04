@@ -34,20 +34,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncChromeDriver, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncChromeDriver.0.2.8\lib\net461\AsyncChromeDriver.dll</HintPath>
+    <Reference Include="AsyncChromeDriver, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncChromeDriver.0.2.9\lib\net461\AsyncChromeDriver.dll</HintPath>
     </Reference>
-    <Reference Include="AsyncFirefoxDriver, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncFirefoxDriver.1.2.8\lib\net452\AsyncFirefoxDriver.dll</HintPath>
+    <Reference Include="AsyncFirefoxDriver, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncFirefoxDriver.1.2.11\lib\net452\AsyncFirefoxDriver.dll</HintPath>
     </Reference>
-    <Reference Include="AsyncOperaDriver, Version=0.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncOperaDriver.0.2.2\lib\net462\AsyncOperaDriver.dll</HintPath>
+    <Reference Include="AsyncOperaDriver, Version=0.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncOperaDriver.0.2.3\lib\net462\AsyncOperaDriver.dll</HintPath>
     </Reference>
-    <Reference Include="AsyncWebDriver, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncWebDriver.1.2.10\lib\net452\AsyncWebDriver.dll</HintPath>
+    <Reference Include="AsyncWebDriver, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.2.11\lib\net452\AsyncWebDriver.dll</HintPath>
     </Reference>
     <Reference Include="BaristaLabs.ChromeDevTools.Runtime.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncChromeDriver.0.2.8\lib\net461\BaristaLabs.ChromeDevTools.Runtime.Framework.dll</HintPath>
+      <HintPath>..\packages\AsyncChromeDriver.0.2.9\lib\net461\BaristaLabs.ChromeDevTools.Runtime.Framework.dll</HintPath>
     </Reference>
     <Reference Include="IAsyncWebBrowserClient, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IAsyncWebBrowserClient.0.1.8\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
@@ -70,7 +70,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WebBrowserCommunication, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AsyncFirefoxDriver.1.2.8\lib\net452\WebBrowserCommunication.dll</HintPath>
+      <HintPath>..\packages\AsyncFirefoxDriver.1.2.11\lib\net452\WebBrowserCommunication.dll</HintPath>
     </Reference>
     <Reference Include="WebSocket4Net, Version=0.14.1.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocket4Net.0.14.1\lib\net45\WebSocket4Net.dll</HintPath>

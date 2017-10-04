@@ -105,30 +105,43 @@ namespace Zu.Firefox
             if (config == null) config = new FirefoxDriverConfig().SetIsDefaultProfile();
             if (config.IsTempProfile)
             {
-                if (string.IsNullOrWhiteSpace(config.ProfileName))
+                if (string.IsNullOrWhiteSpace(config.UserDir))
                 {
-                    config.ProfileName = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+                    config.UserDir = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
                 }
-                await CreateFirefoxProfile(config.ProfileName, Path.GetFileName(config.ProfileName));
+                await CreateFirefoxProfile(config.UserDir, Path.GetFileName(config.UserDir));
             }
-            if (config.UserPreferences != null) AddWriteUserPreferences(config.ProfileName, config.UserPreferences);
-            string name = Path.GetFileName(config.ProfileName);
-            var currentPort = GetMarionettePort(name ?? "default");
-            if (currentPort != config.Port) SetMarionettePort(name, config.Port);
+            if (!config.IsMultiprocess) AddWriteUserPreference(config.UserDir, "browser.tabs.remote.autostart.2", "false");
+            if (config.DoSetDebuggerRemoteEnabled) AddWriteUserPreferences(config.UserDir, new Dictionary<string, string> {
+                { "devtools.debugger.prompt-connection", "false" },
+                { "devtools.debugger.remote-enabled", "true" },
+                { "devtools.debugger.remote-port", config.DebuggerRemotePort.ToString() },
+                //{ "devtools.debugger.chrome-debugging-port", config.DebuggerRemotePort.ToString() },
+                { "devtools.chrome.enabled", "true" }
+            });
+            if (config.UserPreferences != null) AddWriteUserPreferences(config.UserDir, config.UserPreferences);
+            //string name = Path.GetFileName(config.UserDir);
+            var currentPort = GetMarionettePort(config.ProfileName ?? "default");
+            if (currentPort != config.Port) SetMarionettePort(config.ProfileName, config.Port);
             var args = (config.OpenOffline ? " -offline" : "") +
                         //Headless available in Firefox 55+ on Linux, and Firefox 56+ on Windows/Mac OS X.
-                        (config.Headless ? " -headless" : "") + 
+                        (config.Headless ? " -headless" : "") +
                         (string.IsNullOrWhiteSpace(config.CommandLineArgumets) ? "" : " " + config.CommandLineArgumets);
 
-            DriverProcessInfo res = new DriverProcessInfo { UserDir = config.ProfileName, Port = config.Port };
+            DriverProcessInfo res = new DriverProcessInfo { UserDir = config.UserDir, Port = config.Port };
             if (config.IsDefaultProfile) await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(null, args));
-            else await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(Path.GetFileName(config.ProfileName), args));
+            else await Task.Run(() => res.ProcWithJobObject = OpenFirefoxProfileWithJobObject(config.ProfileName, args));
             return res;
         }
 
         public static string GetProfileDir(string profileName)
         {
             return GetProfiles().FirstOrDefault(v => v.Key == profileName).Value;
+        }
+
+        public static string GetProfileName(string dir)
+        {
+            return GetProfiles().FirstOrDefault(v => v.Value == dir).Key;
         }
 
         public static ProcessWithJobObject OpenFirefoxProfileWithJobObject(string key, string addArgs = null)

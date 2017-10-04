@@ -261,7 +261,7 @@ namespace Zu.Firefox
             //if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             if (DriverProcess != null) await DriverProcess.CloseAsync(cancellationToken);
             DriverProcess = null;
-            if (Config.IsTempProfile) await Task.Run(() => FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName)));
+            if (Config.IsTempProfile) await Task.Run(() => FirefoxProfilesWorker.RemoveProfile(Config.ProfileName));
             return "ok";
         }
 
@@ -270,7 +270,7 @@ namespace Zu.Firefox
             BrowserDevTools?.CloseSync();
             DriverProcess?.Close();
             DriverProcess = null;
-            if (Config.IsTempProfile) FirefoxProfilesWorker.RemoveProfile(Path.GetFileName(Config.ProfileName));
+            if (Config.IsTempProfile) FirefoxProfilesWorker.RemoveProfile(Config.ProfileName);
         }
 
 
@@ -708,6 +708,7 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
     'resource://devtools/shared/Loader.jsm');
 
     var preferences = require('sdk/preferences/service');
+    //preferences.set('browser.tabs.remote.autostart.2', false);
     preferences.set('devtools.debugger.prompt-connection', false);
     preferences.set('devtools.debugger.remote-port', " + port + @");
     preferences.set('devtools.chrome.enabled', true);
@@ -727,7 +728,7 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
     //debuggerServer.registerActors({ root: true, browser: true, tab: true });
     debuggerServer.allowChromeProcess = true; //!l10n.hiddenByChromePref();
     let listener = debuggerServer.createListener();
-    let webSocket = "+ webSocket.ToString().ToLower() + @";
+    let webSocket = " + webSocket.ToString().ToLower() + @";
       //if (args.protocol === 'websocket') {
       //  webSocket = true;
       //} else if (args.protocol === 'mozilla-rdp') {
@@ -744,30 +745,76 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
 
         }
 
-        // TODO Errors and not work with content
+        public async Task ReloadIfMultiprocess(CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await SetContextChrome(cancellationToken);
+            var path = "browser.tabs.remote.autostart.2";
+            var res = await JavaScriptExecutor.ExecuteScript($@"try {{
+var {{ require }} = Cu.import('resource://devtools/shared/Loader.jsm', {{}});
+var preferences = require('sdk/preferences/service');
+return preferences.get('{path}');
+}} catch(ex) {{
+return ex.toString();
+}}
+");
+            if (res.ToString().ToLower() != "false")
+            {
+                //res = await JavaScriptExecutor.ExecuteScript(@"try {
+                //        var { require } = Cu.import('resource://devtools/shared/Loader.jsm', {});
+                //        var preferences = require('sdk/preferences/service');
+                //        preferences.set('browser.tabs.remote.autostart.2', false);
+                //    } catch(ex) {
+                //        return ex.toString();
+                //    }
+                //");
+                if (Config.IsTempProfile)
+                {
+                    Config.IsTempProfile = false;
+                    await Close();
+                    await Task.Delay(1000);
+                    FirefoxProfilesWorker.AddWriteUserPreference(Config.UserDir, "browser.tabs.remote.autostart.2", "false");
+                    await Task.Delay(1000);
+                    await Connect();
+                    Config.IsTempProfile = true;
+                }
+                else
+                {
+                    await Close();
+                    await Task.Delay(1000);
+                    FirefoxProfilesWorker.AddWriteUserPreference(Config.UserDir, "browser.tabs.remote.autostart.2", "false");
+                    await Task.Delay(1000);
+                    await Connect();
+                }
+            }
+        }
+
         public async Task<AsyncFirefoxDriver> OpenBrowserDevTools(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default(CancellationToken))
         {
+            //await ReloadIfMultiprocess(cancellationToken);
             await StartDebuggerServer(port, false, cancellationToken);
 
-            //var path = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
-            //var debuggerPort = 9876;
+
+
             var devToolsPrefs = new Dictionary<string, string>
             {
+                { "browser.tabs.remote.autostart.2", "false" },
                 { "devtools.debugger.prompt-connection", "false" },
                 { "devtools.debugger.remote-enabled", "true" },
-                { "devtools.debugger.remote-port", port.ToString() },
-                { "devtools.debugger.chrome-debugging-port", port.ToString() },
+                //{ "devtools.debugger.remote-port", "9888" },
+                { "devtools.debugger.chrome-debugging-port", port.ToString() }, // port.ToString() },
                 { "devtools.chrome.enabled", "true" }
 
             };
-            //var devToolsProfileName = Path.Combine(Config.UserDir, CHROME_DEBUGGER_PROFILE_NAME); // + new Random().Next(1000).ToString();
-            var devToolsProfileDir = Path.Combine(Config.UserDir, CHROME_DEBUGGER_PROFILE_NAME); //Path.GetTempPath(), devToolsProfileName); // Path.Combine(path, CHROME_DEBUGGER_PROFILE_NAME);
+            var profileDir = Config.UserDir;
+            var devToolsProfileDir = Path.Combine(profileDir, CHROME_DEBUGGER_PROFILE_NAME);
             var devToolsProfileName = CHROME_DEBUGGER_PROFILE_NAME + new Random().Next(1000).ToString();
             if (Directory.Exists(devToolsProfileDir)) Directory.Delete(devToolsProfileDir, true);
             await FirefoxProfilesWorker.CreateFirefoxProfile(devToolsProfileDir, devToolsProfileName);
 
-            var prefsFile = Path.Combine(Config.UserDir, "prefs.js");
-            if (File.Exists(prefsFile)) File.Copy(prefsFile, Path.Combine(devToolsProfileDir, "prefs.js"), true);
+            //var prefsFile = Path.Combine(profileDir, "prefs.js");
+            //if (File.Exists(prefsFile)) File.Copy(prefsFile, Path.Combine(devToolsProfileDir, "prefs.js"), true);
+            //var userPrefsFile = Path.Combine(profileDir, "user.js");
+            //if (File.Exists(userPrefsFile)) File.Copy(userPrefsFile, Path.Combine(devToolsProfileDir, "user.js"), true);
             FirefoxProfilesWorker.AddWriteUserPreferences(devToolsProfileDir, devToolsPrefs);
 
 
@@ -781,17 +828,17 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
             var argsStr = string.Join(" ", args);
             var configDevTools = new FirefoxDriverConfig()
                 .SetProfileName(devToolsProfileName);
-            if(!openInBrowserWindow) configDevTools.SetCommandLineArgumets(argsStr);
+            if (!openInBrowserWindow) configDevTools.SetCommandLineArgumets(argsStr);
 
             BrowserDevTools = new AsyncFirefoxDriver(configDevTools);
             await BrowserDevTools.Connect();
-            if(openInBrowserWindow) await BrowserDevTools.Navigation.GoToUrl(DBG_XUL);
+            if (openInBrowserWindow) await BrowserDevTools.Navigation.GoToUrl(DBG_XUL);
             return BrowserDevTools;
         }
 
-        // TODO Errors and not work with content
-        public async Task<AsyncFirefoxDriver> OpenBrowserDevTools2(int port = 9876, bool openInBrowserWindow = true)
+        public async Task<AsyncFirefoxDriver> OpenBrowserDevTools2(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default(CancellationToken))
         {
+            //await ReloadIfMultiprocess(cancellationToken);
             //http://searchfox.org/mozilla-central/source/devtools/shared/gcli/commands/listen.js
             var script = @"
 (function () {
@@ -807,9 +854,9 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
     BrowserToolboxProcess.init();
 }());
 ";
-            var evalInTop = "top.eval(`" + script + "`)";
+            //var evalInTop = "top.eval(`" + script + "`)";
             await SetContextChrome();
-            await JavaScriptExecutor.ExecuteScript(evalInTop);// script);
+            await JavaScriptExecutor.ExecuteScript(script); //evalInTop);//
             await SetContextContent();
 
 

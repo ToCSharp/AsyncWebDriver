@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncWebDriver, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AsyncWebDriver.1.2.11\lib\net452\AsyncWebDriver.dll</HintPath>
+    </Reference>
     <Reference Include="IAsyncWebBrowserClient, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\IAsyncWebBrowserClient.0.1.8\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
     </Reference>
@@ -105,10 +108,6 @@
     <ProjectReference Include="..\AsyncFirefoxDriver\AsyncFirefoxDriver.csproj">
       <Project>{13891dba-94c7-45aa-b9bd-77ac7b56c379}</Project>
       <Name>AsyncFirefoxDriver</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AsyncWebDriver\AsyncWebDriver.csproj">
-      <Project>{489fd59f-d739-4144-89b8-b5a719bcb120}</Project>
-      <Name>AsyncWebDriver</Name>
     </ProjectReference>
     <ProjectReference Include="..\ZuRequestListener\ZuRequestListener.csproj">
       <Project>{bc277712-931f-4201-9cd2-16cd92565f93}</Project>

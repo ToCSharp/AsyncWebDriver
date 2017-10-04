@@ -268,7 +268,7 @@ namespace AsyncFirefoxDriverExample
 
         private void Button_Click_12(object sender, RoutedEventArgs e)
         {
-            asyncFirefoxDriver = new AsyncFirefoxDriver();
+            asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetIsMultiprocessFalse().SetDoSetDebuggerRemoteEnabled());
             webDriver = new WebDriver(asyncFirefoxDriver);
             syncWebDriver = new SyncWebDriver(webDriver);
             syncWebDriver.GoToUrl("https://www.google.com/");
@@ -359,6 +359,60 @@ namespace AsyncFirefoxDriverExample
             if (asyncFirefoxDriver == null) return;
             await asyncFirefoxDriver.OpenBrowserDevTools2();
             tbOpenRes.Text = "BrowserDevTools opened";
+        }
+
+        private async void Button_Click_21(object sender, RoutedEventArgs e)
+        {
+            var profileName = tbOpenProfileName.Text;
+            asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetProfileName(profileName).SetIsMultiprocessFalse().SetDoSetDebuggerRemoteEnabled());
+            webDriver = new WebDriver(asyncFirefoxDriver);
+            await webDriver.GoToUrl("https://www.google.com/");
+        }
+
+        private async void Button_Click_22(object sender, RoutedEventArgs e)
+        {
+            if(asyncFirefoxDriver?.BrowserDevTools != null)
+            {
+                devToolsWebDriver = new WebDriver(asyncFirefoxDriver.BrowserDevTools);
+                try
+                {
+                    await asyncFirefoxDriver.BrowserDevTools.SetContextContent();
+                    await devToolsWebDriver.SwitchTo().Frame("toolbox-iframe");
+                    // Marionette do not send answer when SwitchTo().Frame("toolbox-iframe"); listener.js 1715
+                    var inspectorTab = await devToolsWebDriver.FindElementById("toolbox-tab-inspector");
+                    await inspectorTab.Click();
+                }
+                catch(Exception ex)
+                {
+                    tbOpenRes.Text = ex.ToString();
+                }
+            }
+        }
+
+        private async void Button_Click_23(object sender, RoutedEventArgs e)
+        {
+            if (asyncFirefoxDriver?.BrowserDevTools != null)
+            {
+                await asyncFirefoxDriver.BrowserDevTools.OpenBrowserDevTools(9654);
+            }
+        }
+
+        private async void Button_Click_24(object sender, RoutedEventArgs e)
+        {
+            if (asyncFirefoxDriver?.BrowserDevTools != null)
+            {
+                devToolsWebDriver = new WebDriver(asyncFirefoxDriver.BrowserDevTools);
+                try
+                {
+                    //await asyncFirefoxDriver.BrowserDevTools.SetContextContent();
+                    var inspectorTab = await devToolsWebDriver.FindElementById("toolbox-tab-inspector");
+                    await inspectorTab.Click();
+                }
+                catch (Exception ex)
+                {
+                    tbOpenRes.Text = ex.ToString();
+                }
+            }
         }
     }
 }
