@@ -414,5 +414,24 @@ namespace AsyncFirefoxDriverExample
                 }
             }
         }
+
+        private async void Button_Click_25(object sender, RoutedEventArgs e)
+        {
+            var profileName = tbOpenProfileName.Text;
+            asyncFirefoxDriver = new AsyncFirefoxDriver(
+                new FirefoxDriverConfig()
+                .SetProfileName(profileName)
+                .SetIsMultiprocessFalse()
+                .SetDoSetDebuggerRemoteEnabled());
+            webDriver = new WebDriver(asyncFirefoxDriver);
+            await webDriver.GoToUrl("https://www.google.com/");
+            await asyncFirefoxDriver.OpenBrowserDevTools();
+            // asyncFirefoxDriver.BrowserDevTools is AsyncFirefoxDriver
+            devToolsWebDriver = new WebDriver(asyncFirefoxDriver.BrowserDevTools);
+            //// TODO: not works SwitchTo().Frame("toolbox-iframe");  listener.js 1715
+            //await devToolsWebDriver.SwitchTo().Frame("toolbox-iframe");
+            //var inspectorTab = await devToolsWebDriver.FindElementById("toolbox-tab-inspector");
+            //await inspectorTab.Click();
+        }
     }
 }

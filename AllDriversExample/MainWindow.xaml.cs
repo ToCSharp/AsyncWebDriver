@@ -29,7 +29,8 @@ namespace AllDriversExample
             InitializeComponent();
         }
 
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        #region OpenTab
+        private async void OpenTab_Button_Click_2(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -63,7 +64,7 @@ namespace AllDriversExample
             return (width, height);
         }
 
-        private async void Button_Click_11(object sender, RoutedEventArgs e)
+        private async void OpenTab_Button_Click_11(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -110,13 +111,13 @@ namespace AllDriversExample
             }
         }
 
-        private async void Button_Click_3(object sender, RoutedEventArgs e)
+        private async void OpenTab_Button_Click_3(object sender, RoutedEventArgs e)
         {
             if (webDriver != null) await webDriver.Close();
             tbDevToolsRes2.Text = "closed";
         }
 
-        private async void Button_Click_4(object sender, RoutedEventArgs e)
+        private async void OpenTab_Button_Click_4(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -142,7 +143,7 @@ namespace AllDriversExample
             }
         }
 
-        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        private async void OpenTab_Button_Click_5(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -195,7 +196,7 @@ namespace AllDriversExample
             }
         }
 
-        private async void Button_Click_6(object sender, RoutedEventArgs e)
+        private async void OpenTab_Button_Click_6(object sender, RoutedEventArgs e)
         {
             var name = tbOpenProfileName.Text;
             try
@@ -218,6 +219,32 @@ namespace AllDriversExample
                 tbDevToolsRes2.Text = ex.ToString();
             }
         }
+
+        private async void OpenTab_Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            var name = tbOpenProfileName.Text;
+            try
+            {
+                if (chbOpenProfileHeadless.IsChecked == true)
+                {
+                    var (width, height) = GetWidthHeight();
+                    asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetHeadless().SetWindowSize(width, height).SetProfileName(name).SetOpenOffline());
+                }
+                else asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetProfileName(name).SetOpenOffline());
+                webDriver = new WebDriver(asyncFirefoxDriver);
+                driversToClose.Add(webDriver);
+                // await asyncFirefoxDriver.Connect(); // browser opens here
+                await webDriver.GoToUrl("https://www.google.com/"); // browser opens here
+                var mess = $"Profile {asyncFirefoxDriver.Config.UserDir} opened on port {asyncFirefoxDriver.Port} \nWhen close, dir will NOT be DELETED";
+                tbDevToolsRes2.Text = mess;
+            }
+            catch (Exception ex)
+            {
+                tbDevToolsRes2.Text = ex.ToString();
+            }
+        }
+
+        #endregion
 
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
@@ -248,12 +275,15 @@ namespace AllDriversExample
             return path;
 
         }
-        private void Button_Click_8(object sender, RoutedEventArgs e)
+
+        #region FirefoxTab
+
+        private void FirefoxTab_Button_Click_8(object sender, RoutedEventArgs e)
         {
             lbFirefoxProfiles.ItemsSource = FirefoxProfilesWorker.GetProfiles().Select(v => Tuple.Create(v.Key, v.Value));
         }
 
-        private void Button_Click_9(object sender, RoutedEventArgs e)
+        private void Firefox_Button_Click_9(object sender, RoutedEventArgs e)
         {
             var profile = lbFirefoxProfiles.SelectedItem as Tuple<string, string>;
             if (profile != null)
@@ -263,31 +293,7 @@ namespace AllDriversExample
             }
         }
 
-        private async void Button_Click_10(object sender, RoutedEventArgs e)
-        {
-            var name = tbOpenProfileName.Text;
-            try
-            {
-                if (chbOpenProfileHeadless.IsChecked == true)
-                {
-                    var (width, height) = GetWidthHeight();
-                    asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetHeadless().SetWindowSize(width, height).SetProfileName(name).SetOpenOffline());
-                }
-                else asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetProfileName(name).SetOpenOffline());
-                webDriver = new WebDriver(asyncFirefoxDriver);
-                driversToClose.Add(webDriver);
-                // await asyncFirefoxDriver.Connect(); // browser opens here
-                await webDriver.GoToUrl("https://www.google.com/"); // browser opens here
-                var mess = $"Profile {asyncFirefoxDriver.Config.UserDir} opened on port {asyncFirefoxDriver.Port} \nWhen close, dir will NOT be DELETED";
-                tbDevToolsRes2.Text = mess;
-            }
-            catch (Exception ex)
-            {
-                tbDevToolsRes2.Text = ex.ToString();
-            }
-        }
-
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void FirefoxTab_Button_Click(object sender, RoutedEventArgs e)
         {
             asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetHeadless().SetWindowSize(1200, 900));
             webDriver = new WebDriver(asyncFirefoxDriver);
@@ -299,5 +305,7 @@ namespace AllDriversExample
                 screenshotImage.Save(GetFilePathToSaveScreenshot(@"C:\temp"), System.Drawing.Imaging.ImageFormat.Png);
             }
         }
+        #endregion
+
     }
 }

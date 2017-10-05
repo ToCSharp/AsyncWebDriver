@@ -97,6 +97,7 @@
                     <Button Content="to inspector tab" HorizontalAlignment="Left" Margin="269,86,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_22" Height="20"/>
                     <Button Content="debug DevTools" HorizontalAlignment="Left" Margin="401,60,0,0" VerticalAlignment="Top" Width="100" Click="Button_Click_23" Height="20"/>
                     <Button Content="to inspector tab 2" HorizontalAlignment="Left" Margin="269,111,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_24"/>
+                    <Button Content="open profile and DevTools" HorizontalAlignment="Left" Margin="26,111,0,0" VerticalAlignment="Top" Width="185" Click="Button_Click_25"/>
                 </Grid>
             </TabItem>
             <TabItem Header="JavaScript">
