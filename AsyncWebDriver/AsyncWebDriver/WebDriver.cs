@@ -48,9 +48,9 @@ namespace Zu.AsyncWebDriver.Remote
 
         public bool IsSpecificationCompliant { get; set; }
 
-        public int SimpleCommandsTimeoutMs { get; set; } = 5000;
+        public int SimpleCommandsTimeoutMs { get; set; } = 30000;
 
-        public int GoToUrlTimeoutMs { get; set; } = 30000;
+        public int GoToUrlTimeoutMs { get; set; } = 60000;
 
         /// <summary>
         ///     Finds the first element in the page that matches the CSS Class supplied
@@ -85,6 +85,16 @@ namespace Zu.AsyncWebDriver.Remote
             return FindElement("class name", className, cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementByClassNameOrDefault(string className, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByClassName(className, cancellationToken);
+            }
+            catch { return null; }
+        }
+
+
         /// <summary>
         ///     Finds a list of elements that match the class name supplied
         /// </summary>
@@ -111,6 +121,15 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElements("class name", className, cancellationToken);
         }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByClassName(className, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
 
         /// <summary>
         ///     Finds the first element matching the specified CSS selector.
@@ -123,6 +142,14 @@ namespace Zu.AsyncWebDriver.Remote
             return FindElement("css selector", cssSelector, cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByCssSelector(cssSelector, cancellationToken);
+            }
+            catch { return null; }
+        }
         /// <summary>
         ///     Finds all elements matching the specified CSS selector.
         /// </summary>
@@ -135,6 +162,15 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElements("css selector", cssSelector, cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByCssSelector(cssSelector, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
@@ -155,6 +191,14 @@ namespace Zu.AsyncWebDriver.Remote
                 return FindElement("css selector", "#" + EscapeCssSelector(id), cancellationToken);
 
             return FindElement("id", id, cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByIdOrDefault(string id, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementById(id, cancellationToken);
+            }
+            catch { return null; }
         }
 
         /// <summary>
@@ -182,6 +226,15 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElements("id", id, cancellationToken);
         }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsById(id, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
 
         /// <summary>
         ///     Finds the first of elements that match the link text supplied
@@ -198,6 +251,14 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElement("link text", linkText, cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByLinkTextOrDefault(string linkText, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByLinkText(linkText, cancellationToken);
+            }
+            catch { return null; }
         }
 
         /// <summary>
@@ -217,6 +278,15 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElements("link text", linkText, cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkTextOrDefault(string linkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByLinkText(linkText, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
@@ -238,6 +308,14 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElement("name", name, cancellationToken);
         }
+        public async Task<IWebElement> FindElementByNameOrDefault(string name, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(name, cancellationToken);
+            }
+            catch { return null; }
+        }
 
         /// <summary>
         ///     Finds a list of elements that match the name supplied
@@ -258,6 +336,15 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElements("name", name, cancellationToken);
         }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByNameOrDefault(string name,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByName(name, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
 
         /// <summary>
         ///     Finds the first of elements that match the part of the link text supplied
@@ -274,6 +361,14 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElement("partial link text", partialLinkText, cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByPartialLinkTextOrDefault(string partialLinkText, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(partialLinkText, cancellationToken);
+            }
+            catch { return null; }
         }
 
         /// <summary>
@@ -293,6 +388,15 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElements("partial link text", partialLinkText, cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkTextOrDefault(string partialLinkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByPartialLinkText(partialLinkText, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
@@ -314,6 +418,14 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElement("tag name", tagName, cancellationToken);
         }
+        public async Task<IWebElement> FindElementByTagNameOrDefault(string tagName, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByTagName(tagName, cancellationToken);
+            }
+            catch { return null; }
+        }
 
         /// <summary>
         ///     Finds a list of elements that match the DOM Tag supplied
@@ -334,6 +446,15 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElements("tag name", tagName, cancellationToken);
         }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByTagNameOrDefault(string tagName,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByTagName(tagName, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
 
         /// <summary>
         ///     Finds the first of elements that match the XPath supplied
@@ -351,6 +472,14 @@ namespace Zu.AsyncWebDriver.Remote
         {
             return FindElement("xpath", xpath, cancellationToken);
         }
+        public async Task<IWebElement> FindElementByXPathOrDefault(string tagName, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByXPath(tagName, cancellationToken);
+            }
+            catch { return null; }
+        }
 
         /// <summary>
         ///     Finds a list of elements that match the XPath supplied
@@ -367,6 +496,15 @@ namespace Zu.AsyncWebDriver.Remote
             CancellationToken cancellationToken = new CancellationToken())
         {
             return FindElements("xpath", xpath, cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByXPath(xpath, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         public bool HasApplicationCache => ApplicationCache != null;
@@ -472,6 +610,15 @@ namespace Zu.AsyncWebDriver.Remote
             return by.FindElement(this, cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementOrDefault(By by, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElement(by, cancellationToken);
+            }
+            catch { return null; }
+        }
+
         /// <summary>
         ///     Finds the elements on the page by using the <see cref="By" /> object and returns a ReadOnlyCollection of the
         ///     Elements on the page
@@ -485,12 +632,22 @@ namespace Zu.AsyncWebDriver.Remote
         /// </code>
         /// </example>
         public Task<ReadOnlyCollection<IWebElement>> FindElements(By by,
-            CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = new CancellationToken())
         {
             if (by == null)
                 throw new ArgumentNullException(nameof(by), "by cannot be null");
 
             return by.FindElements(this, cancellationToken);
+        }
+
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsOrDefault(By by,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElements(by, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
@@ -680,12 +837,28 @@ namespace Zu.AsyncWebDriver.Remote
             var selector = EscapeCssSelector(id);
             return FindElement("css selector", $"[id^={selector}]", cancellationToken);
         }
+        public async Task<IWebElement> FindElementByIdStartsWithOrDefault(string id, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByIdStartsWith(id, cancellationToken);
+            }
+            catch { return null; }
+        }
 
         public Task<IWebElement> FindElementByIdEndsWith(string id,
             CancellationToken cancellationToken = new CancellationToken())
         {
             var selector = EscapeCssSelector(id);
             return FindElement("css selector", $"[id$={selector}]", cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByIdEndsWithOrDefault(string id, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByIdEndsWith(id, cancellationToken);
+            }
+            catch { return null; }
         }
 
         public Task<ReadOnlyCollection<IWebElement>> Children(
@@ -703,6 +876,15 @@ namespace Zu.AsyncWebDriver.Remote
 
             return FindElements("css selector", $"[id^={selector}]", cancellationToken);
         }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdStartsWithOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByIdStartsWith(id, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
 
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdEndsWith(string id,
             CancellationToken cancellationToken = new CancellationToken())
@@ -712,6 +894,15 @@ namespace Zu.AsyncWebDriver.Remote
                 return Task.FromResult(new List<IWebElement>().AsReadOnly());
 
             return FindElements("css selector", $"[id$={selector}]", cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdEndsWithOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByIdEndsWith(id, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
@@ -827,6 +1018,16 @@ namespace Zu.AsyncWebDriver.Remote
         {
         }
 
+        public async Task<IWebElement> FindElementOrDefault(string mechanism, string value,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElement(mechanism, value, cancellationToken);
+            }
+            catch { return null; }
+        }
+
         /// <summary>
         ///     Finds an element matching the given mechanism and value.
         /// </summary>
@@ -899,6 +1100,15 @@ namespace Zu.AsyncWebDriver.Remote
                 return GetElementsFromResponse(commandResponse);
             }
             catch { throw; }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsOrDefault(string mechanism, string value,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElements(mechanism, value, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
         /// <summary>
