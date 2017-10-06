@@ -1282,7 +1282,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// <returns>IWebElement object so that you can interact with that object</returns>
         /// <example>
         ///     <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
+        /// var driver = new ChromeDriver();
         /// IWebElement elem = driver.FindElement(By.Name("q"));
         /// </code>
         /// </example>
@@ -1311,7 +1311,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// <returns>ReadOnlyCollection of IWebElement</returns>
         /// <example>
         ///     <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
+        /// var driver = new ChromeDriver();
         /// ReadOnlyCollection<![CDATA[<IWebElement>]]> classList = driver.FindElements(By.ClassName("class"));
         /// </code>
         /// </example>
@@ -1690,14 +1690,8 @@ namespace Zu.AsyncWebDriver.Remote
         /// <summary>
         ///     Method For getting an object to set the Speed
         /// </summary>
-        /// <returns>Returns an IOptions object that allows the driver to set the speed and cookies and getting cookies</returns>
+        /// <returns>Returns an IOptions object that allows the driver to set Timeouts</returns>
         /// <seealso cref="IOptions" />
-        /// <example>
-        ///     <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
-        /// driver.Manage().GetCookies();
-        /// </code>
-        /// </example>
         public IOptions Options()
         {
             return browserClient.Options; // new RemoteOptions(this);
@@ -1709,7 +1703,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// <returns>Returns an INavigation Object that allows the driver to navigate in the browser</returns>
         /// <example>
         ///     <code>
-        ///     IWebDriver driver = new InternetExplorerDriver();
+        ///     var driver = new ChromeDriver();
         ///     driver.Navigate().GoToUrl("http://www.google.co.uk");
         /// </code>
         /// </example>
@@ -1724,7 +1718,7 @@ namespace Zu.AsyncWebDriver.Remote
         /// <returns>Returns an Object that allows you to Switch Frames and Windows</returns>
         /// <example>
         ///     <code>
-        /// IWebDriver driver = new InternetExplorerDriver();
+        /// var driver = new ChromeDriver();
         /// driver.SwitchTo().Frame("FrameName");
         /// </code>
         /// </example>

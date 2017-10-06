@@ -192,7 +192,7 @@ namespace AsyncFirefoxDriverExample
                 // name = "q", 0 - time to wait element, not use ImplicitWait
                 var prevQuery = await webDriver.FindElementByNameOrDefault("q", 0);
                 var res2 = await webDriver.GoToUrl("https://www.google.com/");
-                await Task.Delay(3000);
+                // if element with name "q" from prev page wait for new element with name "q"
                 var query = await webDriver.FindElementByName("q", prevQuery?.Id);
 
                 //await query.SendKeys("ToCSharp");
