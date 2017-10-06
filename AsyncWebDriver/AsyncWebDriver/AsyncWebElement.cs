@@ -70,6 +70,24 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<string> OuterHTML => GetProperty("outerHTML");
         public Task<string> InnerHTML => GetProperty("innerHTML");
 
+
+        #region FindElement
+
+
+        public Task<IWebElement> FindElementByClassName(string className, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            // Element finding mechanism is not allowed by the W3C WebDriver
+            // specification, but rather should be implemented as a function
+            // of other finder mechanisms as documented in the spec.
+            // Implementation after spec reaches recommendation should be as
+            // follows:
+            // return this.FindElement("css selector", "." + className);
+            if (driver.IsSpecificationCompliant)
+                return FindElement("css selector", "." + WebDriver.EscapeCssSelector(className),
+                    notElementId, timeout, cancellationToken);
+            return FindElement("class name", className, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first element in the page that matches the CSS Class supplied
         /// </summary>
@@ -84,19 +102,75 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByClassName(string className,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", "." + className);
-            if (driver.IsSpecificationCompliant)
-                return FindElement("css selector", "." + WebDriver.EscapeCssSelector(className),
-                    cancellationToken);
-
-            return FindElement("class name", className, cancellationToken);
+            return FindElementByClassName(className, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByClassName(string className, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByClassName(className, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByClassName(string className, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByClassName(className, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByClassName(string className, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByClassName(className, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByClassNameOrDefault(string className,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByClassName(className, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByClassNameOrDefault(string className, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByClassName(className, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByClassNameOrDefault(string className, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByClassName(className, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByClassNameOrDefault(string className, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByClassName(className, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
         }
 
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+            {
+                var selector = EscapeCssSelector(className);
+                if (selector.Contains(" "))
+                    throw new InvalidSelectorException(
+                        "Compound class names not allowed. Cannot have whitespace in class name. Use CSS selectors instead.");
+
+                return FindElements("css selector", "." + selector, notElementId, timeout, cancellationToken);
+            }
+
+            return FindElements("class name", className, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds a list of elements that match the class name supplied
         /// </summary>
@@ -111,19 +185,66 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", "." + className);
-            if (driver.IsSpecificationCompliant)
-                return FindElements("css selector", "." + WebDriver.EscapeCssSelector(className),
-                    cancellationToken);
-
-            return FindElements("class name", className, cancellationToken);
+            return FindElementsByClassName(className, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByClassName(className, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByClassName(className, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByClassName(className, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
         }
 
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByClassName(className, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByClassName(className, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByClassName(className, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByClassName(className, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+
+        public Task<IWebElement> FindElementByCssSelector(string cssSelector, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElement("css selector", cssSelector, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first element matching the specified CSS selector.
         /// </summary>
@@ -132,9 +253,66 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByCssSelector(string cssSelector,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElement("css selector", cssSelector, cancellationToken);
+            return FindElementByCssSelector(cssSelector, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByCssSelector(string cssSelector, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByCssSelector(cssSelector, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByCssSelector(string cssSelector, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByCssSelector(cssSelector, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByCssSelector(string cssSelector, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByCssSelector(cssSelector, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByCssSelector(cssSelector, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByCssSelector(cssSelector, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByCssSelector(cssSelector, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByCssSelector(cssSelector, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElements("css selector", cssSelector, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds all elements matching the specified CSS selector.
         /// </summary>
@@ -146,9 +324,68 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElements("css selector", cssSelector, cancellationToken);
+            return FindElementsByCssSelector(cssSelector, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByCssSelector(cssSelector, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByCssSelector(cssSelector, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByCssSelector(cssSelector, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByCssSelector(cssSelector, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByCssSelector(cssSelector, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByCssSelector(cssSelector, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByCssSelector(cssSelector, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+        public Task<IWebElement> FindElementById(string id, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+                return FindElement("css selector", "#" + EscapeCssSelector(id), notElementId, timeout, cancellationToken);
+
+            return FindElement("id", id, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first element in the page that matches the ID supplied
         /// </summary>
@@ -163,12 +400,75 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementById(string id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (driver.IsSpecificationCompliant)
-                return FindElement("css selector", "#" + WebDriver.EscapeCssSelector(id), cancellationToken);
-
-            return FindElement("id", id, cancellationToken);
+            return FindElementById(id, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementById(string id, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementById(id, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementById(string id, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementById(id, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementById(string id, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementById(id, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementByIdOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementById(id, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByIdOrDefault(string id, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementById(id, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByIdOrDefault(string id, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementById(id, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByIdOrDefault(string id, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementById(id, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsById(string id, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+            {
+                var selector = EscapeCssSelector(id);
+                if (string.IsNullOrEmpty(selector))
+                    return Task.FromResult(new List<IWebElement>().AsReadOnly());
+
+                return FindElements("css selector", "#" + selector, notElementId, timeout, cancellationToken);
+            }
+
+            return FindElements("id", id, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first element in the page that matches the ID supplied
         /// </summary>
@@ -183,12 +483,65 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsById(string id,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            if (driver.IsSpecificationCompliant)
-                return FindElements("css selector", "#" + WebDriver.EscapeCssSelector(id), cancellationToken);
-
-            return FindElements("id", id, cancellationToken);
+            return FindElementsById(id, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsById(string id, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsById(id, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsById(string id, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsById(id, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsById(string id, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsById(id, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsById(id, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdOrDefault(string id, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsById(id, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdOrDefault(string id, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsById(id, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByIdOrDefault(string id, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsById(id, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+        public Task<IWebElement> FindElementByLinkText(string linkText, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElement("link text", linkText, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the link text supplied
         /// </summary>
@@ -203,9 +556,65 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByLinkText(string linkText,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElement("link text", linkText, cancellationToken);
+            return FindElementByLinkText(linkText, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByLinkText(string linkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByLinkText(linkText, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByLinkText(string linkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByLinkText(linkText, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByLinkText(string linkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByLinkText(linkText, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByLinkTextOrDefault(string linkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByLinkText(linkText, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByLinkTextOrDefault(string linkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByLinkText(linkText, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByLinkTextOrDefault(string linkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByLinkText(linkText, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByLinkTextOrDefault(string linkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByLinkText(linkText, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
         }
 
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkText(string linkText, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElements("link text", linkText, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the link text supplied
         /// </summary>
@@ -220,9 +629,68 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkText(string linkText,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElements("link text", linkText, cancellationToken);
+            return FindElementsByLinkText(linkText, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkText(string linkText, string notElementId,
+           CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByLinkText(linkText, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkText(string linkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByLinkText(linkText, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkText(string linkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByLinkText(linkText, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkTextOrDefault(string linkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByLinkText(linkText, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkTextOrDefault(string linkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByLinkText(linkText, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkTextOrDefault(string linkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByLinkText(linkText, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByLinkTextOrDefault(string linkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByLinkText(linkText, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+        public Task<IWebElement> FindElementByName(string name, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+                return FindElement("css selector", "*[name=\"" + name + "\"]", notElementId, timeout, cancellationToken);
+
+            return FindElement("name", name, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the name supplied
         /// </summary>
@@ -237,18 +705,68 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByName(string name,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", "*[name=\"" + name + "\"]");
-            if (driver.IsSpecificationCompliant)
-                return FindElement("css selector", "*[name=\"" + name + "\"]", cancellationToken);
-
-            return FindElement("name", name, cancellationToken);
+            return FindElementByName(name, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByName(string name, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByName(name, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByName(string name, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByName(name, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByName(string name, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByName(name, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByNameOrDefault(string name,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(name, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByNameOrDefault(string name, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(name, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByNameOrDefault(string name, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(name, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByNameOrDefault(string name, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByName(name, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
         }
 
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByName(string name, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+                return FindElements("css selector", "*[name=\"" + name + "\"]", notElementId, timeout, cancellationToken);
+
+            return FindElements("name", name, cancellationToken);
+        }
         /// <summary>
         ///     Finds a list of elements that match the name supplied
         /// </summary>
@@ -263,18 +781,65 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByName(string name,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", "*[name=\"" + name + "\"]");
-            if (driver.IsSpecificationCompliant)
-                return FindElements("css selector", "*[name=\"" + name + "\"]", cancellationToken);
-
-            return FindElements("name", name, cancellationToken);
+            return FindElementsByName(name, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByName(string name, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByName(name, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByName(string name, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByName(name, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByName(string name, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByName(name, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByNameOrDefault(string name,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByName(name, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByNameOrDefault(string name, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByName(name, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByNameOrDefault(string name, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByName(name, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByNameOrDefault(string name, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByName(name, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+        public Task<IWebElement> FindElementByPartialLinkText(string partialLinkText, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElement("partial link text", partialLinkText, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the part of the link text supplied
         /// </summary>
@@ -289,9 +854,66 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByPartialLinkText(string partialLinkText,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElement("partial link text", partialLinkText, cancellationToken);
+            return FindElementByPartialLinkText(partialLinkText, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByPartialLinkText(string partialLinkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByPartialLinkText(partialLinkText, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByPartialLinkText(string partialLinkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByPartialLinkText(partialLinkText, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByPartialLinkText(string partialLinkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByPartialLinkText(partialLinkText, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
         }
 
+        public async Task<IWebElement> FindElementByPartialLinkTextOrDefault(string partialLinkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByPartialLinkText(partialLinkText, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByPartialLinkTextOrDefault(string partialLinkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByPartialLinkText(partialLinkText, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByPartialLinkTextOrDefault(string partialLinkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByPartialLinkText(partialLinkText, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByPartialLinkTextOrDefault(string partialLinkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByPartialLinkText(partialLinkText, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkText(string partialLinkText, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElements("partial link text", partialLinkText, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds a list of elements that match the link text supplied
         /// </summary>
@@ -308,9 +930,68 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkText(string partialLinkText,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElements("partial link text", partialLinkText, cancellationToken);
+            return FindElementsByPartialLinkText(partialLinkText, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkText(string partialLinkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByPartialLinkText(partialLinkText, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkText(string partialLinkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByPartialLinkText(partialLinkText, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkText(string partialLinkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByPartialLinkText(partialLinkText, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkTextOrDefault(string partialLinkText,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByPartialLinkText(partialLinkText, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkTextOrDefault(string partialLinkText, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByPartialLinkText(partialLinkText, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkTextOrDefault(string partialLinkText, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByPartialLinkText(partialLinkText, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByPartialLinkTextOrDefault(string partialLinkText, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByPartialLinkText(partialLinkText, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+        public Task<IWebElement> FindElementByTagName(string tagName, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+                return FindElement("css selector", tagName, notElementId, timeout, cancellationToken);
+
+            return FindElement("tag name", tagName, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the DOM Tag supplied
         /// </summary>
@@ -325,18 +1006,67 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByTagName(string tagName,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElement("css selector", tagName);
-            if (driver.IsSpecificationCompliant)
-                return FindElement("css selector", tagName, cancellationToken);
-
-            return FindElement("tag name", tagName, cancellationToken);
+            return FindElementByTagName(tagName, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByTagName(string tagName, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByTagName(tagName, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByTagName(string tagName, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByTagName(tagName, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByTagName(string tagName, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByTagName(tagName, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByTagNameOrDefault(string tagName, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByTagName(tagName, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByTagNameOrDefault(string tagName, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByTagName(tagName, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByTagNameOrDefault(string tagName, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByTagName(tagName, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByTagNameOrDefault(string tagName, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByTagName(tagName, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
         }
 
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByTagName(string tagName, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.IsSpecificationCompliant)
+                return FindElements("css selector", tagName, notElementId, timeout, cancellationToken);
+
+            return FindElements("tag name", tagName, cancellationToken);
+        }
         /// <summary>
         ///     Finds a list of elements that match the DOM Tag supplied
         /// </summary>
@@ -351,18 +1081,66 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByTagName(string tagName,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            // Element finding mechanism is not allowed by the W3C WebDriver
-            // specification, but rather should be implemented as a function
-            // of other finder mechanisms as documented in the spec.
-            // Implementation after spec reaches recommendation should be as
-            // follows:
-            // return this.FindElements("css selector", tagName);
-            if (driver.IsSpecificationCompliant)
-                return FindElements("css selector", tagName, cancellationToken);
-
-            return FindElements("tag name", tagName, cancellationToken);
+            return FindElementsByTagName(tagName, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByTagName(string tagName, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByTagName(tagName, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByTagName(string tagName, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByTagName(tagName, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByTagName(string tagName, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByTagName(tagName, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByTagNameOrDefault(string tagName,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByTagName(tagName, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByTagNameOrDefault(string tagName, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByTagName(tagName, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByTagNameOrDefault(string tagName, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByTagName(tagName, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByTagNameOrDefault(string tagName, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByTagName(tagName, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
         }
 
+
+        public Task<IWebElement> FindElementByXPath(string xpath, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElement("xpath", xpath, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds the first of elements that match the XPath supplied
         /// </summary>
@@ -377,9 +1155,64 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<IWebElement> FindElementByXPath(string xpath,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElement("xpath", xpath, cancellationToken);
+            return FindElementByXPath(xpath, null, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByXPath(string xpath, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByXPath(xpath, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<IWebElement> FindElementByXPath(string xpath, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByXPath(xpath, null, timeout, cancellationToken);
+        }
+        public Task<IWebElement> FindElementByXPath(string xpath, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementByXPath(xpath, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<IWebElement> FindElementByXPathOrDefault(string xpath, CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByXPath(xpath, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByXPathOrDefault(string xpath, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByXPath(xpath, notElementId, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByXPathOrDefault(string xpath, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByXPath(xpath, timeout, cancellationToken);
+            }
+            catch { return null; }
+        }
+        public async Task<IWebElement> FindElementByXPathOrDefault(string xpath, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementByXPath(xpath, timeoutMs, cancellationToken);
+            }
+            catch { return null; }
         }
 
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElements("xpath", xpath, notElementId, timeout, cancellationToken);
+        }
         /// <summary>
         ///     Finds a list of elements that match the XPath supplied
         /// </summary>
@@ -394,8 +1227,201 @@ namespace Zu.AsyncWebDriver.Remote
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return FindElements("xpath", xpath, cancellationToken);
+            return FindElementsByXPath(xpath, null, default(TimeSpan), cancellationToken);
         }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByXPath(xpath, notElementId, default(TimeSpan), cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByXPath(xpath, null, timeout, cancellationToken);
+        }
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByXPath(xpath, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByXPath(xpath, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, string notElementId,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByXPath(xpath, notElementId, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByXPath(xpath, timeout, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+        public async Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, int timeoutMs,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                return await FindElementsByXPath(xpath, timeoutMs, cancellationToken);
+            }
+            catch { return new ReadOnlyCollection<IWebElement>(new List<IWebElement>()); }
+        }
+
+        /// <summary>
+        ///     Finds all <see cref="IWebElement">IWebElements</see> within the current context
+        ///     using the given mechanism.
+        /// </summary>
+        /// <param name="by">The locating mechanism to use.</param>
+        /// <returns>
+        ///     A <see cref="ReadOnlyCollection{T}" /> of all <see cref="IWebElement">WebElements</see>
+        ///     matching the current criteria, or an empty list if nothing matches.
+        /// </returns>
+        public Task<ReadOnlyCollection<IWebElement>> FindElements(By by,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (by == null)
+                throw new ArgumentNullException("by", "by cannot be null");
+
+            return by.FindElements(this, cancellationToken);
+        }
+
+        /// <summary>
+        ///     Finds the first <see cref="IWebElement" /> using the given method.
+        /// </summary>
+        /// <param name="by">The locating mechanism to use.</param>
+        /// <returns>The first matching <see cref="IWebElement" /> on the current context.</returns>
+        /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
+        public Task<IWebElement> FindElement(By by, CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (by == null)
+                throw new ArgumentNullException("by", "by cannot be null");
+
+            return by.FindElement(this, cancellationToken);
+        }
+
+        public Task<IWebElement> FindElementByIdStartsWith(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            var selector = EscapeCssSelector(id);
+            return FindElement("css selector", $"[id^={selector}]", cancellationToken);
+        }
+
+        public Task<IWebElement> FindElementByIdEndsWith(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            var selector = EscapeCssSelector(id);
+            return FindElement("css selector", $"[id$={selector}]", cancellationToken);
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdStartsWith(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            var selector = EscapeCssSelector(id);
+            if (string.IsNullOrEmpty(selector))
+                return Task.FromResult(new List<IWebElement>().AsReadOnly());
+
+            return FindElements("css selector", $"[id^={selector}]", cancellationToken);
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdEndsWith(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            var selector = EscapeCssSelector(id);
+            if (string.IsNullOrEmpty(selector))
+                return Task.FromResult(new List<IWebElement>().AsReadOnly());
+
+            return FindElements("css selector", $"[id$={selector}]", cancellationToken);
+        }
+
+        public static string EscapeCssSelector(string selector)
+        {
+            var escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
+            if (selector.Length > 0 && char.IsDigit(selector[0]))
+                escaped =
+                    @"\" +
+                    (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo
+                        .InvariantCulture) + " " + selector.Substring(1);
+
+            return escaped;
+        }
+
+        public async Task<IWebElement> FindElement(string mechanism, string value, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            JToken res = null;
+            try
+            {
+                res = await driver.browserClient.Elements.FindElement(mechanism, value, InternalElementId, notElementId, timeout, cancellationToken)
+                    .TimeoutAfter(SimpleCommandsTimeoutMs);
+            }
+            catch { throw; }
+
+            return driver.GetElementFromResponse(res);
+        }
+        /// <summary>
+        ///     Finds a child element matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the element.</param>
+        /// <param name="value">The value to use to search for the element.</param>
+        /// <returns>The first <see cref="IWebElement" /> matching the given criteria.</returns>
+        public Task<IWebElement> FindElement(string mechanism, string value,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElement(mechanism, value, null, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<ReadOnlyCollection<IWebElement>> Children(
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElementsByXPath("child::*", cancellationToken);
+        }
+
+        public async Task<ReadOnlyCollection<IWebElement>> FindElements(string mechanism, string value, string notElementId, TimeSpan timeout,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            if (driver.browserClient == null)
+                throw new WebDriverException("no browserClient");
+
+            JToken res = null;
+            try
+            {
+                res = await driver.browserClient.Elements.FindElements(mechanism, value, InternalElementId, notElementId, timeout, cancellationToken)
+                    .TimeoutAfter(SimpleCommandsTimeoutMs);
+            }
+            catch { throw; }
+
+            return driver.GetElementsFromResponse(res);
+        }
+        /// <summary>
+        ///     Finds all child elements matching the given mechanism and value.
+        /// </summary>
+        /// <param name="mechanism">The mechanism by which to find the elements.</param>
+        /// <param name="value">The value to use to search for the elements.</param>
+        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
+        public Task<ReadOnlyCollection<IWebElement>> FindElements(string mechanism, string value,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            return FindElements(mechanism, value, null, default(TimeSpan), cancellationToken);
+        }
+
+        #endregion
 
         /// <summary>
         ///     Gets the point where the element would be when scrolled into view.
@@ -784,38 +1810,6 @@ namespace Zu.AsyncWebDriver.Remote
         }
 
         /// <summary>
-        ///     Finds all <see cref="IWebElement">IWebElements</see> within the current context
-        ///     using the given mechanism.
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>
-        ///     A <see cref="ReadOnlyCollection{T}" /> of all <see cref="IWebElement">WebElements</see>
-        ///     matching the current criteria, or an empty list if nothing matches.
-        /// </returns>
-        public Task<ReadOnlyCollection<IWebElement>> FindElements(By by,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (by == null)
-                throw new ArgumentNullException("by", "by cannot be null");
-
-            return by.FindElements(this, cancellationToken);
-        }
-
-        /// <summary>
-        ///     Finds the first <see cref="IWebElement" /> using the given method.
-        /// </summary>
-        /// <param name="by">The locating mechanism to use.</param>
-        /// <returns>The first matching <see cref="IWebElement" /> on the current context.</returns>
-        /// <exception cref="NoSuchElementException">If no element matches the criteria.</exception>
-        public Task<IWebElement> FindElement(By by, CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (by == null)
-                throw new ArgumentNullException("by", "by cannot be null");
-
-            return by.FindElement(this, cancellationToken);
-        }
-
-        /// <summary>
         ///     Gets the <see cref="IWebDriver" /> used to find this element.
         /// </summary>
         public IWebDriver WrappedDriver => driver;
@@ -842,52 +1836,6 @@ namespace Zu.AsyncWebDriver.Remote
 
         }
 
-        public Task<IWebElement> FindElementByIdStartsWith(string id,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var selector = EscapeCssSelector(id);
-            return FindElement("css selector", $"[id^={selector}]", cancellationToken);
-        }
-
-        public Task<IWebElement> FindElementByIdEndsWith(string id,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var selector = EscapeCssSelector(id);
-            return FindElement("css selector", $"[id$={selector}]", cancellationToken);
-        }
-
-        public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdStartsWith(string id,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var selector = EscapeCssSelector(id);
-            if (string.IsNullOrEmpty(selector))
-                return Task.FromResult(new List<IWebElement>().AsReadOnly());
-
-            return FindElements("css selector", $"[id^={selector}]", cancellationToken);
-        }
-
-        public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdEndsWith(string id,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var selector = EscapeCssSelector(id);
-            if (string.IsNullOrEmpty(selector))
-                return Task.FromResult(new List<IWebElement>().AsReadOnly());
-
-            return FindElements("css selector", $"[id$={selector}]", cancellationToken);
-        }
-
-        public static string EscapeCssSelector(string selector)
-        {
-            var escaped = Regex.Replace(selector, @"(['""\\#.:;,!?+<>=~*^$|%&@`{}\-/\[\]\(\)])", @"\$1");
-            if (selector.Length > 0 && char.IsDigit(selector[0]))
-                escaped =
-                    @"\" +
-                    (30 + int.Parse(selector.Substring(0, 1), CultureInfo.InvariantCulture)).ToString(CultureInfo
-                        .InvariantCulture) + " " + selector.Substring(1);
-
-            return escaped;
-        }
-
         /// <summary>
         ///     Method to get the hash code of the element
         /// </summary>
@@ -906,58 +1854,6 @@ namespace Zu.AsyncWebDriver.Remote
         {
             if (obj == null) return false;
             return InternalElementId == (obj as AsyncWebElement).InternalElementId;
-        }
-
-        /// <summary>
-        ///     Finds a child element matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the element.</param>
-        /// <param name="value">The value to use to search for the element.</param>
-        /// <returns>The first <see cref="IWebElement" /> matching the given criteria.</returns>
-        public async Task<IWebElement> FindElement(string mechanism, string value,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (driver.browserClient == null)
-                throw new WebDriverException("no browserClient");
-
-            JToken res = null;
-            try
-            {
-                res = await driver.browserClient.Elements.FindElement(mechanism, value, InternalElementId, cancellationToken)
-                    .TimeoutAfter(SimpleCommandsTimeoutMs);
-            }
-            catch { throw; }
-
-            return driver.GetElementFromResponse(res);
-        }
-
-        public Task<ReadOnlyCollection<IWebElement>> Children(
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            return FindElementsByXPath("child::*", cancellationToken);
-        }
-
-        /// <summary>
-        ///     Finds all child elements matching the given mechanism and value.
-        /// </summary>
-        /// <param name="mechanism">The mechanism by which to find the elements.</param>
-        /// <param name="value">The value to use to search for the elements.</param>
-        /// <returns>A collection of all of the <see cref="IWebElement">IWebElements</see> matching the given criteria.</returns>
-        public async Task<ReadOnlyCollection<IWebElement>> FindElements(string mechanism, string value,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            if (driver.browserClient == null)
-                throw new WebDriverException("no browserClient");
-
-            JToken res = null;
-            try
-            {
-                res = await driver.browserClient.Elements.FindElements(mechanism, value, InternalElementId, cancellationToken)
-                    .TimeoutAfter(SimpleCommandsTimeoutMs);
-            }
-            catch { throw; }
-
-            return driver.GetElementsFromResponse(res);
         }
 
         public Task<string> UploadFile(string localFile, CancellationToken cancellationToken = new CancellationToken())
