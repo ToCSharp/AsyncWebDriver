@@ -21,16 +21,6 @@ namespace Zu.Firefox
             this.asyncFirefoxDriver = asyncFirefoxDriver;
         }
 
-        public async Task<string> ClearElement(string elementId, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            await asyncFirefoxDriver.CheckConnected(cancellationToken);
-            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
-            var comm1 = new ClearElementCommand(elementId);
-            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
-            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
-            return "ok";
-        }
-
         public async Task Click(string elementId, CancellationToken cancellationToken = default(CancellationToken))
         {
             await asyncFirefoxDriver.CheckConnected(cancellationToken);
@@ -40,28 +30,57 @@ namespace Zu.Firefox
             if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
         }
 
-        public async Task<JToken> FindElement(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<JToken> FindElement(string strategy, string expr, string startNode, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
             try
             {
-                var res = await FindElementNotWait(strategy, expr, startNode, cancellationToken);
-                if (ResultValueConverter.ValueIsNull(res))
+                JToken res = null;
+                var waitEnd = default(DateTime);
+                var nowTime = DateTime.Now;
+                while (true)
                 {
-                    var implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
-                    if (implicitWait != default(TimeSpan))
+                    res = await FindElementNotWait(strategy, expr, startNode, cancellationToken);
+                    if (!ResultValueConverter.ValueIsNull(res))
                     {
-                        var waitEnd = DateTime.Now + implicitWait;
-                        while (ResultValueConverter.ValueIsNull(res) && DateTime.Now < waitEnd)
+                        if (notElementId == null) break;
+                        else
                         {
-                            Thread.Sleep(50);
-                            res = await FindElementNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+                            var elId = GetElementFromResponse(res);
+                            if (elId != notElementId) break;
                         }
                     }
+                    if (waitEnd == default(DateTime))
+                    {
+                        var implicitWait = timeout;
+                        if (implicitWait == default(TimeSpan)) implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
+                        if (implicitWait == default(TimeSpan)) break;
+                        waitEnd = nowTime + implicitWait;
+                    }
+                    if (DateTime.Now > waitEnd) break;
+                    await Task.Delay(50);
                 }
                 if (ResultValueConverter.ValueIsNull(res)) throw new WebBrowserException($"Element not found by {strategy} = {expr}", "no such element");
                 return res;
             }
             catch { throw; }
+        }
+
+        public static string GetElementFromResponse(JToken response)
+        {
+            if (response == null) return null;
+
+            string id = null;
+            var json = response is JValue ? JToken.Parse(response.Value<string>()) : response["value"];
+            if (json is JValue)
+            {
+                if (((JValue)json).Value == null) return null;
+                else return ((JValue)json).Value<string>();
+            }
+            id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
+            if (id == null)
+                id = json?["ELEMENT"]?.ToString();
+
+            return id;
         }
         public async Task<JToken> FindElementNotWait(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
         {
@@ -73,25 +92,56 @@ namespace Zu.Firefox
             return comm1.Result;
         }
 
-        public async Task<JToken> FindElements(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<JToken> FindElements(string strategy, string expr, string startNode, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
-            if ((res as JArray)?.Any() != true)
+            try
             {
-                var implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
-                if (implicitWait != default(TimeSpan))
+                JToken res = null;
+                var waitEnd = default(DateTime);
+                var nowTime = DateTime.Now;
+                while (true)
                 {
-                    var waitEnd = DateTime.Now + implicitWait;
-                    while (((res as JArray)?.Any() != true) && DateTime.Now < waitEnd)
+                    res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken);
+                    if ((res as JArray)?.Any() != true)
                     {
-                        Thread.Sleep(50);
-                        res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+                        if (notElementId == null) break;
+                        else
+                        {
+                            var elId = GetElementsFromResponse(res);
+                            if (elId?.FirstOrDefault() != notElementId) break;
+                        }
                     }
+                    if (waitEnd == default(DateTime))
+                    {
+                        var implicitWait = timeout;
+                        if (implicitWait == default(TimeSpan)) implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
+                        if (implicitWait == default(TimeSpan)) break;
+                        waitEnd = nowTime + implicitWait;
+                    }
+                    if (DateTime.Now > waitEnd) break;
+                    await Task.Delay(50);
                 }
+                if ((res as JArray)?.Any() != true) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
+                return res;
             }
-            if (res == null) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
-            return res;
-            //return asyncChromeDriver.WindowCommands.FindElements(strategy, expr, startNode, cancellationToken);
+            catch { throw; }
+            //var res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+            //if ((res as JArray)?.Any() != true)
+            //{
+            //    var implicitWait = await asyncFirefoxDriver.Options.Timeouts.GetImplicitWait();
+            //    if (implicitWait != default(TimeSpan))
+            //    {
+            //        var waitEnd = DateTime.Now + implicitWait;
+            //        while (((res as JArray)?.Any() != true) && DateTime.Now < waitEnd)
+            //        {
+            //            Thread.Sleep(50);
+            //            res = await FindElementsNotWait(strategy, expr, startNode, cancellationToken = default(CancellationToken));
+            //        }
+            //    }
+            //}
+            //if (res == null) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
+            //return res;
+            ////return asyncChromeDriver.WindowCommands.FindElements(strategy, expr, startNode, cancellationToken);
         }
 
         public async Task<JToken> FindElementsNotWait(string strategy, string expr, string startNode = null, CancellationToken cancellationToken = default(CancellationToken))
@@ -102,6 +152,16 @@ namespace Zu.Firefox
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
             return comm1.Result;
+        }
+
+        public async Task<string> ClearElement(string elementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
+            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+            var comm1 = new ClearElementCommand(elementId);
+            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
+            return "ok";
         }
 
         public async Task<string> GetActiveElement(CancellationToken cancellationToken = default(CancellationToken))
@@ -254,15 +314,15 @@ namespace Zu.Firefox
             return "ok";
         }
 
-        public static string GetElementFromResponse(JToken response)
-        {
-            string id = null;
-            var json = response is JValue ? JToken.Parse(response.Value<string>()) : response["value"];
-            id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
-            if (id == null)
-                id = json?["ELEMENT"]?.ToString();
-            return id;
-        }
+        //public static string GetElementFromResponse(JToken response)
+        //{
+        //    string id = null;
+        //    var json = response is JValue ? JToken.Parse(response.Value<string>()) : response["value"];
+        //    id = json?["element-6066-11e4-a52e-4f735466cecf"]?.ToString();
+        //    if (id == null)
+        //        id = json?["ELEMENT"]?.ToString();
+        //    return id;
+        //}
         public static List<string> GetElementsFromResponse(JToken response)
         {
             var toReturn = new List<string>();
@@ -286,5 +346,87 @@ namespace Zu.Firefox
 
             return toReturn;
         }
+
+        #region FindElement variants
+        public Task<JToken> FindElement(string strategy, string expr, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, null, null, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, null, null, timeout, cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, null, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, string startNode, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, startNode, null, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, string startNode, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, startNode, null, timeout, cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, string startNode, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, startNode, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, string startNode, string notElementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, startNode, notElementId, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElement(string strategy, string expr, string startNode, string notElementId, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElement(strategy, expr, startNode, notElementId, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, null, null, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, null, null, timeout, cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, null, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, string startNode, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, startNode, null, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, string startNode, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, startNode, null, timeout, cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, string startNode, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, startNode, null, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, string startNode, string notElementId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, startNode, notElementId, default(TimeSpan), cancellationToken);
+        }
+
+        public Task<JToken> FindElements(string strategy, string expr, string startNode, string notElementId, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return FindElements(strategy, expr, startNode, notElementId, TimeSpan.FromMilliseconds(timeoutMs), cancellationToken);
+        }
+        #endregion
     }
 }
