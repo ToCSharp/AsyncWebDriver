@@ -2082,7 +2082,7 @@ namespace Zu.AsyncWebDriver.Remote
         }
 
         #region WaitForElement
-
+        [Obsolete("This method will be removed. Use FindElementById(id, notElementId, timeout).")]
         public Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
@@ -2090,6 +2090,7 @@ namespace Zu.AsyncWebDriver.Remote
             else return WaitForWebElement(async () => await FindElementById(id), attemptsCount, delayMs, cancellationToken);
         }
 
+        [Obsolete("This method will be removed. Use FindElementByName(name, notElementId, timeout).")]
         public Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
@@ -2097,6 +2098,7 @@ namespace Zu.AsyncWebDriver.Remote
             else return WaitForWebElement(async () => await FindElementByName(name), attemptsCount, delayMs, cancellationToken);
         }
 
+        [Obsolete("This method will be removed. Use FindElementByCssSelector(cssSelector, notElementId, timeout).")]
         public Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
@@ -2104,6 +2106,7 @@ namespace Zu.AsyncWebDriver.Remote
             else return WaitForWebElement(async () => await FindElementByCssSelector(cssSelector), attemptsCount, delayMs, cancellationToken);
         }
 
+        [Obsolete("This method will be removed. Use FindElement.")]
         public async Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
@@ -2118,12 +2121,14 @@ namespace Zu.AsyncWebDriver.Remote
             return null;
         }
 
+        [Obsolete("This method will be removed. Use FindElement.")]
         public Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {
             return WaitForWebElement(func, notWebElement?.Id, attemptsCount, delayMs, cancellationToken);
         }
 
+        [Obsolete("This method will be removed. Use FindElement.")]
         public async Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
             CancellationToken cancellationToken = new CancellationToken())
         {

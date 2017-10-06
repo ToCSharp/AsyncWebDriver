@@ -13,6 +13,7 @@ using Zu.AsyncWebDriver.Remote;
 using Zu.Browser;
 using Zu.Firefox;
 using Zu.WebBrowser.BasicTypes;
+using System.IO;
 
 namespace AsyncFirefoxDriverExample
 {
@@ -431,6 +432,33 @@ namespace AsyncFirefoxDriverExample
             //await devToolsWebDriver.SwitchTo().Frame("toolbox-iframe");
             //var inspectorTab = await devToolsWebDriver.FindElementById("toolbox-tab-inspector");
             //await inspectorTab.Click();
+        }
+
+        private async void Button_Click_26(object sender, RoutedEventArgs e)
+        {
+            await webDriver.GoToUrl("https://www.google.com/");
+        }
+
+        private async void Button_Click_27(object sender, RoutedEventArgs e)
+        {
+            var query = await webDriver.FindElementById("lst-ib");
+            await query.SendKeys(tbCommandsText.Text);
+        }
+
+        private async void Button_Click_28(object sender, RoutedEventArgs e)
+        {
+            var profileName= tbOpenProfileName.Text;
+            var dir = Path.Combine(tbOpenProfileDir.Text, profileName);
+            await FirefoxProfilesWorker.CreateFirefoxProfile(dir, profileName);
+            asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig()
+                .SetProfileName(profileName)
+                .SetIsMultiprocessFalse()
+                .SetDoSetDebuggerRemoteEnabled());
+            webDriver = new WebDriver(asyncFirefoxDriver);
+            await webDriver.GoToUrl("https://www.google.com/");
+
+            await asyncFirefoxDriver.OpenBrowserDevTools();
+
         }
     }
 }

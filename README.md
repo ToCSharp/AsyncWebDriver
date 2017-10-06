@@ -74,6 +74,23 @@ PM> Install-Package AsyncOperaDriver
      await Task.Delay(500);
      await query.SendKeys(Keys.Enter);
 ```
+##### Firefox Developer Tools
+```csharp
+     await FirefoxProfilesWorker.CreateFirefoxProfile(dir, profileName);
+     asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig()
+         .SetProfileName(profileName)
+         .SetIsMultiprocessFalse()
+         .SetDoSetDebuggerRemoteEnabled());
+     webDriver = new WebDriver(asyncFirefoxDriver);
+     await webDriver.GoToUrl("https://www.google.com/");
+
+     await asyncFirefoxDriver.OpenBrowserDevTools();
+     // asyncFirefoxDriver.BrowserDevTools is AsyncFirefoxDriver
+     devToolsWebDriver = new WebDriver(asyncFirefoxDriver.BrowserDevTools);
+
+     // Then we can debug Firefox developer tools itself: 
+     await asyncFirefoxDriver.BrowserDevTools.OpenBrowserDevTools(9654);
+```
 #### Open
 ```csharp
      IAsyncWebBrowserClient browserClient = null;

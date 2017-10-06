@@ -77,10 +77,10 @@
                     <Button Content="Open in Firefox Developer Edition" Grid.Column="1" HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" Width="193" Click="Button_Click_10"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Open" IsSelected="True">
+            <TabItem Header="Firefox developer tools" IsSelected="True">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="136"/>
+                        <RowDefinition Height="164"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Button Content="open temp profile" HorizontalAlignment="Left" Margin="26,10,0,0" VerticalAlignment="Top" Width="122" Click="Button_Click_12" Height="20" IsEnabled="False"/>
@@ -88,16 +88,18 @@
                     <Button Content="open DevTools in Browser window" HorizontalAlignment="Left" Margin="26,35,0,0" VerticalAlignment="Top" Width="209" Click="Button_Click_14" Height="20"/>
                     <Button Content="open temp profile and DevTools" HorizontalAlignment="Left" Margin="26,86,0,0" VerticalAlignment="Top" Width="201" Click="Button_Click_15" Height="20" IsEnabled="False"/>
                     <TextBox x:Name="tbOpenRes" TextWrapping="Wrap" Grid.Row="1"/>
-                    <Button Content="do" HorizontalAlignment="Left" Margin="393,86,0,0" VerticalAlignment="Top" Width="96" Click="Button_Click_16" Height="20"/>
-                    <Button Content="close DevTools" HorizontalAlignment="Left" Margin="269,60,0,0" VerticalAlignment="Top" Width="120" Click="Button_Click_17" Height="20"/>
+                    <Button Content="do" HorizontalAlignment="Left" Margin="393,105,0,0" VerticalAlignment="Top" Width="96" Click="Button_Click_16" Height="20"/>
+                    <Button Content="close DevTools" HorizontalAlignment="Left" Margin="269,79,0,0" VerticalAlignment="Top" Width="120" Click="Button_Click_17" Height="20"/>
                     <Button Content="open DevTools in XUL" HorizontalAlignment="Left" Margin="26,60,0,0" VerticalAlignment="Top" Width="209" Click="Button_Click_18" Height="20"/>
-                    <Button Content="open DevTools in Browser window v2" HorizontalAlignment="Left" Margin="253,35,0,0" VerticalAlignment="Top" Width="236" Click="Button_Click_20" Height="20"/>
-                    <Button Content="open profile" HorizontalAlignment="Left" Margin="363,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_21" Height="20"/>
-                    <TextBox x:Name="tbOpenProfileName" HorizontalAlignment="Left" Height="23" Margin="269,10,0,0" TextWrapping="Wrap" Text="test4" VerticalAlignment="Top" Width="89"/>
-                    <Button Content="to inspector tab" HorizontalAlignment="Left" Margin="269,86,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_22" Height="20"/>
-                    <Button Content="debug DevTools" HorizontalAlignment="Left" Margin="401,60,0,0" VerticalAlignment="Top" Width="100" Click="Button_Click_23" Height="20"/>
-                    <Button Content="to inspector tab 2" HorizontalAlignment="Left" Margin="269,111,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_24"/>
-                    <Button Content="open profile and DevTools" HorizontalAlignment="Left" Margin="26,111,0,0" VerticalAlignment="Top" Width="185" Click="Button_Click_25"/>
+                    <Button Content="open DevTools in Browser window v2" HorizontalAlignment="Left" Margin="253,54,0,0" VerticalAlignment="Top" Width="236" Click="Button_Click_20" Height="20"/>
+                    <Button Content="open profile" HorizontalAlignment="Left" Margin="363,29,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_21" Height="20"/>
+                    <TextBox x:Name="tbOpenProfileName" HorizontalAlignment="Left" Height="23" Margin="269,29,0,0" TextWrapping="Wrap" Text="test5" VerticalAlignment="Top" Width="89"/>
+                    <Button Content="to inspector tab" HorizontalAlignment="Left" Margin="269,105,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_22" Height="20"/>
+                    <Button Content="debug DevTools" HorizontalAlignment="Left" Margin="401,79,0,0" VerticalAlignment="Top" Width="100" Click="Button_Click_23" Height="20"/>
+                    <Button Content="to inspector tab 2" HorizontalAlignment="Left" Margin="269,130,0,0" VerticalAlignment="Top" Width="108" Click="Button_Click_24" Height="20"/>
+                    <Button Content="open profile and DevTools" HorizontalAlignment="Left" Margin="26,111,0,0" VerticalAlignment="Top" Width="185" Click="Button_Click_25" Height="20"/>
+                    <TextBox x:Name="tbOpenProfileDir" HorizontalAlignment="Left" Height="23" Margin="381,1,0,0" TextWrapping="Wrap" Text="C:\firefox\profiles\" VerticalAlignment="Top" Width="120"/>
+                    <Button Content="create profile and open" HorizontalAlignment="Left" Margin="240,4,0,0" VerticalAlignment="Top" Width="136" Click="Button_Click_28"/>
                 </Grid>
             </TabItem>
             <TabItem Header="JavaScript">
@@ -110,6 +112,13 @@
                     <Button Content="Execute" HorizontalAlignment="Left" Margin="57,0,0,9" VerticalAlignment="Bottom" Width="75" Click="Button_Click_19" Grid.Row="1"/>
                     <TextBox x:Name="tbJavaScriptEvalSource" TextWrapping="Wrap"/>
                     <TextBox x:Name="tbJavaScriptEvalRes" Grid.Row="2" TextWrapping="Wrap" Text="TextBox"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Commands">
+                <Grid Background="#FFE5E5E5">
+                    <Button Content="goto" HorizontalAlignment="Left" Margin="29,19,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_26"/>
+                    <TextBox x:Name="tbCommandsText" HorizontalAlignment="Left" Height="23" Margin="241,16,0,0" TextWrapping="Wrap" Text="tt" VerticalAlignment="Top" Width="120"/>
+                    <Button Content="enter" HorizontalAlignment="Left" Margin="161,19,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_27"/>
                 </Grid>
             </TabItem>
         </TabControl>
