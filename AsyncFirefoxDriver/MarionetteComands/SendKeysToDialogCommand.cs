@@ -32,7 +32,7 @@ namespace MyCommunicationLib.Communication.MarionetteComands
                    Id,
                    CommandName,
                    new {
-                        value = Text
+                        text = Text
                    }
 
                 });

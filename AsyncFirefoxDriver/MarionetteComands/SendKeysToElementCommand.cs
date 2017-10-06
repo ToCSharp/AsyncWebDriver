@@ -36,7 +36,8 @@ namespace MyCommunicationLib.Communication.MarionetteComands
                    CommandName,
                    new {
                        id = ElementId,
-                       value = Text
+                       text = Text,
+                       //value = Text.ToArray()
                    }
 
                });

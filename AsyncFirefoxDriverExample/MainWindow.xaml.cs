@@ -18,9 +18,7 @@ namespace AsyncFirefoxDriverExample
 {
     public partial class MainWindow : Window
     {
-        private WebDriver asyncDriver;
         private readonly ObservableCollection<string> evs = new ObservableCollection<string>();
-        private AsyncFirefoxDriver ffDriver;
 
         private readonly ObservableCollection<ZuRequestInfo> loadedFiles = new ObservableCollection<ZuRequestInfo>();
         private ZuRequestListener requestListener;
@@ -36,24 +34,29 @@ namespace AsyncFirefoxDriverExample
 
         private string Prepare()
         {
-            if (ffDriver == null)
+            if (asyncFirefoxDriver == null)
             {
                 var profileName = tbProfileName.Text;
-                ffDriver = new AsyncFirefoxDriver(profileName);
-                asyncDriver = new WebDriver(ffDriver);
+                asyncFirefoxDriver = new AsyncFirefoxDriver(profileName);
+                webDriver = new WebDriver(asyncFirefoxDriver);
             }
             return "ok";
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            if (Prepare() != "ok") return;
+            //if (Prepare() != "ok") return;
+            if (webDriver == null)
+            {
+                asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig().SetIsMultiprocessFalse());
+                webDriver = new WebDriver(asyncFirefoxDriver);
+            }
 
             var url = tbUrl.Text;
 
             if (requestListener == null)
             {
-                requestListener = new ZuRequestListener(ffDriver);
+                requestListener = new ZuRequestListener(asyncFirefoxDriver);
                 // or 
                 //requestListener = new ZuRequestListener(asyncDriver.browserClient);
                 requestListener.DoSendBinary = false;
@@ -63,8 +66,7 @@ namespace AsyncFirefoxDriverExample
                 await requestListener.StartListeningFileLoaded();
             }
 
-            await asyncDriver.SetContextContent();
-            var res2 = await asyncDriver.GoToUrl(url); //"https://www.google.com/");
+            var res2 = await webDriver.GoToUrl(url); //"https://www.google.com/");
             tbRes.Text = res2 + Environment.NewLine + Environment.NewLine + tbRes.Text;
         }
 
@@ -75,7 +77,7 @@ namespace AsyncFirefoxDriverExample
 
         private void bEvalEvents_Click_16(object sender, RoutedEventArgs e)
         {
-            ffDriver.AddEventListener(tbEvalEvents5.Text, ffDriverEventListener);
+            asyncFirefoxDriver.AddEventListener(tbEvalEvents5.Text, ffDriverEventListener);
         }
 
         private void ffDriverEventListener(JToken obj)
@@ -89,48 +91,48 @@ namespace AsyncFirefoxDriverExample
 
         private async void bEvalEvents_Click_19(object sender, RoutedEventArgs e)
         {
-            if (ffDriver != null)
+            if (asyncFirefoxDriver != null)
             {
-                var res = await ffDriver.AddSendEventFuncIfNo();
-                res = await ffDriver.SendEvent(tbEvalEvents8.Text, tbEvalEvents9.Text);
+                var res = await asyncFirefoxDriver.AddSendEventFuncIfNo();
+                res = await asyncFirefoxDriver.SendEvent(tbEvalEvents8.Text, tbEvalEvents9.Text);
             }
         }
 
         private async void bEvalEvents_Click_18(object sender, RoutedEventArgs e)
         {
-            if (ffDriver != null)
+            if (asyncFirefoxDriver != null)
             {
-                await ffDriver.AddSendEventFuncIfNo();
-                await ffDriver.EvalInChrome($"top.zuSendEvent({tbEvalEvents3.Text})");
+                await asyncFirefoxDriver.AddSendEventFuncIfNo();
+                await asyncFirefoxDriver.EvalInChrome($"top.zuSendEvent({tbEvalEvents3.Text})");
             }
         }
 
         private async void bEvalEvents_Click_17(object sender, RoutedEventArgs e)
         {
             var code = tbEvalCode.Text;
-            if (ffDriver != null)
+            if (asyncFirefoxDriver != null)
             {
-                var res = await ffDriver.Eval(code);
+                var res = await asyncFirefoxDriver.Eval(code);
             }
         }
 
         private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (ffDriver != null)
+            if (asyncFirefoxDriver != null)
             {
-                var res = await ffDriver?.GetContext();
+                var res = await asyncFirefoxDriver?.GetContext();
                 tbRes.Text = res + Environment.NewLine + Environment.NewLine + tbRes.Text;
             }
         }
 
         private async void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (ffDriver != null) await ffDriver.SetContextChrome();
+            if (asyncFirefoxDriver != null) await asyncFirefoxDriver.SetContextChrome();
         }
 
         private async void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            if (ffDriver != null) await ffDriver.SetContextContent();
+            if (asyncFirefoxDriver != null) await asyncFirefoxDriver.SetContextContent();
         }
 
         private void lbRequests_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -177,7 +179,7 @@ namespace AsyncFirefoxDriverExample
         private async void Button_Click_7(object sender, RoutedEventArgs e)
         {
             if (Prepare() != "ok") return;
-            await ffDriver.CheckConnected();
+            await asyncFirefoxDriver.CheckConnected();
         }
 
         private async void Button_Click_8(object sender, RoutedEventArgs e)
@@ -185,12 +187,14 @@ namespace AsyncFirefoxDriverExample
             try
             {
                 if (Prepare() != "ok") return;
-                await asyncDriver.SetContextContent();
-                var res2 = await asyncDriver.GoToUrl("https://www.google.com/");
-                //var query = await asyncDriver.FindElement(By.Name("q"));
-                var query = await asyncDriver.WaitForElementWithName("q");
-                query = await asyncDriver.WaitForElementWithId("lst-ib");
-                query = await asyncDriver.WaitForWebElement(async () => await asyncDriver.FindElement(By.Name("q")));
+                await webDriver.Options().Timeouts.SetImplicitWait(TimeSpan.FromSeconds(3));
+                // name = "q", 0 - time to wait element, not use ImplicitWait
+                var prevQuery = await webDriver.FindElementByNameOrDefault("q", 0);
+                var res2 = await webDriver.GoToUrl("https://www.google.com/");
+                await Task.Delay(3000);
+                var query = await webDriver.FindElementByName("q", prevQuery?.Id);
+
+                //await query.SendKeys("ToCSharp");
                 foreach (var v in tbSendKeys.Text.ToList())
                 {
                     await Task.Delay(500 + new Random().Next(1000));
@@ -199,8 +203,9 @@ namespace AsyncFirefoxDriverExample
                 await Task.Delay(500);
                 await query.SendKeys(Keys.Enter);
                 await Task.Delay(2000);
-                query = await asyncDriver.WaitForElementWithId("lst-ib");
-                //query = await asyncDriver.WaitForElementWithName("q");
+                query = await webDriver.FindElementById("lst-ib");
+                //query = await asyncDriver.FindElementByName("q");
+                await query.SendKeys("t");
                 await query.SendKeys(Keys.ArrowDown);
                 await Task.Delay(1000);
                 await query.SendKeys(Keys.ArrowDown);
@@ -221,8 +226,7 @@ namespace AsyncFirefoxDriverExample
         {
             if (Prepare() != "ok") return;
             // set breakpoint here
-            var syncDriver = new SyncWebDriver(asyncDriver);
-            syncDriver.SetContextContent();
+            var syncDriver = new SyncWebDriver(webDriver);
             syncDriver.GoToUrl("https://www.google.com/");
             var s = "";
             var q1 = syncDriver.FindElement(By.Name("q"));
@@ -231,11 +235,7 @@ namespace AsyncFirefoxDriverExample
             q1.SendKeys("T");
             q1.SendKeys("o");
             q1.SendKeys("C");
-            q1.SendKeys("S");
-            q1.SendKeys("h");
-            q1.SendKeys("a");
-            q1.SendKeys("r");
-            q1.SendKeys("p");
+            q1.SendKeys("Sharp");
             q1.SendKeys(Keys.Enter);
             syncDriver.SwitchTo().ActiveElement().SendKeys(Keys.Escape);
             s = "";
@@ -262,7 +262,6 @@ namespace AsyncFirefoxDriverExample
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (asyncDriver != null) asyncDriver.CloseSync();
             if (webDriver != null) webDriver.CloseSync();
         }
 
