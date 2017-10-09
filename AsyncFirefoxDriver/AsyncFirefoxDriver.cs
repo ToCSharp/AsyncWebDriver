@@ -56,7 +56,7 @@ namespace Zu.Firefox
 
             if (Config.Port == 0)
             {
-                Config.Port = 11000 + new Random().Next(2000);
+                Config.Port = 11000 + rnd.Next(2000);
             }
             Port2 = Port + 10000;
         }
@@ -788,6 +788,8 @@ return ex.toString();
             }
         }
 
+        static Random rnd = new Random();
+
         public async Task<AsyncFirefoxDriver> OpenBrowserDevTools(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             //await ReloadIfMultiprocess(cancellationToken);
@@ -801,13 +803,13 @@ return ex.toString();
                 { "devtools.debugger.prompt-connection", "false" },
                 { "devtools.debugger.remote-enabled", "true" },
                 //{ "devtools.debugger.remote-port", "9888" },
-                { "devtools.debugger.chrome-debugging-port", port.ToString() }, // port.ToString() },
+                { "devtools.debugger.chrome-debugging-port", port.ToString() }, 
                 { "devtools.chrome.enabled", "true" }
 
             };
             var profileDir = Config.UserDir;
             var devToolsProfileDir = Path.Combine(profileDir, CHROME_DEBUGGER_PROFILE_NAME);
-            var devToolsProfileName = CHROME_DEBUGGER_PROFILE_NAME + new Random().Next(1000).ToString();
+            var devToolsProfileName = CHROME_DEBUGGER_PROFILE_NAME + rnd.Next(1000).ToString();
             if (Directory.Exists(devToolsProfileDir)) Directory.Delete(devToolsProfileDir, true);
             await FirefoxProfilesWorker.CreateFirefoxProfile(devToolsProfileDir, devToolsProfileName);
 

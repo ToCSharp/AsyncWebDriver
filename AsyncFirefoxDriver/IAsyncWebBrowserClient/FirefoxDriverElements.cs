@@ -121,7 +121,7 @@ namespace Zu.Firefox
                     if (DateTime.Now > waitEnd) break;
                     await Task.Delay(50);
                 }
-                if ((res as JArray)?.Any() != true) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
+                //if ((res as JArray)?.Any() != true) throw new WebBrowserException($"Elements not found by {strategy} = {expr}", "no such element");
                 return res;
             }
             catch { throw; }
