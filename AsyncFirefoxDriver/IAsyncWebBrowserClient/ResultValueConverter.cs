@@ -73,5 +73,10 @@ namespace Zu.Firefox
             if (res?["value"] is JValue && (res?["value"] as JValue)?.Value == null) return true;
             return false;
         }
+
+        internal static string ElementId(JToken result)
+        {
+            return FirefoxDriverElements.GetElementFromResponse(result);
+        }
     }
 }

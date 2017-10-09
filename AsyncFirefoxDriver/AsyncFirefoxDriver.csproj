@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FirefoxDriverActionExecutor.cs" />
+    <Compile Include="IAsyncWebBrowserClient\FirefoxDriverActionExecutor.cs" />
     <Compile Include="FirefoxPreferences.cs" />
     <Compile Include="IAsyncWebBrowserClient\FirefoxDriverAlert.cs" />
     <Compile Include="FirefoxDriverConfig.cs" />
@@ -113,6 +113,7 @@
     <Compile Include="MarionetteComands\MaximizeWindowCommand.cs" />
     <Compile Include="MarionetteComands\NewSessionCommand.cs" />
     <Compile Include="MarionetteComands\RefreshCommand.cs" />
+    <Compile Include="MarionetteComands\ReleaseActionsCommand.cs" />
     <Compile Include="MarionetteComands\SendKeysToDialogCommand.cs" />
     <Compile Include="MarionetteComands\SendKeysToElementCommand.cs" />
     <Compile Include="MarionetteComands\SessionTearDownCommand.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="MarionetteComands\SetWindowSizeCommand.cs" />
     <Compile Include="MarionetteComands\SwitchToFrameCommand.cs" />
     <Compile Include="MarionetteComands\SwitchToParentFrameCommand.cs" />
+    <Compile Include="MarionetteComands\PerformActionsCommand.cs" />
     <Compile Include="MarionetteComands\SwitchToWindowCommand.cs" />
     <Compile Include="MarionetteComands\TakeScreenshotCommand.cs" />
     <Compile Include="MarionetteDebuggerCommand.cs" />

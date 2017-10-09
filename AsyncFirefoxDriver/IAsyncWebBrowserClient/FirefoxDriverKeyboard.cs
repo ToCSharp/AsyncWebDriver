@@ -19,7 +19,8 @@ namespace Zu.Firefox
         public async Task PressKey(string keyToPress, CancellationToken cancellationToken = default(CancellationToken))
         {
             await asyncFirefoxDriver.CheckConnected(cancellationToken);
-            throw new NotImplementedException();
+            var el = await asyncFirefoxDriver.TargetLocator.SwitchToActiveElement(cancellationToken);
+            await asyncFirefoxDriver.Elements.SendKeysToElement(el, keyToPress);
         }
 
         public async Task ReleaseKey(string keyToRelease, CancellationToken cancellationToken = default(CancellationToken))
@@ -31,7 +32,8 @@ namespace Zu.Firefox
         public async Task SendKeys(string keySequence, CancellationToken cancellationToken = default(CancellationToken))
         {
             await asyncFirefoxDriver.CheckConnected(cancellationToken);
-            throw new NotImplementedException();
+            var el = await asyncFirefoxDriver.TargetLocator.SwitchToActiveElement(cancellationToken);
+            await asyncFirefoxDriver.Elements.SendKeysToElement(el, keySequence);
         }
     }
 }

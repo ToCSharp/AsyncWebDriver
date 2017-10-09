@@ -43,9 +43,15 @@ namespace Zu.Firefox
             return ResultValueConverter.WindowHandles(comm1.Result);
         }
 
-        public Task<string> SwitchToActiveElement(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> SwitchToActiveElement(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new System.NotImplementedException();
+            await asyncFirefoxDriver.CheckConnected(cancellationToken);
+            if (asyncFirefoxDriver.ClientMarionette == null) throw new Exception("error: no clientMarionette");
+            await asyncFirefoxDriver.SetContextContent();
+            var comm1 = new GetActiveElementCommand();
+            await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
+            if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
+            return FirefoxDriverElements.GetElementFromResponse(comm1.Result);
         }
 
         public Task<IAlert> SwitchToAlert(CancellationToken cancellationToken = default(CancellationToken))

@@ -8,7 +8,7 @@ using Zu.WebBrowser.BasicTypes;
 
 namespace Zu.Firefox
 {
-    internal class FirefoxDriverMouse : IMouse
+    public class FirefoxDriverMouse : IMouse
     {
         private IAsyncFirefoxDriver asyncFirefoxDriver;
 
@@ -16,6 +16,8 @@ namespace Zu.Firefox
         {
             this.asyncFirefoxDriver = asyncFirefoxDriver;
         }
+
+        public WebPoint MousePosition { get; set; }
 
         public async Task Click(ICoordinates where, CancellationToken cancellationToken = default(CancellationToken))
         {

@@ -171,7 +171,7 @@ namespace Zu.Firefox
             var comm1 = new GetActiveElementCommand();
             await asyncFirefoxDriver.ClientMarionette?.SendRequestAsync(comm1, cancellationToken);
             if (comm1.Error != null) throw new WebBrowserException(comm1.Error);
-            return (string)comm1.Result["value"]; // comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
+            return FirefoxDriverElements.GetElementFromResponse(comm1.Result);
         }
 
         public async Task<string> GetElementAttribute(string elementId, string attrName, CancellationToken cancellationToken = default(CancellationToken))
