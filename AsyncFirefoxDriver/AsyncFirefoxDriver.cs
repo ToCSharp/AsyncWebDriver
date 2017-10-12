@@ -94,6 +94,10 @@ namespace Zu.Firefox
         }
         public async Task<DriverProcessInfo> OpenFirefoxProfile(FirefoxDriverConfig config)
         {
+            if(config.DoOpenBrowserDevTools)
+            {
+                config.SetIsMultiprocessFalse().SetDoSetDebuggerRemoteEnabled();
+            }
             DriverProcessInfo res = null;
             await Task.Run(async () => res = await FirefoxProfilesWorker.OpenFirefoxProfile(config)); // userDir, Port, isHeadless));
             return res;
@@ -161,6 +165,7 @@ namespace Zu.Firefox
                 var res2 = await Connect2();
             }
             await SetContextChrome(cancellationToken);
+            if(Config.DoOpenBrowserDevTools) await OpenBrowserDevTools();
             return "Marionette " + Port + (_connectionM2?.Connected == true ? " Marionette2 " + Port2 : "");
         }
         #endregion

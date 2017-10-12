@@ -421,11 +421,13 @@ namespace AsyncFirefoxDriverExample
             asyncFirefoxDriver = new AsyncFirefoxDriver(
                 new FirefoxDriverConfig()
                 .SetProfileName(profileName)
-                .SetIsMultiprocessFalse()
-                .SetDoSetDebuggerRemoteEnabled());
+                .SetDoOpenBrowserDevTools()
+                //.SetIsMultiprocessFalse()
+                //.SetDoSetDebuggerRemoteEnabled()
+                );
             webDriver = new WebDriver(asyncFirefoxDriver);
             await webDriver.GoToUrl("https://www.google.com/");
-            await asyncFirefoxDriver.OpenBrowserDevTools();
+            //await asyncFirefoxDriver.OpenBrowserDevTools();
             // asyncFirefoxDriver.BrowserDevTools is AsyncFirefoxDriver
             devToolsWebDriver = new WebDriver(asyncFirefoxDriver.BrowserDevTools);
             //// TODO: not works SwitchTo().Frame("toolbox-iframe");  listener.js 1715
@@ -447,17 +449,21 @@ namespace AsyncFirefoxDriverExample
 
         private async void Button_Click_28(object sender, RoutedEventArgs e)
         {
+            if (webDriver != null) await webDriver.Close();
             var profileName= tbOpenProfileName.Text;
             var dir = Path.Combine(tbOpenProfileDir.Text, profileName);
             await FirefoxProfilesWorker.CreateFirefoxProfile(dir, profileName);
             asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig()
                 .SetProfileName(profileName)
-                .SetIsMultiprocessFalse()
-                .SetDoSetDebuggerRemoteEnabled());
+                .SetDoOpenBrowserDevTools()
+                //.SetIsMultiprocessFalse()
+                //.SetDoSetDebuggerRemoteEnabled()
+                );
             webDriver = new WebDriver(asyncFirefoxDriver);
+            //await webDriver.Open();
             await webDriver.GoToUrl("https://www.google.com/");
 
-            await asyncFirefoxDriver.OpenBrowserDevTools();
+            //await asyncFirefoxDriver.OpenBrowserDevTools();
 
         }
     }
