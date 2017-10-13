@@ -8,22 +8,11 @@ namespace Zu.Firefox
 {
     public class FirefoxDriverConfig : DriverConfig
     {
-        public FirefoxDriverConfig()
-            :base()
-        {
-        }
-        public FirefoxDriverConfig(DriverConfig config)
-            :this()
-        {
-            UserDir = config.UserDir;
-            IsTempProfile = config.IsTempProfile;
-            IsDefaultProfile = config.IsDefaultProfile;
-            TempDirCreateDelay = config.TempDirCreateDelay;
-            Port = config.Port;
-            Headless = config.Headless;
-            WindowSize = config.WindowSize;
-            DoNotOpenChromeProfile = config.DoNotOpenChromeProfile;
-        }
+        public Dictionary<string, string> UserPreferences { get; set; }
+
+        public bool IsMultiprocess { get; set; } = true;
+        public bool DoSetDebuggerRemoteEnabled { get; set; } = false;
+        public int DebuggerRemotePort { get; set; }
 
         public bool OpenOffline { get; set; } = false;
 
@@ -45,11 +34,34 @@ namespace Zu.Firefox
             }
         }
 
-        public Dictionary<string, string> UserPreferences { get; set; }
+        public FirefoxDriverConfig()
+            :base()
+        {
+        }
+        public FirefoxDriverConfig(DriverConfig config)
+            :this()
+        {
+            UserDir = config.UserDir;
+            CommandLineArgumets = config.CommandLineArgumets;
+            IsTempProfile = config.IsTempProfile;
+            IsDefaultProfile = config.IsDefaultProfile;
+            TempDirCreateDelay = config.TempDirCreateDelay;
+            Port = config.Port;
+            Headless = config.Headless;
+            WindowSize = config.WindowSize;
+            DoNotOpenChromeProfile = config.DoNotOpenChromeProfile;
+            DoOpenBrowserDevTools = config.DoOpenBrowserDevTools;
+            var firefoxConfig = config as FirefoxDriverConfig;
+            if (firefoxConfig != null)
+            {
+                UserPreferences = firefoxConfig.UserPreferences;
+                DoSetDebuggerRemoteEnabled = firefoxConfig.DoSetDebuggerRemoteEnabled;
+                DebuggerRemotePort = firefoxConfig.DebuggerRemotePort;
+                OpenOffline = firefoxConfig.OpenOffline;
+            }
+        }
 
-        public bool IsMultiprocess { get; set; } = true;
-        public bool DoSetDebuggerRemoteEnabled { get; set; } = false;
-        public int DebuggerRemotePort { get; set; }
+
     }
 
     public static class FirefoxDriverConfigFluent
