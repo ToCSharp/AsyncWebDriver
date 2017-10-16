@@ -1320,11 +1320,33 @@ namespace Zu.AsyncWebDriver.Remote
             return FindElement("css selector", $"[id^={selector}]", cancellationToken);
         }
 
+        public Task<IWebElement> FindElementByIdStartsWithOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                var selector = EscapeCssSelector(id);
+                return FindElement("css selector", $"[id^={selector}]", cancellationToken);
+            }
+            catch { return null; }
+        }
+
         public Task<IWebElement> FindElementByIdEndsWith(string id,
             CancellationToken cancellationToken = new CancellationToken())
         {
             var selector = EscapeCssSelector(id);
             return FindElement("css selector", $"[id$={selector}]", cancellationToken);
+        }
+
+        public Task<IWebElement> FindElementByIdEndsWithOrDefault(string id,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            try
+            {
+                var selector = EscapeCssSelector(id);
+                return FindElement("css selector", $"[id$={selector}]", cancellationToken);
+            }
+            catch { return null; }
         }
 
         public Task<ReadOnlyCollection<IWebElement>> FindElementsByIdStartsWith(string id,

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("AsyncFirefoxDriver")]
-[assembly: AssemblyDescription("Async FirefoxDriver")]
+[assembly: AssemblyDescription("Async Firefox Driver connects directly to Marionette and is async from this connection. No need in geckodriver.exe. AsyncFirefoxDriver implements IAsyncWebBrowserClient interfaces and can be used as AsyncWebDriver.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Oleg Zudov")]
 [assembly: AssemblyProduct("AsyncFirefoxDriver")]
