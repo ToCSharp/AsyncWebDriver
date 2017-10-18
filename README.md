@@ -75,6 +75,7 @@ PM> Install-Package AsyncOperaDriver
      await query.SendKeys(Keys.Enter);
 ```
 ##### Firefox Developer Tools
+Look [BrowsersDevToolsExample](https://github.com/ToCSharp/BrowsersDevToolsExample). 
 ```csharp
      await FirefoxProfilesWorker.CreateFirefoxProfile(dir, profileName);
      asyncFirefoxDriver = new AsyncFirefoxDriver(new FirefoxDriverConfig()
