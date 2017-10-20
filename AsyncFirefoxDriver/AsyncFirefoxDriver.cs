@@ -201,7 +201,7 @@ namespace Zu.Firefox
 
         public INavigation Navigation { get { if (navigation == null) navigation = new FirefoxDriverNavigation(this); return navigation; } }
 
-        public IJavaScriptExecutor JavaScriptExecutor { get { if (javaScriptExecutor == null) javaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this); return javaScriptExecutor; } }
+        public IJavaScriptExecutor JavaScriptExecutor { get { if (FirefoxJavaScriptExecutor == null) FirefoxJavaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this); return FirefoxJavaScriptExecutor; } }
 
         public IOptions Options { get { if (options == null) options = new FirefoxDriverOptions(this); return options; } }
 
@@ -221,9 +221,8 @@ namespace Zu.Firefox
 
         private IMouse mouse;
         private IKeyboard keyboard;
-        private DriverConfig config;
         private FirefoxDriverNavigation navigation;
-        private FirefoxDriverJavaScriptExecutor javaScriptExecutor;
+        public FirefoxDriverJavaScriptExecutor FirefoxJavaScriptExecutor;
         private FirefoxDriverOptions options;
         private FirefoxDriverTargetLocator targetLocator;
         private FirefoxDriverElements elements;

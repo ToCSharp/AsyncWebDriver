@@ -17,6 +17,10 @@ namespace Zu.Firefox
     {
         private IAsyncFirefoxDriver asyncFirefoxDriver;
 
+        public string Sandbox { get; set; } = null;
+
+        public void DoExecuteInDefaultSandbox() => Sandbox = "defaultSandbox";
+
         public FirefoxDriverJavaScriptExecutor(IAsyncFirefoxDriver asyncFirefoxDriver)
         {
             this.asyncFirefoxDriver = asyncFirefoxDriver;
@@ -24,7 +28,7 @@ namespace Zu.Firefox
 
         public async Task<object> ExecuteScript(string script, CancellationToken cancellationToken = default(CancellationToken), params object[] args)
         {
-            var res = await ExecuteScript(script, null, null/*"defaultSandbox"*/, cancellationToken, args);
+            var res = await ExecuteScript(script, null, Sandbox/*"defaultSandbox"*/, cancellationToken, args);
             return res;
         }
 
