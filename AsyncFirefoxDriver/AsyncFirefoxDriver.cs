@@ -173,56 +173,35 @@ namespace Zu.Firefox
         public Contexts CurrentContext { get; set; }
 
         #region IAsyncWebBrowserClient
-        public IMouse Mouse
-        {
-            get
-            {
-                if (mouse == null) mouse = new FirefoxDriverMouse(this);
-                return mouse;
-            }
-            set
-            {
-                mouse = value;
-            }
-        }
+        public IMouse Mouse => mouse ?? (mouse = new FirefoxDriverMouse(this));
 
-        public IKeyboard Keyboard
-        {
-            get
-            {
-                if (keyboard == null) keyboard = new FirefoxDriverKeyboard(this);
-                return keyboard;
-            }
-            set
-            {
-                keyboard = value;
-            }
-        }
+        public IKeyboard Keyboard => keyboard ?? (keyboard = new FirefoxDriverKeyboard(this));
 
-        public INavigation Navigation { get { if (navigation == null) navigation = new FirefoxDriverNavigation(this); return navigation; } }
+        public INavigation Navigation => navigation ?? (navigation = new FirefoxDriverNavigation(this));// { get { if (navigation == null) navigation = new FirefoxDriverNavigation(this); return navigation; } }
 
-        public IJavaScriptExecutor JavaScriptExecutor { get { if (FirefoxJavaScriptExecutor == null) FirefoxJavaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this); return FirefoxJavaScriptExecutor; } }
+        public IJavaScriptExecutor JavaScriptExecutor => firefoxJavaScriptExecutor ?? (firefoxJavaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this)); // { get { if (firefoxJavaScriptExecutor == null) firefoxJavaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this); return firefoxJavaScriptExecutor; } }
 
-        public IOptions Options { get { if (options == null) options = new FirefoxDriverOptions(this); return options; } }
+        public IOptions Options => options ?? (options = new FirefoxDriverOptions(this));
 
-        public ITargetLocator TargetLocator { get { if (targetLocator == null) targetLocator = new FirefoxDriverTargetLocator(this); return targetLocator; } }
+        public ITargetLocator TargetLocator => targetLocator ?? (targetLocator = new FirefoxDriverTargetLocator(this));
 
-        public IElements Elements { get { if (elements == null) elements = new FirefoxDriverElements(this); return elements; } }
+        public IElements Elements => elements ?? (elements = new FirefoxDriverElements(this)); 
 
-        public IAlert Alert { get { if (alert == null) alert = new FirefoxDriverAlert(this); return alert; } }
+        public IAlert Alert => alert ?? (alert = new FirefoxDriverAlert(this)); 
 
-        public ICoordinates Coordinates { get { if (coordinates == null) coordinates = new FirefoxDriverCoordinates(this); return coordinates; } }
+        public ICoordinates Coordinates => coordinates ?? (coordinates = new FirefoxDriverCoordinates(this));
 
-        public ITakesScreenshot Screenshot { get { if (screenshot == null) screenshot = new FirefoxDriverScreenshot(this); return screenshot; } }
+        public ITakesScreenshot Screenshot => screenshot ?? (screenshot = new FirefoxDriverScreenshot(this)); 
 
-        public ITouchScreen TouchScreen { get { if (touchScreen == null) touchScreen = new FirefoxDriverTouchScreen(this); return touchScreen; } }
+        public ITouchScreen TouchScreen => touchScreen ?? (touchScreen = new FirefoxDriverTouchScreen(this));
 
-        public IActionExecutor ActionExecutor { get { if (actionExecutor == null) actionExecutor = new FirefoxDriverActionExecutor(this); return actionExecutor; } }
+        public IActionExecutor ActionExecutor => actionExecutor ?? (actionExecutor = new FirefoxDriverActionExecutor(this));
 
         private IMouse mouse;
         private IKeyboard keyboard;
         private FirefoxDriverNavigation navigation;
-        public FirefoxDriverJavaScriptExecutor FirefoxJavaScriptExecutor;
+        public FirefoxDriverJavaScriptExecutor firefoxJavaScriptExecutor;
+        public FirefoxDriverJavaScriptExecutor FirefoxJavaScriptExecutor => firefoxJavaScriptExecutor ?? (firefoxJavaScriptExecutor = new FirefoxDriverJavaScriptExecutor(this));
         private FirefoxDriverOptions options;
         private FirefoxDriverTargetLocator targetLocator;
         private FirefoxDriverElements elements;

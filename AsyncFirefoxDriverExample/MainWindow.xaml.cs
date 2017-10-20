@@ -206,7 +206,6 @@ namespace AsyncFirefoxDriverExample
                 await Task.Delay(2000);
                 query = await webDriver.FindElementById("lst-ib");
                 //query = await asyncDriver.FindElementByName("q");
-                await query.SendKeys("t");
                 await query.SendKeys(Keys.ArrowDown);
                 await Task.Delay(1000);
                 await query.SendKeys(Keys.ArrowDown);
