@@ -1,5 +1,4 @@
-﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -12,7 +11,6 @@ namespace Zu.AsyncWebDriver.Remote
     public class SyncCookieJar
     {
         private ICookieJar cookies;
-
         public SyncCookieJar(ICookieJar cookies)
         {
             this.cookies = cookies;
@@ -27,14 +25,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await cookies.AddCookie(cookie);
+                    await cookies.AddCookie(cookie).ConfigureAwait(false);
                     MRes.Set();
                 }
-                catch (Exception ex) { exception = ex; }
-            });
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
+
         public ReadOnlyCollection<Cookie> AllCookies()
         {
             ReadOnlyCollection<Cookie> res = null;
@@ -45,16 +50,23 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await cookies.AllCookies();
+                    res = await cookies.AllCookies().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
-                MRes.Set();
-            });
-            MRes.Wait();
-            if (exception != null) throw exception;
-            return res;
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
+                MRes.Set();
+            }
+
+            );
+            MRes.Wait();
+            if (exception != null)
+                throw exception;
+            return res;
         }
+
         public void DeleteAllCookies()
         {
             var MRes = new ManualResetEventSlim(true);
@@ -64,14 +76,22 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await cookies.DeleteAllCookies();
+                    await cookies.DeleteAllCookies().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
+
         public void DeleteCookie(Cookie cookie)
         {
             var MRes = new ManualResetEventSlim(true);
@@ -81,14 +101,22 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await cookies.DeleteCookie(cookie);
+                    await cookies.DeleteCookie(cookie).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
+
         public void DeleteCookieNamed(string name)
         {
             var MRes = new ManualResetEventSlim(true);
@@ -98,13 +126,20 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await cookies.DeleteCookieNamed(name);
+                    await cookies.DeleteCookieNamed(name).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
 
         public Cookie GetCookieNamed(string name)
@@ -117,15 +152,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await cookies.GetCookieNamed(name);
+                    res = await cookies.GetCookieNamed(name).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
-
     }
 }

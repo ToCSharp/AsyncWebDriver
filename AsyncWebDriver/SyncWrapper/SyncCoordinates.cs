@@ -1,5 +1,4 @@
-﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace Zu.AsyncWebDriver.Remote
     public class SyncCoordinates
     {
         private ICoordinates coordinates;
-
         public SyncCoordinates(ICoordinates coordinates)
         {
             this.coordinates = coordinates;
@@ -27,13 +25,20 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await coordinates.LocationOnScreen();
+                    res = await coordinates.LocationOnScreen().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
 
@@ -47,13 +52,20 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await coordinates.LocationInViewport();
+                    res = await coordinates.LocationInViewport().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
 
@@ -67,17 +79,23 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await coordinates.LocationInDom();
+                    res = await coordinates.LocationInDom().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
 
         public string AuxiliaryLocator => coordinates.AuxiliaryLocator;
-
     }
 }

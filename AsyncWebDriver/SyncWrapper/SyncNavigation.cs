@@ -1,5 +1,4 @@
-﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ namespace Zu.AsyncWebDriver.Remote
     public class SyncNavigation
     {
         private INavigation navigation;
-
         public SyncNavigation(INavigation navigation)
         {
             this.navigation = navigation;
@@ -25,14 +23,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await navigation.Back();
-                    await Task.Delay(50);
+                    await navigation.Back().ConfigureAwait(false);
+                    await Task.Delay(50).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
 
         public void GoToUrl(string url)
@@ -44,20 +49,27 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await navigation.GoToUrl(url);
-                    //todo: remove delay
-                    await Task.Delay(200);
+                    await navigation.GoToUrl(url).ConfigureAwait(false);
+                    await Task.Delay(200).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
 
         public void GoToUrl(Uri url)
         {
-            if (url == null) throw new ArgumentNullException(nameof(url));
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
             Exception exception = null;
@@ -65,14 +77,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await navigation.GoToUrl(url);
-                    await Task.Delay(50);
+                    await navigation.GoToUrl(url).ConfigureAwait(false);
+                    await Task.Delay(50).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
 
         public void Forward()
@@ -84,14 +103,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await navigation.Forward();
-                    await Task.Delay(50);
+                    await navigation.Forward().ConfigureAwait(false);
+                    await Task.Delay(50).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
 
         public void Refresh()
@@ -103,14 +129,21 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await navigation.Refresh();
-                    await Task.Delay(50);
+                    await navigation.Refresh().ConfigureAwait(false);
+                    await Task.Delay(50).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
     }
 }

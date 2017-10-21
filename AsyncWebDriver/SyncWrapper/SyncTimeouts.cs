@@ -1,5 +1,4 @@
-﻿// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+// Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ namespace Zu.AsyncWebDriver.Remote
     public class SyncTimeouts
     {
         private ITimeouts timeouts;
-
         public SyncTimeouts(ITimeouts timeouts)
         {
             this.timeouts = timeouts;
@@ -18,7 +16,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public TimeSpan GetAsynchronousJavaScript()
         {
-            TimeSpan res = default(TimeSpan);
+            TimeSpan res = default (TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
             Exception exception = null;
@@ -26,18 +24,26 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await timeouts.GetAsynchronousJavaScript();
+                    res = await timeouts.GetAsynchronousJavaScript().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
+
         public TimeSpan GetImplicitWait()
         {
-            TimeSpan res = default(TimeSpan);
+            TimeSpan res = default (TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
             Exception exception = null;
@@ -45,18 +51,26 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await timeouts.GetImplicitWait();
+                    res = await timeouts.GetImplicitWait().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
+
         public TimeSpan GetPageLoad()
         {
-            TimeSpan res = default(TimeSpan);
+            TimeSpan res = default (TimeSpan);
             var MRes = new ManualResetEventSlim(true);
             MRes.Reset();
             Exception exception = null;
@@ -64,15 +78,23 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    res = await timeouts.GetPageLoad();
+                    res = await timeouts.GetPageLoad().ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
             return res;
         }
+
         public void SetAsynchronousJavaScript(TimeSpan time)
         {
             var MRes = new ManualResetEventSlim(true);
@@ -82,14 +104,22 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await timeouts.SetAsynchronousJavaScript(time);
+                    await timeouts.SetAsynchronousJavaScript(time).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
+
         public void SetImplicitWait(TimeSpan implicitWait)
         {
             var MRes = new ManualResetEventSlim(true);
@@ -99,14 +129,22 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await timeouts.SetImplicitWait(implicitWait);
+                    await timeouts.SetImplicitWait(implicitWait).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+
                 MRes.Set();
-            });
+            }
+
+            );
             MRes.Wait();
-            if (exception != null) throw exception;
+            if (exception != null)
+                throw exception;
         }
+
         public void SetPageLoad(TimeSpan time)
         {
             var MRes = new ManualResetEventSlim(true);
@@ -116,14 +154,20 @@ namespace Zu.AsyncWebDriver.Remote
             {
                 try
                 {
-                    await timeouts.SetPageLoad(time);
+                    await timeouts.SetPageLoad(time).ConfigureAwait(false);
                 }
-                catch (Exception ex) { exception = ex; }
-                MRes.Set();
-            });
-            MRes.Wait();
-            if (exception != null) throw exception;
-        }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
 
+                MRes.Set();
+            }
+
+            );
+            MRes.Wait();
+            if (exception != null)
+                throw exception;
+        }
     }
 }

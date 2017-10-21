@@ -1,6 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +10,6 @@ namespace Zu.AsyncWebDriver.Remote
     public class RemoteTargetLocator : IWebDriverTargetLocator
     {
         private readonly WebDriver driver;
-
         public RemoteTargetLocator(WebDriver driver)
         {
             this.driver = driver;
@@ -21,8 +19,7 @@ namespace Zu.AsyncWebDriver.Remote
         {
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
-
-            var res = await driver.browserClient.Elements.GetActiveElement(cancellationToken);
+            var res = await driver.browserClient.Elements.GetActiveElement(cancellationToken).ConfigureAwait(false);
             return driver.GetElementFromResponse(res);
         }
 
@@ -33,21 +30,23 @@ namespace Zu.AsyncWebDriver.Remote
 
         public async Task<IWebDriver> DefaultContent(CancellationToken cancellationToken = new CancellationToken())
         {
-            await driver.browserClient.TargetLocator.SwitchToFrame(null);
+            await driver.browserClient.TargetLocator.SwitchToFrame(null).ConfigureAwait(false);
             return driver;
         }
 
-        public async Task<IWebDriver> Frame(int frameIndex,
-            CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> Frame(int frameIndex, CancellationToken cancellationToken = new CancellationToken())
         {
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
-
             try
             {
-                await driver.browserClient.TargetLocator.SwitchToFrame(frameIndex, cancellationToken: cancellationToken);
+                await driver.browserClient.TargetLocator.SwitchToFrame(frameIndex, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
-            catch { throw; }
+            catch
+            {
+                throw;
+            }
+
             return driver;
         }
 
@@ -57,26 +56,34 @@ namespace Zu.AsyncWebDriver.Remote
                 throw new WebDriverException("no browserClient");
             try
             {
-                await driver.browserClient.TargetLocator.SwitchToFrame(frameName, cancellationToken: cancellationToken);
+                await driver.browserClient.TargetLocator.SwitchToFrame(frameName, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
-            catch { throw; }
+            catch
+            {
+                throw;
+            }
+
             return driver;
         }
 
-        public async Task<IWebDriver> Frame(IWebElement frameElement,
-            CancellationToken cancellationToken = new CancellationToken())
+        public async Task<IWebDriver> Frame(IWebElement frameElement, CancellationToken cancellationToken = new CancellationToken())
         {
             if (frameElement == null)
             {
                 throw new ArgumentNullException("frameElement", "Frame element cannot be null");
             }
+
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
             try
             {
-                await driver.browserClient.TargetLocator.SwitchToFrameByElement(frameElement.Id, cancellationToken: cancellationToken);
+                await driver.browserClient.TargetLocator.SwitchToFrameByElement(frameElement.Id, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
-            catch { throw; }
+            catch
+            {
+                throw;
+            }
+
             return driver;
         }
 
@@ -84,8 +91,7 @@ namespace Zu.AsyncWebDriver.Remote
         {
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
-
-            await driver.browserClient.TargetLocator.SwitchToParentFrame(cancellationToken);
+            await driver.browserClient.TargetLocator.SwitchToParentFrame(cancellationToken).ConfigureAwait(false);
             return driver;
         }
 
@@ -93,8 +99,7 @@ namespace Zu.AsyncWebDriver.Remote
         {
             if (driver?.browserClient == null)
                 throw new WebDriverException("no browserClient");
-
-            await driver.browserClient.TargetLocator.SwitchToWindow(windowName, cancellationToken);
+            await driver.browserClient.TargetLocator.SwitchToWindow(windowName, cancellationToken).ConfigureAwait(false);
             return driver;
         }
     }

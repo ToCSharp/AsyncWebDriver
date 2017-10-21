@@ -1,6 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,18 +18,15 @@ namespace Zu.AsyncWebDriver.Interactions
         private ActionBuilder actionBuilder = new ActionBuilder();
         public PointerInputDevice defaultMouse = new PointerInputDevice(PointerKind.Mouse, "default mouse");
         public KeyInputDevice defaultKeyboard = new KeyInputDevice("default keyboard");
-
         private IKeyboard keyboard;
         private IMouse mouse;
         private CompositeAction action = new CompositeAction();
-
         public CompositeAction Action => action;
         public ActionBuilder ActionBuilder => actionBuilder;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="Actions"/> class.
+        /// Initializes a new instance of the <see cref = "Actions"/> class.
         /// </summary>
-        /// <param name="driver">The <see cref="IWebDriver"/> object on which the actions built will be performed.</param>
+        /// <param name = "driver">The <see cref = "IWebDriver"/> object on which the actions built will be performed.</param>
         public Actions(IWebDriver driver)
         {
             this.driver = driver;
@@ -63,10 +59,10 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a modifier key down message to the browser.
         /// </summary>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// <param name = "theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
+        /// <exception cref = "ArgumentException">If the key sent is not is not one
+        /// of <see cref = "Keys.Shift"/>, <see cref = "Keys.Control"/>, or <see cref = "Keys.Alt"/>.</exception>
         public Actions KeyDown(string theKey)
         {
             return this.KeyDown(null, theKey);
@@ -75,11 +71,11 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a modifier key down message to the specified element in the browser.
         /// </summary>
-        /// <param name="element">The element to which to send the key command.</param>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// <param name = "element">The element to which to send the key command.</param>
+        /// <param name = "theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
+        /// <exception cref = "ArgumentException">If the key sent is not is not one
+        /// of <see cref = "Keys.Shift"/>, <see cref = "Keys.Control"/>, or <see cref = "Keys.Alt"/>.</exception>
         public Actions KeyDown(IWebElement element, string theKey)
         {
             if (string.IsNullOrEmpty(theKey))
@@ -104,10 +100,10 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a modifier key up message to the browser.
         /// </summary>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// <param name = "theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
+        /// <exception cref = "ArgumentException">If the key sent is not is not one
+        /// of <see cref = "Keys.Shift"/>, <see cref = "Keys.Control"/>, or <see cref = "Keys.Alt"/>.</exception>
         public Actions KeyUp(string theKey)
         {
             return this.KeyUp(null, theKey);
@@ -116,11 +112,11 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a modifier up down message to the specified element in the browser.
         /// </summary>
-        /// <param name="element">The element to which to send the key command.</param>
-        /// <param name="theKey">The key to be sent.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        /// <exception cref="ArgumentException">If the key sent is not is not one
-        /// of <see cref="Keys.Shift"/>, <see cref="Keys.Control"/>, or <see cref="Keys.Alt"/>.</exception>
+        /// <param name = "element">The element to which to send the key command.</param>
+        /// <param name = "theKey">The key to be sent.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
+        /// <exception cref = "ArgumentException">If the key sent is not is not one
+        /// of <see cref = "Keys.Shift"/>, <see cref = "Keys.Control"/>, or <see cref = "Keys.Alt"/>.</exception>
         public Actions KeyUp(IWebElement element, string theKey)
         {
             if (string.IsNullOrEmpty(theKey))
@@ -144,8 +140,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a sequence of keystrokes to the browser.
         /// </summary>
-        /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "keysToSend">The keystrokes to send to the browser.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions SendKeys(string keysToSend)
         {
             return this.SendKeys(null, keysToSend);
@@ -154,9 +150,9 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Sends a sequence of keystrokes to the specified element in the browser.
         /// </summary>
-        /// <param name="element">The element to which to send the keystrokes.</param>
-        /// <param name="keysToSend">The keystrokes to send to the browser.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "element">The element to which to send the keystrokes.</param>
+        /// <param name = "keysToSend">The keystrokes to send to the browser.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions SendKeys(IWebElement element, string keysToSend)
         {
             if (string.IsNullOrEmpty(keysToSend))
@@ -185,8 +181,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Clicks and holds the mouse button down on the specified element.
         /// </summary>
-        /// <param name="onElement">The element on which to click and hold.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "onElement">The element on which to click and hold.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions ClickAndHold(IWebElement onElement)
         {
             this.MoveToElement(onElement).ClickAndHold();
@@ -196,7 +192,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Clicks and holds the mouse button at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions ClickAndHold()
         {
             this.action.AddAction(new ClickAndHoldAction(this.mouse, null));
@@ -207,8 +203,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Releases the mouse button on the specified element.
         /// </summary>
-        /// <param name="onElement">The element on which to release the button.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "onElement">The element on which to release the button.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions Release(IWebElement onElement)
         {
             this.MoveToElement(onElement).Release();
@@ -218,7 +214,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Releases the mouse button at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions Release()
         {
             this.action.AddAction(new ButtonReleaseAction(this.mouse, null));
@@ -229,8 +225,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Clicks the mouse on the specified element.
         /// </summary>
-        /// <param name="onElement">The element on which to click.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "onElement">The element on which to click.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions Click(IWebElement onElement)
         {
             this.MoveToElement(onElement).Click();
@@ -240,7 +236,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions Click()
         {
             this.action.AddAction(new ClickAction(this.mouse, null));
@@ -252,8 +248,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Double-clicks the mouse on the specified element.
         /// </summary>
-        /// <param name="onElement">The element on which to double-click.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "onElement">The element on which to double-click.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions DoubleClick(IWebElement onElement)
         {
             this.MoveToElement(onElement).DoubleClick();
@@ -263,7 +259,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Double-clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions DoubleClick()
         {
             this.action.AddAction(new DoubleClickAction(this.mouse, null));
@@ -277,8 +273,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Moves the mouse to the specified element.
         /// </summary>
-        /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "toElement">The element to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement)
         {
             if (toElement == null)
@@ -295,10 +291,10 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Moves the mouse to the specified offset of the top-left corner of the specified element.
         /// </summary>
-        /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "toElement">The element to which to move the mouse.</param>
+        /// <param name = "offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name = "offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
             ILocatable target = GetLocatableFromElement(toElement);
@@ -310,9 +306,9 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Moves the mouse to the specified offset of the last known mouse coordinates.
         /// </summary>
-        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name = "offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions MoveByOffset(int offsetX, int offsetY)
         {
             this.action.AddAction(new MoveToOffsetAction(this.mouse, null, offsetX, offsetY));
@@ -323,8 +319,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Right-clicks the mouse on the specified element.
         /// </summary>
-        /// <param name="onElement">The element on which to right-click.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "onElement">The element on which to right-click.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions ContextClick(IWebElement onElement)
         {
             this.MoveToElement(onElement).ContextClick();
@@ -334,7 +330,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Right-clicks the mouse at the last known mouse coordinates.
         /// </summary>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions ContextClick()
         {
             this.action.AddAction(new ContextClickAction(this.mouse, null));
@@ -346,9 +342,9 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Performs a drag-and-drop operation from one element to another.
         /// </summary>
-        /// <param name="source">The element on which the drag operation is started.</param>
-        /// <param name="target">The element on which the drop is performed.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "source">The element on which the drag operation is started.</param>
+        /// <param name = "target">The element on which the drop is performed.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions DragAndDrop(IWebElement source, IWebElement target)
         {
             this.ClickAndHold(source).MoveToElement(target).Release(target);
@@ -358,10 +354,10 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Performs a drag-and-drop operation on one element to a specified offset.
         /// </summary>
-        /// <param name="source">The element on which the drag operation is started.</param>
-        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        /// <param name = "source">The element on which the drag operation is started.</param>
+        /// <param name = "offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name = "offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref = "Actions"/>.</returns>
         public Actions DragAndDropToOffset(IWebElement source, int offsetX, int offsetY)
         {
             this.ClickAndHold(source).MoveByOffset(offsetX, offsetY).Release();
@@ -371,7 +367,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Builds the sequence of actions.
         /// </summary>
-        /// <returns>A composite <see cref="IAction"/> which can be used to perform the actions.</returns>
+        /// <returns>A composite <see cref = "IAction"/> which can be used to perform the actions.</returns>
         public IAction Build()
         {
             IAction toReturn = new BuiltAction(driver, actionBuilder, action);
@@ -383,24 +379,24 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Performs the currently built action.
         /// </summary>
-        public async Task Perform(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task Perform(CancellationToken cancellationToken = default (CancellationToken))
         {
             IActionExecutor actionExecutor = this.driver as IActionExecutor;
-            if (await actionExecutor.IsActionExecutor(cancellationToken))
+            if (await actionExecutor.IsActionExecutor(cancellationToken).ConfigureAwait(false))
             {
-                await actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList());
+                await actionExecutor.PerformActions(this.actionBuilder.ToActionSequenceList()).ConfigureAwait(false);
             }
             else
             {
-                await action.Perform();
+                await action.Perform().ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// Gets the <see cref="ILocatable"/> instance of the specified <see cref="IWebElement"/>.
+        /// Gets the <see cref = "ILocatable"/> instance of the specified <see cref = "IWebElement"/>.
         /// </summary>
-        /// <param name="element">The <see cref="IWebElement"/> to get the location of.</param>
-        /// <returns>The <see cref="ILocatable"/> of the <see cref="IWebElement"/>.</returns>
+        /// <param name = "element">The <see cref = "IWebElement"/> to get the location of.</param>
+        /// <returns>The <see cref = "ILocatable"/> of the <see cref = "IWebElement"/>.</returns>
         protected static ILocatable GetLocatableFromElement(IWebElement element)
         {
             if (element == null)
@@ -435,11 +431,10 @@ namespace Zu.AsyncWebDriver.Interactions
         /// <summary>
         /// Adds an action to current list of actions to be performed.
         /// </summary>
-        /// <param name="actionToAdd">The <see cref="IAction"/> to be added.</param>
+        /// <param name = "actionToAdd">The <see cref = "IAction"/> to be added.</param>
         protected void AddAction(IAction actionToAdd)
         {
             this.action.AddAction(actionToAdd);
         }
-
     }
 }

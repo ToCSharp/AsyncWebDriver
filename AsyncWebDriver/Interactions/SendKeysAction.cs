@@ -1,6 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
-
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Interactions.Internal;
@@ -14,16 +13,14 @@ namespace Zu.AsyncWebDriver.Interactions
     public class SendKeysAction : KeyboardAction, IAction
     {
         private readonly string keysToSend;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="SendKeysAction" /> class.
+        ///     Initializes a new instance of the <see cref = "SendKeysAction"/> class.
         /// </summary>
-        /// <param name="keyboard">The <see cref="IKeyboard" /> to use in performing the action.</param>
-        /// <param name="mouse">The <see cref="IMouse" /> to use in setting focus to the element on which to perform the action.</param>
-        /// <param name="actionTarget">An <see cref="ILocatable" /> object providing the element on which to perform the action.</param>
-        /// <param name="keysToSend">The key sequence to send.</param>
-        public SendKeysAction(IKeyboard keyboard, IMouse mouse, ILocatable actionTarget, string keysToSend) : base(
-            keyboard, mouse, actionTarget)
+        /// <param name = "keyboard">The <see cref = "IKeyboard"/> to use in performing the action.</param>
+        /// <param name = "mouse">The <see cref = "IMouse"/> to use in setting focus to the element on which to perform the action.</param>
+        /// <param name = "actionTarget">An <see cref = "ILocatable"/> object providing the element on which to perform the action.</param>
+        /// <param name = "keysToSend">The key sequence to send.</param>
+        public SendKeysAction(IKeyboard keyboard, IMouse mouse, ILocatable actionTarget, string keysToSend): base (keyboard, mouse, actionTarget)
         {
             this.keysToSend = keysToSend;
         }
@@ -33,8 +30,8 @@ namespace Zu.AsyncWebDriver.Interactions
         /// </summary>
         public async Task Perform(CancellationToken cancellationToken = new CancellationToken())
         {
-            await FocusOnElement(cancellationToken);
-            await Keyboard.SendKeys(keysToSend, cancellationToken);
+            await FocusOnElement(cancellationToken).ConfigureAwait(false);
+            await Keyboard.SendKeys(keysToSend, cancellationToken).ConfigureAwait(false);
         }
     }
 }

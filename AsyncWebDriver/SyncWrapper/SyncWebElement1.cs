@@ -1,5 +1,4 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,35 +15,26 @@ namespace Zu.AsyncWebDriver.Remote
             AsyncElement = element;
         }
 
-        public AsyncWebElement AsyncElement { get; }
+        public AsyncWebElement AsyncElement
+        {
+            get;
+        }
+
         public string Id => AsyncElement?.Id;
-
-
         public string TagName => GetTagName();
         public string Text => GetText();
-
         public bool Enabled => GetEnabled();
-
         public bool Selected => GetSelected();
-
         public Point Location => GetLocation();
         public Size Size => GetSize();
-
         public bool Displayed => GetDisplayed();
-
-
         public Point LocationOnScreenOnceScrolledIntoView => GetLocationOnScreenOnceScrolledIntoView();
-
         public ICoordinates Coordinates => AsyncElement.Coordinates;
-
         public string OuterHTML => GetProperty("outerHTML");
         public string InnerHTML => GetProperty("innerHTML");
-
         public SyncWebElement First => GetChildren()?.FirstOrDefault();
         public SyncWebElement Last => GetChildren()?.LastOrDefault();
-
         public List<SyncWebElement> Children => GetChildren();
-
         public override string ToString()
         {
             return AsyncElement?.ToString() ?? "AsyncElement = null";
@@ -82,9 +72,11 @@ namespace Zu.AsyncWebDriver.Remote
             mRes.Reset();
             Task.Run(async () =>
             {
-                res = await AsyncElement.Size();
+                res = await AsyncElement.Size().ConfigureAwait(false);
                 mRes.Set();
-            });
+            }
+
+            );
             mRes.Wait();
             return res;
         }
@@ -98,7 +90,6 @@ namespace Zu.AsyncWebDriver.Remote
         {
             return AsyncElement.LocationOnScreenOnceScrolledIntoView().DoSync();
         }
-
 
         public void Clear()
         {
@@ -137,20 +128,12 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> GetChildren()
         {
-            return AsyncElement.Children()
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.Children().DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public List<SyncWebElement> FindElements(By by)
         {
-            return AsyncElement.FindElements(by)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElements(by).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElement(By by)
@@ -160,10 +143,13 @@ namespace Zu.AsyncWebDriver.Remote
             mRes.Reset();
             Task.Run(async () =>
             {
-                var r = await AsyncElement.FindElement(by);
-                if (r is AsyncWebElement) res = new SyncWebElement(r as AsyncWebElement);
+                var r = await AsyncElement.FindElement(by).ConfigureAwait(false);
+                if (r is AsyncWebElement)
+                    res = new SyncWebElement(r as AsyncWebElement);
                 mRes.Set();
-            });
+            }
+
+            );
             mRes.Wait();
             return res;
         }
@@ -176,11 +162,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByLinkText(string linkText)
         {
-            return AsyncElement.FindElementsByLinkText(linkText)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByLinkText(linkText).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementById(string id)
@@ -203,29 +185,17 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsById(string id)
         {
-            return AsyncElement.FindElementsById(id)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsById(id).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public List<SyncWebElement> FindElementsByIdStartsWith(string id)
         {
-            return AsyncElement.FindElementsByIdStartsWith(id)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByIdStartsWith(id).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public List<SyncWebElement> FindElementsByIdEndsWith(string id)
         {
-            return AsyncElement.FindElementsByIdEndsWith(id)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByIdEndsWith(id).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByName(string name)
@@ -236,11 +206,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByName(string name)
         {
-            return AsyncElement.FindElementsByName(name)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByName(name).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByTagName(string tagName)
@@ -251,11 +217,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByTagName(string tagName)
         {
-            return AsyncElement.FindElementsByTagName(tagName)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByTagName(tagName).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByClassName(string className)
@@ -266,11 +228,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByClassName(string className)
         {
-            return AsyncElement.FindElementsByClassName(className)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByClassName(className).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByXPath(string xpath)
@@ -281,11 +239,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByXPath(string xpath)
         {
-            return AsyncElement.FindElementsByXPath(xpath)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByXPath(xpath).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByPartialLinkText(string partialLinkText)
@@ -296,11 +250,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByPartialLinkText(string partialLinkText)
         {
-            return AsyncElement.FindElementsByPartialLinkText(partialLinkText)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByPartialLinkText(partialLinkText).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public SyncWebElement FindElementByCssSelector(string cssSelector)
@@ -311,18 +261,13 @@ namespace Zu.AsyncWebDriver.Remote
 
         public List<SyncWebElement> FindElementsByCssSelector(string cssSelector)
         {
-            return AsyncElement.FindElementsByCssSelector(cssSelector)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElementsByCssSelector(cssSelector).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public Screenshot GetScreenshot()
         {
             return AsyncElement.GetScreenshot().DoSync();
         }
-
 
         protected SyncWebElement FindElement(string mechanism, string value)
         {
@@ -332,11 +277,7 @@ namespace Zu.AsyncWebDriver.Remote
 
         protected List<SyncWebElement> FindElements(string mechanism, string value)
         {
-            return AsyncElement.FindElements(mechanism, value)
-                .DoSync()
-                ?.Where(a => a is AsyncWebElement)
-                .Select(v => new SyncWebElement(v as AsyncWebElement))
-                .ToList();
+            return AsyncElement.FindElements(mechanism, value).DoSync()?.Where(a => a is AsyncWebElement).Select(v => new SyncWebElement(v as AsyncWebElement)).ToList();
         }
 
         public string UploadFile(string localFile)

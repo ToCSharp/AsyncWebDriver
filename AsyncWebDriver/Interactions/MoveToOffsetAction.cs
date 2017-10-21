@@ -1,6 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
-
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Interactions.Internal;
@@ -15,16 +14,14 @@ namespace Zu.AsyncWebDriver.Interactions
     {
         private readonly int offsetX;
         private readonly int offsetY;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="MoveToOffsetAction" /> class.
+        ///     Initializes a new instance of the <see cref = "MoveToOffsetAction"/> class.
         /// </summary>
-        /// <param name="mouse">The <see cref="IMouse" /> with which the action will be performed.</param>
-        /// <param name="actionTarget">An <see cref="ILocatable" /> describing an element at which to perform the action.</param>
-        /// <param name="offsetX">The horizontal offset from the origin of the target to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset from the origin of the target to which to move the mouse.</param>
-        public MoveToOffsetAction(IMouse mouse, ILocatable actionTarget, int offsetX, int offsetY) : base(mouse,
-            actionTarget)
+        /// <param name = "mouse">The <see cref = "IMouse"/> with which the action will be performed.</param>
+        /// <param name = "actionTarget">An <see cref = "ILocatable"/> describing an element at which to perform the action.</param>
+        /// <param name = "offsetX">The horizontal offset from the origin of the target to which to move the mouse.</param>
+        /// <param name = "offsetY">The vertical offset from the origin of the target to which to move the mouse.</param>
+        public MoveToOffsetAction(IMouse mouse, ILocatable actionTarget, int offsetX, int offsetY): base (mouse, actionTarget)
         {
             this.offsetX = offsetX;
             this.offsetY = offsetY;
@@ -35,7 +32,7 @@ namespace Zu.AsyncWebDriver.Interactions
         /// </summary>
         public async Task Perform(CancellationToken cancellationToken = new CancellationToken())
         {
-            await Mouse.MouseMove(ActionLocation, offsetX, offsetY, cancellationToken);
+            await Mouse.MouseMove(ActionLocation, offsetX, offsetY, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -1,6 +1,5 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,29 +18,27 @@ namespace Zu.AsyncWebDriver.Interactions
         private readonly int speed;
         private readonly int speedX;
         private readonly int speedY;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FlickAction" /> class.
+        ///     Initializes a new instance of the <see cref = "FlickAction"/> class.
         /// </summary>
-        /// <param name="touchScreen">The <see cref="ITouchScreen" /> with which the action will be performed.</param>
-        /// <param name="speedX">The horizontal speed in pixels per second.</param>
-        /// <param name="speedY">The vertical speed in pixels per second.</param>
-        public FlickAction(ITouchScreen touchScreen, int speedX, int speedY) : base(touchScreen, null)
+        /// <param name = "touchScreen">The <see cref = "ITouchScreen"/> with which the action will be performed.</param>
+        /// <param name = "speedX">The horizontal speed in pixels per second.</param>
+        /// <param name = "speedY">The vertical speed in pixels per second.</param>
+        public FlickAction(ITouchScreen touchScreen, int speedX, int speedY): base (touchScreen, null)
         {
             this.speedX = speedX;
             this.speedY = speedY;
         }
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="FlickAction" /> class for use with the specified element.
+        ///     Initializes a new instance of the <see cref = "FlickAction"/> class for use with the specified element.
         /// </summary>
-        /// <param name="touchScreen">The <see cref="ITouchScreen" /> with which the action will be performed.</param>
-        /// <param name="actionTarget">An <see cref="ILocatable" /> describing an element at which to perform the action.</param>
-        /// <param name="offsetX">The x offset relative to the viewport.</param>
-        /// <param name="offsetY">The y offset relative to the viewport.</param>
-        /// <param name="speed">The speed in pixels per second.</param>
-        public FlickAction(ITouchScreen touchScreen, ILocatable actionTarget, int offsetX, int offsetY,
-            int speed) : base(touchScreen, actionTarget)
+        /// <param name = "touchScreen">The <see cref = "ITouchScreen"/> with which the action will be performed.</param>
+        /// <param name = "actionTarget">An <see cref = "ILocatable"/> describing an element at which to perform the action.</param>
+        /// <param name = "offsetX">The x offset relative to the viewport.</param>
+        /// <param name = "offsetY">The y offset relative to the viewport.</param>
+        /// <param name = "speed">The speed in pixels per second.</param>
+        public FlickAction(ITouchScreen touchScreen, ILocatable actionTarget, int offsetX, int offsetY, int speed): base (touchScreen, actionTarget)
         {
             if (actionTarget == null)
                 throw new ArgumentException("Must provide a location for a single tap action.", "actionTarget");
@@ -56,9 +53,9 @@ namespace Zu.AsyncWebDriver.Interactions
         public async Task Perform(CancellationToken cancellationToken = new CancellationToken())
         {
             if (ActionLocation != null)
-                await TouchScreen.Flick(ActionLocation, offsetX, offsetY, speed, cancellationToken);
+                await TouchScreen.Flick(ActionLocation, offsetX, offsetY, speed, cancellationToken).ConfigureAwait(false);
             else
-                await TouchScreen.Flick(speedX, speedY, cancellationToken);
+                await TouchScreen.Flick(speedX, speedY, cancellationToken).ConfigureAwait(false);
         }
     }
 }
