@@ -4,7 +4,8 @@ AsyncWebDriver is .Net WebDriver rewritten to async/await pattern from [selenium
 It uses browser drivers via [IAsyncWebBrowserClient](https://github.com/ToCSharp/IAsyncWebBrowserClient) interfaces.
 AsyncWebDriver has synchronous wrapper [SyncWebDriver](https://github.com/ToCSharp/AsyncWebDriver/tree/master/AsyncWebDriver/SyncWrapper) and [SeleniumAdapter](https://github.com/ToCSharp/AsyncChromeDriverExamplesAndTests/tree/master/AsyncWebDriver.SeleniumAdapter).
 
-[![Join the chat at https://gitter.im/AsyncWebDriver/Lobby](https://badges.gitter.im/AsyncWebDriver/Lobby.svg)](https://gitter.im/AsyncWebDriver/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/AsyncWebDriver/Lobby](https://badges.gitter.im/AsyncWebDriver/Lobby.svg)](https://gitter.im/AsyncWebDriver/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
+Look video of BrowsersDevToolsExample: https://youtu.be/dNMuoeDmEME 
 
 ## [AsyncFirefoxDriver](https://github.com/ToCSharp/AsyncWebDriver/tree/master/AsyncFirefoxDriver)
 It is Firefox driver. It connects directly to Marionette and is async from this connection. No need in geckodriver.
