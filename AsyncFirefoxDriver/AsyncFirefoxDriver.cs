@@ -20,8 +20,8 @@ namespace Zu.Firefox
     public class AsyncFirefoxDriver : IAsyncFirefoxDriver
     {
         #region Connection
-        private DebuggerConnectionMarionette _connectionM;
-        private DebuggerConnectionMarionette _connectionM2;
+        protected IDebuggerConnection _connectionM;
+        protected IDebuggerConnection _connectionM2;
         private Uri _debuggerEndpointUri;
         private Uri _debuggerEndpointUri2;
         public IDebuggerClient ClientMarionette
@@ -30,7 +30,7 @@ namespace Zu.Firefox
             set;
         }
 
-        public DebuggerClientMarionette clientMarionette2;
+        public IDebuggerClient clientMarionette2;
         public FirefoxDriverConfig Config
         {
             get;
@@ -88,23 +88,20 @@ namespace Zu.Firefox
         {
             get;
             set;
-        }
+        } = 10000;
 
-        = 10000;
         public bool DoConnect2
         {
             get;
             set;
-        }
+        } = true;
 
-        = true;
         public bool DoConnectWhenCheckConnected
         {
             get;
             set;
-        }
+        } = true; 
 
-        = true;
         private bool isConnected = false;
         public async Task CheckConnected(CancellationToken cancellationToken = default (CancellationToken))
         {
@@ -118,7 +115,7 @@ namespace Zu.Firefox
             }
         }
 
-        public async Task<DriverProcessInfo> OpenFirefoxProfile(FirefoxDriverConfig config)
+        public virtual async Task<DriverProcessInfo> OpenFirefoxProfile(FirefoxDriverConfig config)
         {
             if (config.DoOpenBrowserDevTools)
             {
@@ -130,7 +127,12 @@ namespace Zu.Firefox
             return res;
         }
 
-        public async Task<string> Connect(CancellationToken cancellationToken = new CancellationToken())
+        public Task<string> Open(CancellationToken cancellationToken = new CancellationToken())
+        {
+            return Connect(cancellationToken);
+        }
+
+        public virtual async Task<string> Connect(CancellationToken cancellationToken = new CancellationToken())
         {
             if (Port == 0)
                 return "Error: MarionettePort not set";
@@ -167,8 +169,8 @@ namespace Zu.Firefox
                         break;
                     }
             }
-
             , cancellationToken).ConfigureAwait(false);
+
             if (r != "connected")
                 return r;
             ClientMarionette = new DebuggerClientMarionette(_connectionM);
@@ -202,7 +204,7 @@ namespace Zu.Firefox
             return "Marionette " + Port + (_connectionM2?.Connected == true ? " Marionette2 " + Port2 : "");
         }
 
-#endregion
+        #endregion
         public Contexts CurrentContext
         {
             get;
@@ -261,7 +263,7 @@ namespace Zu.Firefox
             return comm1.Result is JValue ? comm1.Result.ToString() : comm1.Result?["value"]?.ToString();
         }
 
-        public async Task<string> Close(CancellationToken cancellationToken = new CancellationToken())
+        public virtual async Task<string> Close(CancellationToken cancellationToken = new CancellationToken())
         {
             //await CheckConnected(cancellationToken);
             //if (clientMarionette == null) throw new Exception("error: no clientMarionette");
@@ -276,7 +278,7 @@ namespace Zu.Firefox
             return "ok";
         }
 
-        public void CloseSync()
+        public virtual void CloseSync()
         {
             BrowserDevTools?.CloseSync();
             DriverProcess?.Close();
@@ -608,7 +610,7 @@ return ""ok"";", $@"D:\scripts\script{scriptInd++}.js", cancellationToken: cance
         }
 
         public event EventHandler<string> EventMessage;
-        public async Task<string> Connect2()
+        public virtual async Task<string> Connect2()
         {
             await SetContextChrome().ConfigureAwait(false);
             if (await ObjectExists("top.zuMServer").ConfigureAwait(false))
@@ -732,7 +734,7 @@ return ""ok""", $@"D:\scripts\script{scriptInd++}.js", "defaultSandbox", cancell
 
         string DBG_XUL = "chrome://devtools/content/framework/toolbox-process-window.xul";
         string CHROME_DEBUGGER_PROFILE_NAME = "chrome_debugger_profile";
-        public async Task StartDebuggerServer(int port = 9876, bool webSocket = false, CancellationToken cancellationToken = default (CancellationToken))
+        public virtual async Task StartDebuggerServer(int port = 9876, bool webSocket = false, CancellationToken cancellationToken = default (CancellationToken))
         {
             //http://searchfox.org/mozilla-central/source/devtools/shared/gcli/commands/listen.js
             var script = @"
@@ -823,7 +825,7 @@ return ex.toString();
         }
 
         static Random rnd = new Random();
-        public async Task<AsyncFirefoxDriver> OpenBrowserDevTools(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default (CancellationToken))
+        public virtual async Task<AsyncFirefoxDriver> OpenBrowserDevTools(int port = 9876, bool openInBrowserWindow = true, CancellationToken cancellationToken = default (CancellationToken))
         {
             await StartDebuggerServer(port, false, cancellationToken).ConfigureAwait(false);
             var devToolsPrefs = new Dictionary<string, string>{{"browser.tabs.remote.autostart.2", "false"}, {"devtools.debugger.prompt-connection", "false"}, {"devtools.debugger.remote-enabled", "true"}, //{ "devtools.debugger.remote-port", "9888" },
