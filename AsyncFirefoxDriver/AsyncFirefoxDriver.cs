@@ -37,7 +37,7 @@ namespace Zu.Firefox
             set;
         }
 
-        private List<Tuple<string, Action<JToken>>> eventAsyncActions = new List<Tuple<string, Action<JToken>>>();
+        protected List<Tuple<string, Action<JToken>>> eventAsyncActions = new List<Tuple<string, Action<JToken>>>();
         private object lock1 = new object ();
         private readonly object lock2 = new object ();
         public int Port
