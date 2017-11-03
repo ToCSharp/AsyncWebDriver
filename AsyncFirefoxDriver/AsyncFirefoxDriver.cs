@@ -39,7 +39,7 @@ namespace Zu.Firefox
 
         protected List<Tuple<string, Action<JToken>>> eventAsyncActions = new List<Tuple<string, Action<JToken>>>();
         private object lock1 = new object ();
-        private readonly object lock2 = new object ();
+        protected object lock2 = new object ();
         public int Port
         {
             get => Config.Port;
