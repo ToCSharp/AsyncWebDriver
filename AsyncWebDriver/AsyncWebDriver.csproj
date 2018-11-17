@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
+    <Compile Include="AsyncWebDriver\TaskRemoteTargetLocatorExtensions.cs" />
     <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
     <Compile Include="Interactions\BuiltAction.cs" />
