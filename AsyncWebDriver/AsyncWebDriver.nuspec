@@ -1,17 +1,18 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <licenseUrl>https://github.com/ToCSharp/AsyncWebDriver/blob/master/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/ToCSharp/AsyncWebDriver</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
-    <copyright>Copyright Oleg Zudov 2017</copyright>
-    <tags>WebDriver Browser</tags>
-  </metadata>
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>$title$</title>
+        <authors>$author$</authors>
+        <owners>$author$</owners>
+        <licenseUrl>https://github.com/ToCSharp/AsyncWebDriver/blob/master/LICENSE.txt</licenseUrl>
+        <projectUrl>https://github.com/ToCSharp/AsyncWebDriver</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>$description$</description>
+        <summary>Async WebDriver is base for different WebBrowser drivers</summary>
+        <releaseNotes>Now we can: await driver.WaitForElementWithId("id").Click();</releaseNotes>
+        <copyright>Copyright Oleg Zudov 2018</copyright>
+        <tags>WebDriver Browser</tags>
+    </metadata>
 </package>
