@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.AsyncWebDriver.Remote;
+using Zu.WebBrowser.AsyncInteractions;
+using Zu.WebBrowser.BrowserOptions;
 
 namespace Zu.AsyncWebDriver
 {
@@ -105,6 +108,24 @@ namespace Zu.AsyncWebDriver
         {
             var el = await elementTask;
             return await el.WaitForWebElement(func, notWebElementId, attemptsCount, delayMs, cancellationToken);
+        }
+
+        public static async Task<IOptions> Options(this Task<IWebDriver> elementTask, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var el = await elementTask;
+            return el.Options();
+        }
+
+        public static async Task<INavigation> Navigate(this Task<IWebDriver> elementTask, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var el = await elementTask;
+            return el.Navigate();
+        }
+
+        public static async Task<RemoteTargetLocator> SwitchTo(this Task<IWebDriver> elementTask, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var el = await elementTask;
+            return el.SwitchTo();
         }
     }
 }
