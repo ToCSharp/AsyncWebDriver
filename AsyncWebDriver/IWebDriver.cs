@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Remote;
-using Zu.WebBrowser;
 using Zu.WebBrowser.AsyncInteractions;
 using Zu.WebBrowser.BrowserOptions;
 

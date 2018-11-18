@@ -50,14 +50,20 @@
     <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
     <Compile Include="AsyncWebDriver\TaskRemoteTargetLocatorExtensions.cs" />
     <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
+    <Compile Include="Exceptions\ElementClickInterceptedException.cs" />
+    <Compile Include="Exceptions\ElementNotInteractableException.cs" />
+    <Compile Include="Exceptions\ElementNotSelectableException.cs" />
+    <Compile Include="Exceptions\ElementNotVisibleException.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
     <Compile Include="Interactions\BuiltAction.cs" />
     <Compile Include="Interactions\KeyInputDevice.cs" />
     <Compile Include="Interactions\PointerInputDevice.cs" />
-    <Compile Include="TaskISearchContextExtensions.cs" />
-    <Compile Include="TaskIWebDriverExtensions.cs" />
+    <Compile Include="Exceptions\InvalidElementStateException.cs" />
+    <Compile Include="Exceptions\NoAlertPresentException.cs" />
+    <Compile Include="Extensions\TaskISearchContextExtensions.cs" />
+    <Compile Include="Extensions\TaskIWebDriverExtensions.cs" />
     <Compile Include="IWebDriverTargetLocator.cs" />
-    <Compile Include="TaskIWebElementExtensions.cs" />
+    <Compile Include="Extensions\TaskIWebElementExtensions.cs" />
     <Compile Include="SyncWrapper\SyncCookieJar.cs" />
     <Compile Include="SyncWrapper\SyncCoordinates.cs" />
     <Compile Include="SyncWrapper\SyncLogs.cs" />
@@ -108,15 +114,15 @@
     <Compile Include="Internal\IWebElementReference.cs" />
     <Compile Include="Internal\IWrapsElement.cs" />
     <Compile Include="Internal\ReturnedCookie.cs" />
-    <Compile Include="InvalidSelectorException.cs" />
+    <Compile Include="Exceptions\InvalidSelectorException.cs" />
     <Compile Include="ISearchContext.cs" />
-    <Compile Include="TaskIWebDriverTargetLocatorExtensions.cs" />
+    <Compile Include="Extensions\TaskIWebDriverTargetLocatorExtensions.cs" />
     <Compile Include="IWebDriver.cs" />
     <Compile Include="IWebElement.cs" />
-    <Compile Include="NoSuchElementException.cs" />
-    <Compile Include="NoSuchFrameException.cs" />
-    <Compile Include="NoSuchWindowException.cs" />
-    <Compile Include="NotFoundException.cs" />
+    <Compile Include="Exceptions\NoSuchElementException.cs" />
+    <Compile Include="Exceptions\NoSuchFrameException.cs" />
+    <Compile Include="Exceptions\NoSuchWindowException.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AsyncWebDriver\WebDriver.cs" />
     <Compile Include="SyncWrapper\SyncAlert.cs" />
@@ -124,7 +130,7 @@
     <Compile Include="SyncWrapper\SyncKeyboard.cs" />
     <Compile Include="SyncWrapper\SyncMouse.cs" />
     <Compile Include="SyncWrapper\SyncWindow.cs" />
-    <Compile Include="WebDriverException.cs" />
+    <Compile Include="Exceptions\WebDriverException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

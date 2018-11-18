@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Zu.AsyncWebDriver.Remote;
@@ -127,5 +128,18 @@ namespace Zu.AsyncWebDriver
             var el = await elementTask;
             return el.SwitchTo();
         }
+
+        public static async Task<IWebElement> FindElement(this Task<IWebDriver> elementTask, By by, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var el = await elementTask;
+            return await el.FindElement(by, cancellationToken);
+        }
+
+        public static async Task<ReadOnlyCollection<IWebElement>> FindElements(this Task<IWebDriver> elementTask, By by, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var el = await elementTask;
+            return await el.FindElements(by, cancellationToken);
+        }
+
     }
 }

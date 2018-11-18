@@ -3,7 +3,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Zu.WebBrowser.AsyncInteractions;
 
 namespace Zu.AsyncWebDriver.Remote
 {

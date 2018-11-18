@@ -11,7 +11,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
         <summary>Async WebDriver is base for different WebBrowser drivers</summary>
-        <releaseNotes>Now we can: await driver.WaitForElementWithId("id").Click();</releaseNotes>
+        <releaseNotes>Additional Exceptions</releaseNotes>
         <copyright>Copyright Oleg Zudov 2018</copyright>
         <tags>WebDriver Browser</tags>
     </metadata>
