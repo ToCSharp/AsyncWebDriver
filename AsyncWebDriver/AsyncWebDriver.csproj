@@ -54,6 +54,7 @@
     <Compile Include="Exceptions\ElementNotInteractableException.cs" />
     <Compile Include="Exceptions\ElementNotSelectableException.cs" />
     <Compile Include="Exceptions\ElementNotVisibleException.cs" />
+    <Compile Include="Exceptions\WebDriverTimeoutException.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
     <Compile Include="Interactions\BuiltAction.cs" />
     <Compile Include="Interactions\KeyInputDevice.cs" />
