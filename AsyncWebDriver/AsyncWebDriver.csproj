@@ -57,6 +57,8 @@
     <Compile Include="Exceptions\StaleElementReferenceException.cs" />
     <Compile Include="Exceptions\UnhandledAlertException.cs" />
     <Compile Include="Exceptions\WebDriverTimeoutException.cs" />
+    <Compile Include="Extensions\TaskStringExtensions.cs" />
+    <Compile Include="Extensions\TaskCollectionsExtensions.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
     <Compile Include="Interactions\BuiltAction.cs" />
     <Compile Include="Interactions\KeyInputDevice.cs" />

@@ -7,23 +7,20 @@ using System.Threading.Tasks;
 
 namespace Zu.AsyncWebDriver
 {
-    /// <summary>
-    ///     Defines the interface used to search for elements.
-    /// </summary>
     public static class TaskISearchContextExtensions
     {
         public static async Task<IWebElement> FindElement(this Task<ISearchContext> elementTask, By by,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            var el = await elementTask;
-            return await el.FindElement(by, cancellationToken);
+            var el = await elementTask.ConfigureAwait(false);
+            return await el.FindElement(by, cancellationToken).ConfigureAwait(false);
         }
 
         public static async Task<ReadOnlyCollection<IWebElement>> FindElements(this Task<ISearchContext> elementTask, By by,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            var el = await elementTask;
-            return await el.FindElements(by, cancellationToken);
+            var el = await elementTask.ConfigureAwait(false);
+            return await el.FindElements(by, cancellationToken).ConfigureAwait(false);
         }
     }
 }
