@@ -57,6 +57,7 @@
     <Compile Include="Exceptions\StaleElementReferenceException.cs" />
     <Compile Include="Exceptions\UnhandledAlertException.cs" />
     <Compile Include="Exceptions\WebDriverTimeoutException.cs" />
+    <Compile Include="Extensions\TaskWebSizeWebPointExtensions.cs" />
     <Compile Include="Extensions\TaskStringExtensions.cs" />
     <Compile Include="Extensions\TaskCollectionsExtensions.cs" />
     <Compile Include="Interactions\ActionBuilder.cs" />
@@ -65,7 +66,6 @@
     <Compile Include="Interactions\PointerInputDevice.cs" />
     <Compile Include="Exceptions\InvalidElementStateException.cs" />
     <Compile Include="Exceptions\NoAlertPresentException.cs" />
-    <Compile Include="Extensions\TaskISearchContextExtensions.cs" />
     <Compile Include="Extensions\TaskIWebDriverExtensions.cs" />
     <Compile Include="IWebDriverTargetLocator.cs" />
     <Compile Include="Extensions\TaskIWebElementExtensions.cs" />
