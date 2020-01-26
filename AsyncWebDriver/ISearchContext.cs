@@ -1,6 +1,7 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,5 +32,19 @@ namespace Zu.AsyncWebDriver
         /// </returns>
         Task<ReadOnlyCollection<IWebElement>> FindElements(By by,
             CancellationToken cancellationToken = new CancellationToken());
+
+        Task<IWebElement> FindElement(string mechanism, string value, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElement(string mechanism, string value, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementOrDefault(By by, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementOrDefault(string mechanism, string value, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementOrDefault(string mechanism, string value, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReadOnlyCollection<IWebElement>> FindElements(string mechanism, string value, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElements(string mechanism, string value, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsOrDefault(By by, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsOrDefault(string mechanism, string value, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsOrDefault(string mechanism, string value, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReadOnlyCollection<IWebElement>> Children(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

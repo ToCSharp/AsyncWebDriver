@@ -18,7 +18,7 @@ using Zu.WebBrowser.BrowserOptions;
 
 namespace Zu.AsyncWebDriver.Remote
 {
-    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IActionExecutor
+    public class WebDriver : IWebDriver
     {
         /// <summary>
         ///     The default command timeout for HTTP requests in a RemoteWebDriver instance.

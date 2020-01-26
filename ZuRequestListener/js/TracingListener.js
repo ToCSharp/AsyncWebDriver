@@ -1,25 +1,25 @@
 ﻿
-if (typeof (Services) == 'undefined')
+if (typeof (Services) === 'undefined')
     Cu.import('resource://gre/modules/Services.jsm');
 
 
-this.fileNameFromUrl = function (url) {
+this.fileNameFromUrl = function(url) {
     if (!url) return "noname";
     var ps = url.split('#').shift().split('?').shift().split('/');
     var res = ps.pop();
     if (res === "") res = ps.pop().replace(/\./, '');
     return res.split('#').shift().split('?').shift();
     //return url?url.split('/').pop().split('#').shift().split('?').shift():"noname";
-}
+};
 
-this.extFromFileName = function (name) {
+this.extFromFileName = function(name) {
     if (!name) return "";
     var ps = name.split('.');
-    if (ps.length == 1) return "";
+    if (ps.length === 1) return "";
     return ps.pop();
-}
+};
 
-this.readBinaryFromFile = function (filename) {
+this.readBinaryFromFile = function(filename) {
     var fileIO = require("sdk/io/file");
     var text = null;
     if (fileIO.exists(filename)) {
@@ -30,19 +30,19 @@ this.readBinaryFromFile = function (filename) {
         }
     }
     return text;
-}
+};
 
-this.writeBinaryToFile = function (text, filename) {
+this.writeBinaryToFile = function(text, filename) {
     var fileIO = require("sdk/io/file");
     var TextWriter = fileIO.open(filename, "bw");
     if (!TextWriter.closed) {
         TextWriter.write(text);
         TextWriter.close();
     }
-}
+};
 String.prototype.hashCode = function () {
     var hash = 0, i, char;
-    if (this.length == 0) return hash;
+    if (this.length === 0) return hash;
     for (i = 0; i < this.length; i++) {
         char = this.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
@@ -57,8 +57,9 @@ var BinaryInputStream = CC('@mozilla.org/binaryinputstream;1', 'nsIBinaryInputSt
 var BinaryOutputStream = CC('@mozilla.org/binaryoutputstream;1', 'nsIBinaryOutputStream', 'setOutputStream');
 var StorageStream = CC('@mozilla.org/storagestream;1', 'nsIStorageStream', 'init');
 
-this.TracingListener = function () {
-    this.receivedChunks = []; // array for incoming data. holds chunks as they come, onStopRequest we join these junks to get the full source
+this.TracingListener = function() {
+    this.receivedChunks =
+        []; // array for incoming data. holds chunks as they come, onStopRequest we join these junks to get the full source
     this.responseBody; // we'll set this to the 
     this.responseBody64; // we'll set this to the 
     this.code = "";
@@ -86,18 +87,18 @@ this.TracingListener = function () {
         resolve: null,
         reject: null
     };
-    this.deferredDone.promise = new Promise(function (resolve, reject) {
+    this.deferredDone.promise = new Promise(function(resolve, reject) {
         this.resolve = resolve;
         this.reject = reject;
     }.bind(this.deferredDone));
     Object.freeze(this.deferredDone);
     this.promiseDone = this.deferredDone.promise;
-}
+};
 this.TracingListener.prototype = {
     onDataAvailable: function (aRequest, aContext, aInputStream, aOffset, aCount) {
 
         if (this.doRecordFile) {
-            var iStream = new BinaryInputStream(aInputStream) // binaryaInputStream
+            var iStream = new BinaryInputStream(aInputStream); // binaryaInputStream
             var sStream = new StorageStream(8192, aCount, null); // storageStream // not sure why its 8192 but thats how eveyrone is doing it, we should ask why
             var oStream = new BinaryOutputStream(sStream.getOutputStream(0)); // binaryOutputStream
 
@@ -242,10 +243,10 @@ this.httpResponseObserver = {
 
     observe: function (aSubject, aTopic, aData) {
         var newListener = new TracingListener();
-        if (this.doSaveAll == true) {
+        if (this.doSaveAll === true) {
             newListener.doSaveFile = true;
         }
-        if (this.doSendBinary == true) {
+        if (this.doSendBinary === true) {
             newListener.doSendBinary = true;
         }
         newListener.filesExtNotRecord = this.filesExtNotRecord;
@@ -262,29 +263,31 @@ this.httpResponseObserver = {
                 if (newListener.doRecordFile) {
                     if (newListener.doSaveFile) {
                         var hashC = newListener.responseBody.hashCode();
-                        var fName = fileNameFromUrl(newListener.url)
+                        var fName = fileNameFromUrl(newListener.url);
                         var ext = extFromFileName(fName);
-                        if (ext != '') ext = '.' + ext;
+                        if (ext !== '') ext = '.' + ext;
                         var p = self.pathToSave + fName + '_' + hashC + ext;
                         writeBinaryToFile(newListener.responseBody, p);
                         for (var i = 0; i < self.listeners.length; ++i) {
                             if (typeof (self.listeners[i].onFileSaved) === "function") {
                                 try {
                                     self.listeners[i].onFileSaved(newListener.url, p, hashC);
-                                } catch (e) {
+                                } catch {
+                                    //
                                 }
                             }
                         }
                     }
-                    for (var i = 0; i < self.listeners.length; ++i) {
-                        if (typeof (self.listeners[i].onFileLoaded) == "function") {
+                    for (var i2 = 0; i2 < self.listeners.length; ++i2) {
+                        if (typeof (self.listeners[i2].onFileLoaded) === "function") {
                             try {
                                 if (newListener.responseBody64) {
-                                    self.listeners[i].onFileLoaded(newListener.url, newListener.responseBody64, newListener.code);
+                                    self.listeners[i2].onFileLoaded(newListener.url, newListener.responseBody64, newListener.code);
                                 } else {
-                                    self.listeners[i].onFileLoaded(newListener.url, newListener.responseBody, newListener.code);
+                                    self.listeners[i2].onFileLoaded(newListener.url, newListener.responseBody, newListener.code);
                                 }
-                            } catch (e) {
+                            } catch {
+                                //
                             }
                         }
                     }

@@ -70,46 +70,46 @@ namespace Zu.AsyncWebDriver
             return el;
         }
 
-        public static async Task<IWebElement> WaitForElementWithId(this Task<IWebDriver> elementTask, string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForElementWithId(id, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
+        //public static async Task<IWebElement> WaitForElementWithId(this Task<IWebDriver> elementTask, string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForElementWithId(id, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
 
-        public static async Task<IWebElement> WaitForElementWithName(this Task<IWebDriver> elementTask, string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForElementWithName(name, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
+        //public static async Task<IWebElement> WaitForElementWithName(this Task<IWebDriver> elementTask, string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForElementWithName(name, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
 
-        public static async Task<IWebElement> WaitForElementWithCssSelector(this Task<IWebDriver> elementTask, string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForElementWithCssSelector(cssSelector, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
+        //public static async Task<IWebElement> WaitForElementWithCssSelector(this Task<IWebDriver> elementTask, string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForElementWithCssSelector(cssSelector, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
 
-        public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForWebElement(func, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
-        public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForWebElement(func, notWebElement, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
+        //public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForWebElement(func, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
+        //public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForWebElement(func, notWebElement, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
 
-        public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken())
-        {
-            var el = await elementTask.ConfigureAwait(false);
-            return await el.WaitForWebElement(func, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
-        }
+        //public static async Task<IWebElement> WaitForWebElement(this Task<IWebDriver> elementTask, Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
+        //    CancellationToken cancellationToken = new CancellationToken())
+        //{
+        //    var el = await elementTask.ConfigureAwait(false);
+        //    return await el.WaitForWebElement(func, notWebElementId, attemptsCount, delayMs, cancellationToken).ConfigureAwait(false);
+        //}
 
         public static async Task<IOptions> Options(this Task<IWebDriver> elementTask, CancellationToken cancellationToken = new CancellationToken())
         {

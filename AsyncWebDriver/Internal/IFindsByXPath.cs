@@ -1,6 +1,7 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,5 +31,23 @@ namespace Zu.AsyncWebDriver.Internal
         /// </returns>
         Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath,
             CancellationToken cancellationToken = new CancellationToken());
+
+        Task<IWebElement> FindElementByXPath(string xpath, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPath(string xpath, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPath(string xpath, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPath(string xpath, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPathOrDefault(string xpath, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPathOrDefault(string xpath, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPathOrDefault(string xpath, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByXPathOrDefault(string xpath, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPath(string xpath, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByXPathOrDefault(string xpath, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

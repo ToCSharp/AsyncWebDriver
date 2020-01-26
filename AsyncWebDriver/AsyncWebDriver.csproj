@@ -1,144 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{489FD59F-D739-4144-89B8-B5A719BCB120}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AsyncWebDriver</RootNamespace>
-    <AssemblyName>AsyncWebDriver</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+    <Version>1.4.2</Version>
+    <PackageReleaseNotes>Now IWebDriver and IWebElement interfaces are inherited from ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName...</PackageReleaseNotes>
+    <Description>Async WebDriver is base for different WebBrowser drivers</Description>
+    <Authors>Oleg Zudov</Authors>
+    <Copyright>Copyright Oleg Zudov 2018</Copyright>
+    <PackageLicenseUrl>https://github.com/ToCSharp/IAsyncWebBrowserClient/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/ToCSharp/IAsyncWebBrowserClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ToCSharp/IAsyncWebBrowserClient</RepositoryUrl>
+    <PackageTags>WebDriver Browser AsyncWebDriver</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="IAsyncWebBrowserClient, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\AsyncChromeDriverExamplesAndTests\packages\IAsyncWebBrowserClient.0.1.10\lib\net452\IAsyncWebBrowserClient.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Compile Remove="Extensions\TaskISearchContextExtensions.cs" />
+    <Compile Remove="SyncWrapper\SyncWebDriver1.cs" />
+    <Compile Remove="SyncWrapper\SyncWebElement1.cs" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="AsyncWebDriver\AsyncWebElement.cs" />
-    <Compile Include="AsyncWebDriver\TaskRemoteTargetLocatorExtensions.cs" />
-    <Compile Include="AsyncWebDriver\RemoteTargetLocator.cs" />
-    <Compile Include="Exceptions\ElementClickInterceptedException.cs" />
-    <Compile Include="Exceptions\ElementNotInteractableException.cs" />
-    <Compile Include="Exceptions\ElementNotSelectableException.cs" />
-    <Compile Include="Exceptions\ElementNotVisibleException.cs" />
-    <Compile Include="Exceptions\StaleElementReferenceException.cs" />
-    <Compile Include="Exceptions\UnhandledAlertException.cs" />
-    <Compile Include="Exceptions\WebDriverTimeoutException.cs" />
-    <Compile Include="Extensions\TaskWebSizeWebPointExtensions.cs" />
-    <Compile Include="Extensions\TaskStringExtensions.cs" />
-    <Compile Include="Extensions\TaskCollectionsExtensions.cs" />
-    <Compile Include="Interactions\ActionBuilder.cs" />
-    <Compile Include="Interactions\BuiltAction.cs" />
-    <Compile Include="Interactions\KeyInputDevice.cs" />
-    <Compile Include="Interactions\PointerInputDevice.cs" />
-    <Compile Include="Exceptions\InvalidElementStateException.cs" />
-    <Compile Include="Exceptions\NoAlertPresentException.cs" />
-    <Compile Include="Extensions\TaskIWebDriverExtensions.cs" />
-    <Compile Include="IWebDriverTargetLocator.cs" />
-    <Compile Include="Extensions\TaskIWebElementExtensions.cs" />
-    <Compile Include="SyncWrapper\SyncCookieJar.cs" />
-    <Compile Include="SyncWrapper\SyncCoordinates.cs" />
-    <Compile Include="SyncWrapper\SyncLogs.cs" />
-    <Compile Include="SyncWrapper\SyncOptions.cs" />
-    <Compile Include="SyncWrapper\SyncRemoteTargetLocator.cs" />
-    <Compile Include="SyncWrapper\SyncTimeouts.cs" />
-    <Compile Include="SyncWrapper\SyncWebDriver.cs" />
-    <Compile Include="SyncWrapper\SyncWebElement.cs" />
-    <Compile Include="AsyncWebDriver\TaskExt.cs" />
-    <Compile Include="By.cs" />
-    <Compile Include="IHasInputDevices.cs" />
-    <Compile Include="IHasTouchScreen.cs" />
-    <Compile Include="Interactions\Actions.cs" />
-    <Compile Include="Interactions\ButtonReleaseAction.cs" />
-    <Compile Include="Interactions\ClickAction.cs" />
-    <Compile Include="Interactions\ClickAndHoldAction.cs" />
-    <Compile Include="Interactions\CompositeAction.cs" />
-    <Compile Include="Interactions\ContextClickAction.cs" />
-    <Compile Include="Interactions\DoubleClickAction.cs" />
-    <Compile Include="Interactions\DoubleTapAction.cs" />
-    <Compile Include="Interactions\FlickAction.cs" />
-    <Compile Include="Interactions\KeyboardAction.cs" />
-    <Compile Include="Interactions\KeyDownAction.cs" />
-    <Compile Include="Interactions\KeyUpAction.cs" />
-    <Compile Include="Interactions\LongPressAction.cs" />
-    <Compile Include="Interactions\MouseAction.cs" />
-    <Compile Include="Interactions\MoveMouseAction.cs" />
-    <Compile Include="Interactions\MoveToOffsetAction.cs" />
-    <Compile Include="Interactions\ScreenMoveAction.cs" />
-    <Compile Include="Interactions\ScreenPressAction.cs" />
-    <Compile Include="Interactions\ScreenReleaseAction.cs" />
-    <Compile Include="Interactions\ScrollAction.cs" />
-    <Compile Include="Interactions\SendKeysAction.cs" />
-    <Compile Include="Interactions\SingleKeyAction.cs" />
-    <Compile Include="Interactions\SingleTapAction.cs" />
-    <Compile Include="Interactions\TouchAction.cs" />
-    <Compile Include="Interactions\TouchActions.cs" />
-    <Compile Include="Interactions\WebDriverAction.cs" />
-    <Compile Include="Internal\IFindsByClassName.cs" />
-    <Compile Include="Internal\IFindsByCssSelector.cs" />
-    <Compile Include="Internal\IFindsById.cs" />
-    <Compile Include="Internal\IFindsByLinkText.cs" />
-    <Compile Include="Internal\IFindsByName.cs" />
-    <Compile Include="Internal\IFindsByPartialLinkText.cs" />
-    <Compile Include="Internal\IFindsByTagName.cs" />
-    <Compile Include="Internal\IFindsByXPath.cs" />
-    <Compile Include="Internal\IWrapsDriver.cs" />
-    <Compile Include="Internal\IWebElementReference.cs" />
-    <Compile Include="Internal\IWrapsElement.cs" />
-    <Compile Include="Internal\ReturnedCookie.cs" />
-    <Compile Include="Exceptions\InvalidSelectorException.cs" />
-    <Compile Include="ISearchContext.cs" />
-    <Compile Include="Extensions\TaskIWebDriverTargetLocatorExtensions.cs" />
-    <Compile Include="IWebDriver.cs" />
-    <Compile Include="IWebElement.cs" />
-    <Compile Include="Exceptions\NoSuchElementException.cs" />
-    <Compile Include="Exceptions\NoSuchFrameException.cs" />
-    <Compile Include="Exceptions\NoSuchWindowException.cs" />
-    <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="AsyncWebDriver\WebDriver.cs" />
-    <Compile Include="SyncWrapper\SyncAlert.cs" />
-    <Compile Include="SyncWrapper\SyncNavigation.cs" />
-    <Compile Include="SyncWrapper\SyncKeyboard.cs" />
-    <Compile Include="SyncWrapper\SyncMouse.cs" />
-    <Compile Include="SyncWrapper\SyncWindow.cs" />
-    <Compile Include="Exceptions\WebDriverException.cs" />
+    <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

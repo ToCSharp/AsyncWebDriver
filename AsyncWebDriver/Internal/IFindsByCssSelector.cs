@@ -1,6 +1,7 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,5 +31,23 @@ namespace Zu.AsyncWebDriver.Internal
         /// </returns>
         Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector,
             CancellationToken cancellationToken = new CancellationToken());
+
+        Task<IWebElement> FindElementByCssSelector(string cssSelector, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelector(string cssSelector, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelector(string cssSelector, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelector(string cssSelector, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByCssSelectorOrDefault(string cssSelector, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelector(string cssSelector, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByCssSelectorOrDefault(string cssSelector, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

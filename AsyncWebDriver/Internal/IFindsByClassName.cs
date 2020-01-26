@@ -1,6 +1,7 @@
 // Copyright (c) Oleg Zudov. All Rights Reserved. Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // This file is based on or incorporates material from the project Selenium, licensed under the Apache License, Version 2.0. More info in THIRD-PARTY-NOTICES file.
 
+using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,5 +31,24 @@ namespace Zu.AsyncWebDriver.Internal
         /// </returns>
         Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className,
             CancellationToken cancellationToken = new CancellationToken());
+
+        Task<IWebElement> FindElementByClassName(string className, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassName(string className, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassName(string className, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassName(string className, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassNameOrDefault(string className, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassNameOrDefault(string className, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassNameOrDefault(string className, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IWebElement> FindElementByClassNameOrDefault(string className, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, string notElementId, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassName(string className, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, int timeoutMs, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, string notElementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ReadOnlyCollection<IWebElement>> FindElementsByClassNameOrDefault(string className, TimeSpan timeout, CancellationToken cancellationToken = default(CancellationToken));
+
     }
 }

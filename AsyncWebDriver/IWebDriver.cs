@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Zu.AsyncWebDriver.Internal;
 using Zu.AsyncWebDriver.Remote;
 using Zu.WebBrowser.AsyncInteractions;
 using Zu.WebBrowser.BrowserOptions;
@@ -39,8 +40,9 @@ namespace Zu.AsyncWebDriver
     ///         more fully featured browser when there is a requirement for one.
     ///     </para>
     /// </remarks>
-    public interface IWebDriver : ISearchContext, IDisposable
+    public interface IWebDriver : IDisposable, ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector, ITakesScreenshot, IHasInputDevices, IHasWebStorage, IHasLocationContext, IHasApplicationCache, IActionExecutor
     {
+        int GoToUrlTimeoutMs { get; set; }
         Task<string> GetUrl(CancellationToken cancellationToken = new CancellationToken());
         Task<string> GoToUrl(string url, CancellationToken cancellationToken = new CancellationToken());
 
@@ -84,6 +86,8 @@ namespace Zu.AsyncWebDriver
         /// </summary>
         Task Close(CancellationToken cancellationToken = new CancellationToken());
 
+        void CloseSync();
+
         /// <summary>
         ///     Quits this driver, closing every associated window.
         /// </summary>
@@ -116,17 +120,7 @@ namespace Zu.AsyncWebDriver
         /// </returns>
         RemoteTargetLocator SwitchTo();
 
-        Task<IWebElement> WaitForElementWithId(string id, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForElementWithName(string name, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForElementWithCssSelector(string cssSelector, string notWebElementId = null, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, IWebElement notWebElement, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
-        Task<IWebElement> WaitForWebElement(Func<Task<IWebElement>> func, string notWebElementId, int attemptsCount = 20, int delayMs = 500,
-            CancellationToken cancellationToken = new CancellationToken());
+        Task ClearElement(string elementId, CancellationToken cancellationToken = default(CancellationToken));
+        Task ClickElement(string elementId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
