@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
-    <Version>1.4.5</Version>
+    <Version>1.4.6</Version>
     <PackageReleaseNotes>IAsyncWebBrowserClient update</PackageReleaseNotes>
     <Description>Async WebDriver is base for different WebBrowser drivers</Description>
     <Authors>Oleg Zudov</Authors>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.5" />
+    <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
