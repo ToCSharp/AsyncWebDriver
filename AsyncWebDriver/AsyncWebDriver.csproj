@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
-    <Version>1.4.3</Version>
-    <PackageReleaseNotes>Now IWebDriver and IWebElement interfaces are inherited from ISearchContext, IJavaScriptExecutor, IFindsById, IFindsByClassName...</PackageReleaseNotes>
+    <Version>1.4.4</Version>
+    <PackageReleaseNotes>Nuget update</PackageReleaseNotes>
     <Description>Async WebDriver is base for different WebBrowser drivers</Description>
     <Authors>Oleg Zudov</Authors>
     <Copyright>Copyright Oleg Zudov 2018</Copyright>
@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
