@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="IAsyncWebBrowserClient" Version="0.2.6" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup>
