@@ -1,5 +1,7 @@
 ### AsyncWebDriver
 
+> **Development discontinued.** This project is no longer maintained. Further development continues at **[ZuChromeDriver](https://github.com/ZuChromeDriver/ZuChromeDriver)** — the successor with the same core idea (in-process CDP, chromedriver atom parity, async-first WebDriver API, and full Chrome DevTools access).
+
 AsyncWebDriver is .Net WebDriver rewritten to async/await pattern from [selenium](https://github.com/SeleniumHQ/selenium) project.
 It uses browser drivers via [IAsyncWebBrowserClient](https://github.com/ToCSharp/IAsyncWebBrowserClient) interfaces.
 AsyncWebDriver has synchronous wrapper [SyncWebDriver](https://github.com/ToCSharp/AsyncWebDriver/tree/master/AsyncWebDriver/SyncWrapper) and [SeleniumAdapter](https://github.com/ToCSharp/AsyncChromeDriverExamplesAndTests/tree/master/AsyncWebDriver.SeleniumAdapter).
